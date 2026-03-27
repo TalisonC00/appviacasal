@@ -3,50 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nosso Diário de Viagens 👩‍❤️‍👨</title>
+    <title>Nosso Mapa 👩‍❤️‍👨</title>
     <style>
         :root { --primary: #ff4b5c; }
-        body { font-family: sans-serif; background: #f0f2f5; margin: 0; text-align: center; }
+        body { font-family: sans-serif; background: #f0f2f5; margin: 0; padding-bottom: 80px; }
         
         /* Container do Mapa */
         .mapa-wrapper { 
             position: relative; 
             display: inline-block; 
-            margin: 20px auto;
-            width: 90%; max-width: 400px;
+            margin: 10px auto;
+            width: 95%; max-width: 500px;
+            background: white; border-radius: 15px; padding: 10px;
         }
-        .img-mapa { width: 100%; height: auto; display: block; }
+        .img-mapa { width: 100%; height: auto; border-radius: 10px; }
 
         /* Estilo do Pino 📌 */
         .pino-marcador {
             position: absolute;
             font-size: 25px;
-            transform: translate(-50%, -100%); /* Ajusta para a ponta do pino ficar no local */
-            animation: bounce 0.5s infinite alternate;
+            transform: translate(-50%, -100%);
+            cursor: pointer;
+            z-index: 10;
         }
 
-        /* Abas */
-        .aba { display: none; padding: 20px; }
+        /* Abas e Menu */
+        .aba { display: none; padding: 15px; }
         .ativa { display: block; }
-        .menu { position: fixed; bottom: 0; width: 100%; background: white; display: flex; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
-        .btn-menu { flex: 1; padding: 15px; border: none; background: none; font-size: 20px; }
-        .btn-menu.active { color: var(--primary); font-weight: bold; }
+        .menu { position: fixed; bottom: 0; width: 100%; background: white; display: flex; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); z-index: 100; }
+        .btn-menu { flex: 1; padding: 18px; border: none; background: none; font-size: 24px; color: #ccc; }
+        .btn-menu.active { color: var(--primary); }
 
-        /* Estética */
+        /* Estética do Card */
         .card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        select, input, button { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #ddd; }
+        select, input, button { width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid #ddd; font-size: 16px; box-sizing: border-box; }
         button { background: var(--primary); color: white; border: none; font-weight: bold; }
-
-        @keyframes bounce { from { transform: translate(-50%, -100%); } to { transform: translate(-50%, -120%); } }
     </style>
 </head>
 <body>
 
     <div id="mapa" class="aba ativa">
         <div class="card">
-            <h2>🇧🇷 Nossa Jornada</h2>
+            <h2 style="text-align:center; color:var(--primary)">🇧🇷 Nossa Jornada</h2>
             <div class="mapa-wrapper" id="container-mapa">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Brazil_States_Blank_Map.svg/500px-Brazil_States_Blank_Map.svg.png" class="img-mapa">
+                <img src="https://i.imgur.com/vHq16P9.png" class="img-mapa" id="img-base">
                 </div>
         </div>
     </div>
@@ -55,16 +55,22 @@
         <div class="card">
             <h2>📍 Onde estivemos?</h2>
             <select id="estado">
-                <option value="45,75">São Paulo</option>
-                <option value="38,70">Rio de Janeiro</option>
-                <option value="35,55">Minas Gerais</option>
-                <option value="60,40">Bahia</option>
-                <option value="15,25">Amazonas</option>
-                <option value="25,90">Rio Grande do Sul</option>
-                <option value="32,15">Ceará</option>
+                <option value="48,78">São Paulo</option>
+                <option value="60,72">Rio de Janeiro</option>
+                <option value="55,60">Minas Gerais</option>
+                <option value="75,45">Bahia</option>
+                <option value="25,30">Amazonas</option>
+                <option value="38,90">Rio Grande do Sul</option>
+                <option value="42,82">Paraná</option>
+                <option value="45,86">Santa Catarina</option>
+                <option value="82,28">Ceará</option>
+                <option value="78,35">Pernambuco</option>
+                <option value="48,50">Goiás</option>
+                <option value="35,15">Pará</option>
             </select>
-            <input type="text" id="cidade" placeholder="Cidade">
-            <button onclick="marcarPino()">Colocar Pino 📌</button>
+            <input type="text" id="cidade" placeholder="Nome da cidade">
+            <button onclick="marcarPino()">Marcar Viagem! 📌</button>
+            <button onclick="limparTudo()" style="background:#888; margin-top: 20px;">Resetar Mapa</button>
         </div>
     </div>
 
@@ -74,6 +80,12 @@
     </nav>
 
 <script>
+    // 1. CARREGAR PINOS AO ABRIR
+    window.onload = function() {
+        const salvos = JSON.parse(localStorage.getItem('minhasViagens')) || [];
+        salvos.forEach(v => criarPinoNoMapa(v.x, v.y));
+    };
+
     function mudarAba(id, btn) {
         document.querySelectorAll('.aba').forEach(a => a.classList.remove('ativa'));
         document.querySelectorAll('.btn-menu').forEach(b => b.classList.remove('active'));
@@ -83,24 +95,42 @@
 
     function marcarPino() {
         const coordenadas = document.getElementById('estado').value.split(',');
-        const container = document.getElementById('container-mapa');
+        const cidade = document.getElementById('cidade').value;
+        
+        if(!cidade) return alert("Escreve o nome da cidade!");
 
-        // Criar o elemento do pino
+        const x = coordenadas[0];
+        const y = coordenadas[1];
+
+        // Criar o pino visualmente
+        criarPinoNoMapa(x, y);
+
+        // SALVAR NO NAVEGADOR (LocalStorage)
+        const viagens = JSON.parse(localStorage.getItem('minhasViagens')) || [];
+        viagens.push({ x, y, cidade });
+        localStorage.setItem('minhasViagens', JSON.stringify(viagens));
+
+        alert(`Pino colocado em ${cidade}!`);
+        mudarAba('mapa', document.querySelectorAll('.btn-menu')[0]);
+    }
+
+    function criarPinoNoMapa(x, y) {
+        const container = document.getElementById('container-mapa');
         const pino = document.createElement('div');
         pino.className = 'pino-marcador';
         pino.innerHTML = '📌';
-        
-        // Posicionar (em % para funcionar em qualquer tela)
-        pino.style.left = coordenadas[0] + '%';
-        pino.style.top = coordenadas[1] + '%';
-
+        pino.style.left = x + '%';
+        pino.style.top = y + '%';
         container.appendChild(pino);
-        
-        alert("Pino colocado!");
-        mudarAba('mapa', document.querySelectorAll('.btn-menu')[0]);
+    }
+
+    function limparTudo() {
+        if(confirm("Queres mesmo apagar todas as viagens do mapa?")) {
+            localStorage.removeItem('minhasViagens');
+            location.reload();
+        }
     }
 </script>
 
 </body>
 </html>
-
