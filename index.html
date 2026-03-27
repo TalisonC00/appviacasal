@@ -3,102 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nosso Mapa: Edição Brasil 🇧🇷</title>
+    <title>Mapa Colorido Brasil 🇧🇷</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <style>
         :root { --primary: #ff4b5c; }
-        body { font-family: sans-serif; margin: 0; background: #f0f2f5; overflow: hidden; }
-        
-        #map { height: 100vh; width: 100vw; }
+        body { font-family: sans-serif; margin: 0; background: #f1f2f6; overflow: hidden; }
+        #map { height: 100vh; width: 100vw; z-index: 1; }
 
-        /* Estilo dos Menus */
-        .controles { 
-            position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
+        /* Painel de Controle */
+        .painel { 
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
             z-index: 1000; width: 90%; max-width: 400px;
+            background: white; padding: 15px; border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
         }
-        .card { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        
-        input, button { width: 100%; padding: 12px; margin: 5px 0; border-radius: 10px; border: 1px solid #ddd; font-size: 14px; box-sizing: border-box; }
+        input, button { width: 100%; padding: 12px; margin: 5px 0; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; font-size: 14px; }
         button { background: var(--primary); color: white; border: none; font-weight: bold; cursor: pointer; }
-
-        /* Ajuste do Pop-up para fotos */
-        .leaflet-popup-content img { width: 100%; border-radius: 5px; margin-top: 5px; }
+        .stats { font-size: 11px; color: #777; text-align: center; margin-top: 5px; }
     </style>
 </head>
 <body>
 
-    <div class="controles">
-        <div class="card" id="form-viagem">
-            <input type="text" id="cidade" placeholder="Cidade e Estado (ex: Ubatuba, SP)">
-            <input type="file" id="foto1" accept="image/*" style="display:none">
-            <button onclick="registrarViagem()">Marcar nossa história 📌</button>
-        </div>
+    <div class="painel">
+        <input type="text" id="cidade" placeholder="Cidade, Estado (ex: Santos, SP)">
+        <button onclick="adicionarViagem()">Marcar e Colorir 🚩</button>
+        <div id="stats" class="stats">Carregando mapa...</div>
     </div>
 
     <div id="map"></div>
 
     <script>
-        // 1. LIMITES GEOGRÁFICOS DO BRASIL (Aprox.)
-        const cantoSuperiorEsquerdo = [5.27, -73.99];
-        const cantoInferiorDireito = [-33.75, -34.79];
-        const limitesBrasil = L.latLngBounds(cantoSuperiorEsquerdo, cantoInferiorDireito);
-
-        // 2. INICIALIZAR MAPA RESTRITO
+        // 1. LIMITES DO BRASIL
+        const limitesBrasil = L.latLngBounds([5.27, -73.99], [-33.75, -34.79]);
+        
         var map = L.map('map', {
-            maxBounds: limitesBrasil,      // Prende o mapa no Brasil
-            maxBoundsViscosity: 1.0,      // Impede totalmente de arrastar para fora
-            minZoom: 4,                   // Não deixa ver o mundo todo
-            maxZoom: 18                   // Permite ver as ruas
+            maxBounds: limitesBrasil,
+            maxBoundsViscosity: 1.0,
+            minZoom: 4
         }).setView([-15.78, -47.93], 4);
 
-        // 3. CAMADA DE MAPA (ESTILO LIMPO)
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap',
-            bounds: limitesBrasil         // Só carrega os quadrados do Brasil
-        }).addTo(map);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-        // 4. CARREGAR PINOS SALVOS
-        window.onload = function() {
-            const viagens = JSON.parse(localStorage.getItem('viagens_casal_mapa')) || [];
-            viagens.forEach(v => {
-                L.marker([v.lat, v.lng]).addTo(map).bindPopup(`<b>${v.cidade}</b><br>Nossa Memória aqui!`);
-            });
-        };
+        var camadaGeoJSON;
 
-        // 5. REGISTRAR NOVA VIAGEM
-        async function registrarViagem() {
-            const cidade = document.getElementById('cidade').value;
-            if(!cidade) return alert("Escreva o nome da cidade!");
+        // 2. CARREGAR CONTORNOS DOS ESTADOS (GEOJSON)
+        function carregarGeoJSON() {
+            fetch('https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/brazil-states.geojson')
+                .then(res => res.json())
+                .then(data => {
+                    renderizarMapa(data);
+                })
+                .catch(err => {
+                    document.getElementById('stats').innerText = "Erro ao carregar contornos.";
+                });
+        }
 
-            // Busca as coordenadas (Geocoding)
+        function renderizarMapa(data) {
+            const visitados = JSON.parse(localStorage.getItem('estados_casal')) || [];
+            
+            if (camadaGeoJSON) map.removeLayer(camadaGeoJSON);
+
+            camadaGeoJSON = L.geoJson(data, {
+                style: function(feature) {
+                    // DUPLA VERIFICAÇÃO: Checa sigla (SP) ou Nome (São Paulo)
+                    const sigla = feature.properties.sigla;
+                    const nome = feature.properties.name;
+                    const estaColorido = visitados.some(v => v === sigla || v === nome);
+
+                    return {
+                        fillColor: estaColorido ? '#ff4b5c' : 'transparent',
+                        weight: 1.5,
+                        color: '#666',
+                        fillOpacity: 0.5
+                    };
+                }
+            }).addTo(map);
+
+            document.getElementById('stats').innerText = `Estados coloridos: ${visitados.length}`;
+        }
+
+        // 3. LOGICA PARA BUSCAR CIDADE E IDENTIFICAR ESTADO
+        async function adicionarViagem() {
+            const input = document.getElementById('cidade').value;
+            if (!input) return alert("Digite uma cidade!");
+
             try {
-                const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${cidade}&countrycodes=br`);
+                const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=${input}&countrycodes=br`);
                 const data = await res.json();
 
-                if(data.length > 0) {
-                    const lat = data[0].lat;
-                    const lng = data[0].lon;
+                if (data.length === 0) return alert("Cidade não encontrada no Brasil.");
 
-                    // Adiciona pino e centraliza
-                    L.marker([lat, lng]).addTo(map).bindPopup(`<b>${cidade}</b>`).openPopup();
-                    map.setView([lat, lng], 10);
+                const local = data[0];
+                const addr = local.address;
 
-                    // Salva
-                    const viagens = JSON.parse(localStorage.getItem('viagens_casal_mapa')) || [];
-                    viagens.push({ lat, lng, cidade });
-                    localStorage.setItem('viagens_casal_mapa', JSON.stringify(viagens));
+                // Captura identificadores do estado (Sigla ou Nome)
+                const idEstado = (addr.state_code || addr.state || "").toUpperCase();
+                const nomeEstado = (addr.state || "");
 
-                    document.getElementById('cidade').value = "";
-                } else {
-                    alert("Cidade não encontrada no Brasil. Tente adicionar o Estado (ex: , SP)");
-                }
+                // Salva no LocalStorage
+                let visitados = JSON.parse(localStorage.getItem('estados_casal')) || [];
+                
+                if (!visitados.includes(idEstado)) visitados.push(idEstado);
+                if (!visitados.includes(nomeEstado)) visitados.push(nomeEstado);
+
+                localStorage.setItem('estados_casal', JSON.stringify(visitados));
+
+                // Coloca pino e atualiza cores
+                L.marker([local.lat, local.lon]).addTo(map).bindPopup(`<b>${input}</b>`).openPopup();
+                
+                // Recarrega o GeoJSON para aplicar a nova cor
+                carregarGeoJSON();
+                
+                map.setView([local.lat, local.lon], 7);
+                document.getElementById('cidade').value = "";
+
             } catch (e) {
-                alert("Erro ao buscar localização. Verifique sua internet.");
+                alert("Erro na conexão.");
             }
         }
+
+        // Iniciar
+        window.onload = carregarGeoJSON;
     </script>
 </body>
 </html>
