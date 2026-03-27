@@ -3,130 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mapa Colorido Brasil 🇧🇷</title>
-    
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
+    <title>Nosso Mapa de Aventuras 👩‍❤️‍👨</title>
     <style>
-        :root { --primary: #ff4b5c; }
-        body { font-family: sans-serif; margin: 0; background: #f1f2f6; overflow: hidden; }
-        #map { height: 100vh; width: 100vw; z-index: 1; }
+        :root { --primary: #ff4b5c; --bg: #f1f2f6; --gray: #dcdde1; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding-bottom: 90px; text-align: center; }
+        
+        .card { background: white; margin: 15px; padding: 15px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        
+        /* O MAPA REAL EM SVG */
+        .mapa-container { width: 100%; max-width: 500px; margin: auto; }
+        svg { width: 100%; height: auto; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1)); }
+        path { fill: var(--gray); stroke: #fff; stroke-width: 1; transition: fill 0.4s ease; }
+        .visitado { fill: var(--primary) !important; }
 
-        /* Painel de Controle */
-        .painel { 
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-            z-index: 1000; width: 90%; max-width: 400px;
-            background: white; padding: 15px; border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-        }
-        input, button { width: 100%; padding: 12px; margin: 5px 0; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; font-size: 14px; }
-        button { background: var(--primary); color: white; border: none; font-weight: bold; cursor: pointer; }
-        .stats { font-size: 11px; color: #777; text-align: center; margin-top: 5px; }
+        /* INTERFACE */
+        .aba { display: none; animation: fadeIn 0.3s; }
+        .ativa { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .menu { position: fixed; bottom: 0; width: 100%; background: white; display: flex; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); z-index: 100; }
+        .btn-nav { flex: 1; padding: 20px; border: none; background: none; font-size: 24px; color: #ccc; }
+        .btn-nav.active { color: var(--primary); }
+
+        /* FORMULÁRIO */
+        select, input, button { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; border: 1px solid #eee; font-size: 16px; box-sizing: border-box; }
+        button { background: var(--primary); color: white; border: none; font-weight: bold; }
+        
+        /* FEED DE FOTOS */
+        .feed-item { border-left: 5px solid var(--primary); padding: 10px; margin-bottom: 15px; text-align: left; background: #fff; border-radius: 10px; }
+        .galeria { display: flex; gap: 8px; margin-top: 10px; }
+        .img-trip { width: 48%; height: 120px; object-fit: cover; border-radius: 8px; background: #eee; }
     </style>
 </head>
 <body>
 
-    <div class="painel">
-        <input type="text" id="cidade" placeholder="Cidade, Estado (ex: Santos, SP)">
-        <button onclick="adicionarViagem()">Marcar e Colorir 🚩</button>
-        <div id="stats" class="stats">Carregando mapa...</div>
+    <div id="aba-mapa" class="aba ativa">
+        <div class="card">
+            <h2 style="color:var(--primary); margin:0 0 10px 0;">🇧🇷 Nossa Jornada</h2>
+            <div class="mapa-container" id="svg-host">
+                </div>
+            <p id="counter" style="font-size: 13px; color: #888; margin-top: 10px;"></p>
+        </div>
     </div>
 
-    <div id="map"></div>
+    <div id="aba-add" class="aba">
+        <div class="card">
+            <h2>📍 Nova Memória</h2>
+            <select id="reg-estado"></select>
+            <input type="text" id="reg-cidade" placeholder="Cidade visitada">
+            <label style="font-size: 12px; display: block; margin-top: 10px; color: #666;">Selecione até 2 fotos:</label>
+            <input type="file" id="reg-fotos" multiple accept="image/*">
+            <button onclick="salvarViagem()">Guardar Momento 🚩</button>
+        </div>
+    </div>
 
-    <script>
-        // 1. LIMITES DO BRASIL
-        const limitesBrasil = L.latLngBounds([5.27, -73.99], [-33.75, -34.79]);
+    <div id="aba-feed" class="aba">
+        <div class="card">
+            <h2>📸 Nossas Memórias</h2>
+            <div id="feed-lista"></div>
+        </div>
+    </div>
+
+    <nav class="menu">
+        <button class="btn-nav active" onclick="trocar('mapa', this)">🗺️</button>
+        <button class="btn-nav" onclick="trocar('add', this)">➕</button>
+        <button class="btn-nav" onclick="trocar('feed', this)">🖼️</button>
+    </nav>
+
+<script>
+    // 1. DADOS DO MAPA (COORDENADAS REAIS SIMPLIFICADAS)
+    const svgBrasil = `<svg viewBox="0 0 550 550"><path id="AC" d="M25,270l35,-20l30,20l0,40l-30,20l-35,-10z"/><path id="AM" d="M35,115l155,-10l30,120l-75,40l-100,-20z"/><path id="RR" d="M155,35l50,20l-10,45l-40,0z"/><path id="PA" d="M195,110l150,5l10,140l-130,-15l-30,-50z"/><path id="AP" d="M300,45l45,15l-10,45l-35,-5z"/><path id="MA" d="M350,115l55,20l10,90l-55,30z"/><path id="PI" d="M410,140l35,20l10,85l-45,0z"/><path id="CE" d="M450,165l45,15l-5,45l-40,0z"/><path id="RN" d="M500,185l35,10l-5,25l-30,0z"/><path id="PB" d="M500,225l35,10l-5,20l-30,0z"/><path id="PE" d="M465,250l75,15l-10,25l-65,-10z"/><path id="AL" d="M505,300l25,10l-10,25l-15,0z"/><path id="SE" d="M495,340l20,10l-5,25l-15,0z"/><path id="BA" d="M365,265l115,20l-25,130l-90,-20z"/><path id="TO" d="M320,245l35,10l10,115l-45,0z"/><path id="MT" d="M190,245l120,0l-10,125l-110,15z"/><path id="GO" d="M310,360l50,10l-10,75l-40,0z"/><path id="DF" d="M335,400l10,0l0,10l-10,0z"/><path id="MS" d="M200,395l95,-10l-10,100l-85,-10z"/><path id="MG" d="M360,395l100,15l-15,100l-85,-10z"/><path id="ES" d="M465,430l25,10l-10,45l-15,-5z"/><path id="RJ" d="M430,515l40,5l-5,25l-35,-5z"/><path id="SP" d="M295,490l120,15l-10,55l-110,-10z"/><path id="PR" d="M250,490l40,5l-5,40l-35,-5z"/><path id="SC" d="M255,545l55,10l-5,25l-50,0z"/><path id="RS" d="M225,545l25,5l-10,75l-40,-15z"/><path id="RO" d="M100,270l45,-10l35,70l-80,10z"/></svg>`;
+
+    const estados = {"AC":"Acre","AL":"Alagoas","AP":"Amapá","AM":"Amazonas","BA":"Bahia","CE":"Ceará","DF":"Distrito Fed.","ES":"Espírito Santo","GO":"Goiás","MA":"Maranhão","MT":"Mato Grosso","MS":"Mato Grosso do Sul","MG":"Minas Gerais","PA":"Pará","PB":"Paraíba","PR":"Paraná","PE":"Pernambuco","PI":"Piauí","RJ":"Rio de Janeiro","RN":"Rio G. do Norte","RS":"Rio G. do Sul","RO":"Rondônia","RR":"Roraima","SC":"Santa Catarina","SP":"São Paulo","SE":"Sergipe","TO":"Tocantins"};
+
+    // 2. INICIALIZAÇÃO
+    window.onload = () => {
+        document.getElementById('svg-host').innerHTML = svgBrasil;
+        const select = document.getElementById('reg-estado');
+        Object.keys(estados).sort().forEach(sigla => {
+            select.innerHTML += `<option value="${sigla}">${estados[sigla]}</option>`;
+        });
+        atualizarInterface();
+    };
+
+    function trocar(aba, btn) {
+        document.querySelectorAll('.aba').forEach(a => a.classList.remove('ativa'));
+        document.querySelectorAll('.btn-nav').forEach(b => b.classList.remove('active'));
+        document.getElementById('aba-' + aba).classList.add('ativa');
+        btn.classList.add('active');
+        if(aba === 'feed') renderizarFeed();
+    }
+
+    // 3. LÓGICA DE FOTOS E SALVAMENTO
+    async function salvarViagem() {
+        const estado = document.getElementById('reg-estado').value;
+        const cidade = document.getElementById('reg-cidade').value;
+        const inputFotos = document.getElementById('reg-fotos');
+
+        if(!cidade) return alert("Escreve a cidade!");
+
+        const fotosBase64 = [];
+        for (let i = 0; i < Math.min(inputFotos.files.length, 2); i++) {
+            const base64 = await processarImagem(inputFotos.files[i]);
+            fotosBase64.push(base64);
+        }
+
+        const viagens = JSON.parse(localStorage.getItem('viagens_v10')) || [];
+        viagens.push({ estado, cidade, fotos: fotosBase64, data: new Date().toLocaleDateString() });
+        localStorage.setItem('viagens_v10', JSON.stringify(viagens));
+
+        alert("Viagem guardada! O mapa foi atualizado.");
+        document.getElementById('reg-cidade').value = "";
+        atualizarInterface();
+        trocar('mapa', document.querySelectorAll('.btn-nav')[0]);
+    }
+
+    function processarImagem(file) {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (e) => {
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const scale = 400 / img.width;
+                    canvas.width = 400;
+                    canvas.height = img.height * scale;
+                    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                    resolve(canvas.toDataURL('image/jpeg', 0.7));
+                };
+            };
+        });
+    }
+
+    function atualizarInterface() {
+        const viagens = JSON.parse(localStorage.getItem('viagens_v10')) || [];
+        const visitados = [...new Set(viagens.map(v => v.estado))];
         
-        var map = L.map('map', {
-            maxBounds: limitesBrasil,
-            maxBoundsViscosity: 1.0,
-            minZoom: 4
-        }).setView([-15.78, -47.93], 4);
+        document.querySelectorAll('path').forEach(p => p.classList.remove('visitado'));
+        visitados.forEach(sigla => {
+            const el = document.getElementById(sigla);
+            if(el) el.classList.add('visitado');
+        });
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        document.getElementById('counter').innerText = `Vocês já visitaram ${visitados.length} estados!`;
+    }
 
-        var camadaGeoJSON;
+    function renderizarFeed() {
+        const viagens = JSON.parse(localStorage.getItem('viagens_v10')) || [];
+        const container = document.getElementById('feed-lista');
+        container.innerHTML = viagens.length ? "" : "<p style='color:#888'>Nenhuma viagem registada ainda.</p>";
 
-        // 2. CARREGAR CONTORNOS DOS ESTADOS (GEOJSON)
-        function carregarGeoJSON() {
-            fetch('https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/brazil-states.geojson')
-                .then(res => res.json())
-                .then(data => {
-                    renderizarMapa(data);
-                })
-                .catch(err => {
-                    document.getElementById('stats').innerText = "Erro ao carregar contornos.";
-                });
-        }
-
-        function renderizarMapa(data) {
-            const visitados = JSON.parse(localStorage.getItem('estados_casal')) || [];
-            
-            if (camadaGeoJSON) map.removeLayer(camadaGeoJSON);
-
-            camadaGeoJSON = L.geoJson(data, {
-                style: function(feature) {
-                    // DUPLA VERIFICAÇÃO: Checa sigla (SP) ou Nome (São Paulo)
-                    const sigla = feature.properties.sigla;
-                    const nome = feature.properties.name;
-                    const estaColorido = visitados.some(v => v === sigla || v === nome);
-
-                    return {
-                        fillColor: estaColorido ? '#ff4b5c' : 'transparent',
-                        weight: 1.5,
-                        color: '#666',
-                        fillOpacity: 0.5
-                    };
-                }
-            }).addTo(map);
-
-            document.getElementById('stats').innerText = `Estados coloridos: ${visitados.length}`;
-        }
-
-        // 3. LOGICA PARA BUSCAR CIDADE E IDENTIFICAR ESTADO
-        async function adicionarViagem() {
-            const input = document.getElementById('cidade').value;
-            if (!input) return alert("Digite uma cidade!");
-
-            try {
-                const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=${input}&countrycodes=br`);
-                const data = await res.json();
-
-                if (data.length === 0) return alert("Cidade não encontrada no Brasil.");
-
-                const local = data[0];
-                const addr = local.address;
-
-                // Captura identificadores do estado (Sigla ou Nome)
-                const idEstado = (addr.state_code || addr.state || "").toUpperCase();
-                const nomeEstado = (addr.state || "");
-
-                // Salva no LocalStorage
-                let visitados = JSON.parse(localStorage.getItem('estados_casal')) || [];
-                
-                if (!visitados.includes(idEstado)) visitados.push(idEstado);
-                if (!visitados.includes(nomeEstado)) visitados.push(nomeEstado);
-
-                localStorage.setItem('estados_casal', JSON.stringify(visitados));
-
-                // Coloca pino e atualiza cores
-                L.marker([local.lat, local.lon]).addTo(map).bindPopup(`<b>${input}</b>`).openPopup();
-                
-                // Recarrega o GeoJSON para aplicar a nova cor
-                carregarGeoJSON();
-                
-                map.setView([local.lat, local.lon], 7);
-                document.getElementById('cidade').value = "";
-
-            } catch (e) {
-                alert("Erro na conexão.");
-            }
-        }
-
-        // Iniciar
-        window.onload = carregarGeoJSON;
-    </script>
+        viagens.reverse().forEach(v => {
+            const fotosHtml = v.fotos.map(f => `<img src="${f}" class="img-trip">`).join('');
+            container.innerHTML += `
+                <div class="feed-item">
+                    <strong>📍 ${v.cidade} (${v.estado})</strong><br>
+                    <small>📅 ${v.data}</small>
+                    <div class="galeria">${fotosHtml}</div>
+                </div>`;
+        });
+    }
+</script>
 </body>
 </html>
