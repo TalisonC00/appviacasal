@@ -3,25 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nosso Mapa Real 🇧🇷</title>
+    <title>Mapa Real Brasil 🇧🇷</title>
     <style>
         :root { --primary: #ff4b5c; }
-        body { font-family: sans-serif; background: #f0f2f5; margin: 0; padding-bottom: 80px; text-align: center; }
-        
+        body { font-family: sans-serif; background: #f4f7f6; margin: 0; padding-bottom: 80px; text-align: center; }
         .card { background: white; margin: 15px; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
         
-        /* Ajuste para o seu SVG aparecer corretamente */
-        #mapa-container { width: 100%; max-width: 500px; margin: auto; }
+        /* Ajuste do container para o SEU SVG */
+        #mapa-svg { width: 100%; max-width: 500px; margin: auto; }
         svg { width: 100%; height: auto; display: block; }
         
-        /* Estilo dos estados */
-        path { fill: #dcdde1; stroke: #fff; stroke-width: 0.5; transition: fill 0.4s; cursor: pointer; }
+        /* Estilo que será aplicado aos estados do SEU arquivo */
+        path { fill: #d1d8e0; stroke: #fff; stroke-width: 0.5; transition: 0.3s; cursor: pointer; }
         .visitado { fill: var(--primary) !important; }
 
         /* Menu */
-        .menu { position: fixed; bottom: 0; width: 100%; background: white; display: flex; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); border-top-left-radius: 20px; border-top-right-radius: 20px; }
-        .btn-menu { flex: 1; padding: 20px; border: none; background: none; font-size: 24px; color: #ccc; }
-        .btn-menu.active { color: var(--primary); }
+        .menu { position: fixed; bottom: 0; width: 100%; background: white; display: flex; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
+        .btn-nav { flex: 1; padding: 20px; border: none; background: none; font-size: 24px; color: #ccc; }
+        .btn-nav.active { color: var(--primary); }
         .aba { display: none; }
         .ativa { display: block; }
 
@@ -34,11 +33,9 @@
 
     <div id="aba-mapa" class="aba ativa">
         <div class="card">
-            <h2 style="color:var(--primary)">🇧🇷 Nossa Jornada</h2>
-            <div id="mapa-container">
-                <p id="status">Carregando mapa oficial...</p>
-            </div>
-            <p id="contador" style="color:#888; margin-top:10px;"></p>
+            <h2>🇧🇷 Nossa Jornada</h2>
+            <div id="mapa-svg">A carregar mapa oficial...</div>
+            <p id="stats" style="color:#888; font-size: 12px; margin-top: 10px;"></p>
         </div>
     </div>
 
@@ -47,46 +44,44 @@
             <h2>📍 Nova Viagem</h2>
             <select id="sel-estado"></select>
             <input type="text" id="txt-cidade" placeholder="Cidade visitada">
-            <button onclick="salvar()">Acender no Mapa 🚩</button>
+            <button onclick="salvar()">Acender Estado 🚩</button>
         </div>
     </div>
 
     <nav class="menu">
-        <button class="btn-menu active" onclick="mudar('mapa', this)">🗺️</button>
-        <button class="btn-menu" onclick="mudar('add', this)">➕</button>
+        <button class="btn-nav active" onclick="trocar('mapa', this)">🗺️</button>
+        <button class="btn-nav" onclick="trocar('add', this)">➕</button>
     </nav>
 
     <script>
         const siglas = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"];
 
-        // 1. CARREGAR O SEU ARQUIVO SVG
+        // 1. CARREGAR O SEU ARQUIVO br.svg (Lógica da biblioteca brazil-map)
         fetch('br.svg')
-            .then(response => response.text())
-            .then(svgData => {
-                const container = document.getElementById('mapa-container');
-                container.innerHTML = svgData;
+            .then(res => res.text())
+            .then(data => {
+                const host = document.getElementById('mapa-svg');
+                host.innerHTML = data;
                 
-                // IMPORTANTE: Tenta encontrar os IDs dentro do seu SVG
-                // Se o seu SVG usar classes ou IDs como "BR-SP", o código abaixo limpa para "SP"
-                document.querySelectorAll('path').forEach(p => {
-                    if(p.id) p.id = p.id.toUpperCase().replace('BR-', '');
+                // Mapeia os estados para que o código saiba quem é quem
+                document.querySelectorAll('path').forEach(el => {
+                    // Se o seu SVG tiver IDs como "BR-SP" ou classes, nós limpamos aqui
+                    if(el.id) el.id = el.id.toUpperCase().replace('BR-', '');
                 });
                 
-                atualizarMapa();
+                atualizarCores();
             })
-            .catch(err => {
-                document.getElementById('status').innerText = "Erro ao carregar br.svg. Verifique se o arquivo está na pasta.";
-            });
+            .catch(() => document.getElementById('mapa-svg').innerHTML = "Erro: Coloque o arquivo br.svg na mesma pasta do index.html");
 
         window.onload = function() {
-            const select = document.getElementById('sel-estado');
-            siglas.sort().forEach(s => select.innerHTML += `<option value="${s}">${s}</option>`);
+            const sel = document.getElementById('sel-estado');
+            siglas.sort().forEach(s => sel.innerHTML += `<option value="${s}">${s}</option>`);
         };
 
-        function mudar(aba, btn) {
+        function trocar(id, btn) {
             document.querySelectorAll('.aba').forEach(a => a.classList.remove('ativa'));
-            document.querySelectorAll('.btn-menu').forEach(b => b.classList.remove('active'));
-            document.getElementById('aba-' + aba).classList.add('ativa');
+            document.querySelectorAll('.btn-nav').forEach(b => b.classList.remove('active'));
+            document.getElementById('aba-' + id).classList.add('ativa');
             btn.classList.add('active');
         }
 
@@ -95,24 +90,23 @@
             const cid = document.getElementById('txt-cidade').value;
             if(!cid) return alert("Escreva a cidade!");
 
-            let viagens = JSON.parse(localStorage.getItem('mapa_viagens')) || [];
+            let viagens = JSON.parse(localStorage.getItem('viagens_vFinal')) || [];
             if(!viagens.includes(est)) {
                 viagens.push(est);
-                localStorage.setItem('mapa_viagens', JSON.stringify(viagens));
+                localStorage.setItem('viagens_vFinal', JSON.stringify(viagens));
             }
-            atualizarMapa();
-            alert("Registrado!");
-            mudar('mapa', document.querySelectorAll('.btn-menu')[0]);
+            atualizarCores();
+            alert("Registado!");
+            trocar('mapa', document.querySelectorAll('.btn-nav')[0]);
         }
 
-        function atualizarMapa() {
-            const viagens = JSON.parse(localStorage.getItem('mapa_viagens')) || [];
-            viagens.forEach(sigla => {
-                // Tenta achar o estado pelo ID (ex: SP) ou pela classe se o ID falhar
-                const el = document.getElementById(sigla) || document.querySelector('.' + sigla);
+        function atualizarCores() {
+            const viagens = JSON.parse(localStorage.getItem('viagens_vFinal')) || [];
+            viagens.forEach(s => {
+                const el = document.getElementById(s) || document.querySelector('.' + s);
                 if(el) el.classList.add('visitado');
             });
-            document.getElementById('contador').innerText = `Visitados: ${viagens.length} estados`;
+            document.getElementById('stats').innerText = `Estados visitados: ${viagens.length}`;
         }
     </script>
 </body>
