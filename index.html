@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosso Diário de Viagens 👩‍❤️‍👨</title>
+    <style>
+        :root { --primary: #ff4b5c; }
+        body { font-family: sans-serif; background: #f0f2f5; margin: 0; text-align: center; }
+        
+        /* Container do Mapa */
+        .mapa-wrapper { 
+            position: relative; 
+            display: inline-block; 
+            margin: 20px auto;
+            width: 90%; max-width: 400px;
+        }
+        .img-mapa { width: 100%; height: auto; display: block; }
+
+        /* Estilo do Pino 📌 */
+        .pino-marcador {
+            position: absolute;
+            font-size: 25px;
+            transform: translate(-50%, -100%); /* Ajusta para a ponta do pino ficar no local */
+            animation: bounce 0.5s infinite alternate;
+        }
+
+        /* Abas */
+        .aba { display: none; padding: 20px; }
+        .ativa { display: block; }
+        .menu { position: fixed; bottom: 0; width: 100%; background: white; display: flex; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
+        .btn-menu { flex: 1; padding: 15px; border: none; background: none; font-size: 20px; }
+        .btn-menu.active { color: var(--primary); font-weight: bold; }
+
+        /* Estética */
+        .card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        select, input, button { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #ddd; }
+        button { background: var(--primary); color: white; border: none; font-weight: bold; }
+
+        @keyframes bounce { from { transform: translate(-50%, -100%); } to { transform: translate(-50%, -120%); } }
+    </style>
+</head>
+<body>
+
+    <div id="mapa" class="aba ativa">
+        <div class="card">
+            <h2>🇧🇷 Nossa Jornada</h2>
+            <div class="mapa-wrapper" id="container-mapa">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Brazil_States_Blank_Map.svg/500px-Brazil_States_Blank_Map.svg.png" class="img-mapa">
+                </div>
+        </div>
+    </div>
+
+    <div id="registo" class="aba">
+        <div class="card">
+            <h2>📍 Onde estivemos?</h2>
+            <select id="estado">
+                <option value="45,75">São Paulo</option>
+                <option value="38,70">Rio de Janeiro</option>
+                <option value="35,55">Minas Gerais</option>
+                <option value="60,40">Bahia</option>
+                <option value="15,25">Amazonas</option>
+                <option value="25,90">Rio Grande do Sul</option>
+                <option value="32,15">Ceará</option>
+            </select>
+            <input type="text" id="cidade" placeholder="Cidade">
+            <button onclick="marcarPino()">Colocar Pino 📌</button>
+        </div>
+    </div>
+
+    <nav class="menu">
+        <button class="btn-menu active" onclick="mudarAba('mapa', this)">🗺️</button>
+        <button class="btn-menu" onclick="mudarAba('registo', this)">➕</button>
+    </nav>
+
+<script>
+    function mudarAba(id, btn) {
+        document.querySelectorAll('.aba').forEach(a => a.classList.remove('ativa'));
+        document.querySelectorAll('.btn-menu').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('ativa');
+        btn.classList.add('active');
+    }
+
+    function marcarPino() {
+        const coordenadas = document.getElementById('estado').value.split(',');
+        const container = document.getElementById('container-mapa');
+
+        // Criar o elemento do pino
+        const pino = document.createElement('div');
+        pino.className = 'pino-marcador';
+        pino.innerHTML = '📌';
+        
+        // Posicionar (em % para funcionar em qualquer tela)
+        pino.style.left = coordenadas[0] + '%';
+        pino.style.top = coordenadas[1] + '%';
+
+        container.appendChild(pino);
+        
+        alert("Pino colocado!");
+        mudarAba('mapa', document.querySelectorAll('.btn-menu')[0]);
+    }
+</script>
+
+</body>
+</html>
+
