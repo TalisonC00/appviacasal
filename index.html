@@ -3,134 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nosso Mapa 👩‍❤️‍👨</title>
+    <title>Nosso Mapa do Brasil 🇧🇷</title>
     <style>
-        :root { --primary: #ff4b5c; }
-        body { font-family: sans-serif; background: #f0f2f5; margin: 0; padding-bottom: 80px; }
+        :root { --primary: #ff4b5c; --empty: #dfe6e9; --bg: #f1f2f6; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; }
         
-        /* Container do Mapa */
-        .mapa-wrapper { 
-            position: relative; 
-            display: inline-block; 
-            margin: 10px auto;
-            width: 95%; max-width: 500px;
-            background: white; border-radius: 15px; padding: 10px;
-        }
-        .img-mapa { width: 100%; height: auto; border-radius: 10px; }
+        .card { background: white; margin: 15px; padding: 20px; border-radius: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        h2 { color: var(--primary); margin-bottom: 20px; text-align: center; }
 
-        /* Estilo do Pino 📌 */
-        .pino-marcador {
-            position: absolute;
-            font-size: 25px;
-            transform: translate(-50%, -100%);
-            cursor: pointer;
-            z-index: 10;
-        }
+        /* DESIGN DO MAPA SVG */
+        .mapa-container { width: 100%; max-width: 550px; margin: auto; }
+        svg { width: 100%; height: auto; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1)); }
+        path { fill: var(--empty); stroke: #ffffff; stroke-width: 0.8; transition: all 0.5s ease; cursor: pointer; }
+        
+        /* ESTADO VISITADO */
+        .visitado { fill: var(--primary) !important; filter: drop-shadow(0 0 5px var(--primary)); }
 
-        /* Abas e Menu */
-        .aba { display: none; padding: 15px; }
-        .ativa { display: block; }
-        .menu { position: fixed; bottom: 0; width: 100%; background: white; display: flex; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); z-index: 100; }
-        .btn-menu { flex: 1; padding: 18px; border: none; background: none; font-size: 24px; color: #ccc; }
-        .btn-menu.active { color: var(--primary); }
+        /* MENU INFERIOR */
+        .menu { position: fixed; bottom: 0; width: 100%; background: white; display: flex; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); border-radius: 25px 25px 0 0; }
+        .btn { flex: 1; padding: 20px; border: none; background: none; font-size: 24px; color: #b2bec3; transition: 0.3s; }
+        .btn.active { color: var(--primary); transform: scale(1.2); }
 
-        /* Estética do Card */
-        .card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        select, input, button { width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid #ddd; font-size: 16px; box-sizing: border-box; }
-        button { background: var(--primary); color: white; border: none; font-weight: bold; }
+        .aba { display: none; }
+        .ativa { display: block; animation: fadeIn 0.4s; }
+
+        /* FORMULÁRIO */
+        select, input, button { width: 100%; padding: 15px; margin: 10px 0; border-radius: 15px; border: 1px solid #eee; font-size: 16px; outline: none; }
+        button { background: var(--primary); color: white; border: none; font-weight: bold; cursor: pointer; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <div id="mapa" class="aba ativa">
+    <div id="aba-mapa" class="aba ativa">
         <div class="card">
-            <h2 style="text-align:center; color:var(--primary)">🇧🇷 Nossa Jornada</h2>
-            <div class="mapa-wrapper" id="container-mapa">
-                <img src="https://i.imgur.com/vHq16P9.png" class="img-mapa" id="img-base">
-                </div>
+            <h2>🇧🇷 Nossa Jornada</h2>
+            <div class="mapa-container">
+                <svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+                    <path id="AC" d="M40,290 L80,270 L110,290 L110,320 L80,340 L40,330 Z" />
+                    <path id="AM" d="M50,130 L210,120 L240,240 L160,290 L60,280 Z" />
+                    <path id="RR" d="M170,40 L220,60 L210,110 L160,110 Z" />
+                    <path id="PA" d="M215,115 L370,125 L380,280 L245,260 L215,220 Z" />
+                    <path id="AP" d="M320,50 L370,70 L360,110 L320,110 Z" />
+                    <path id="RO" d="M120,295 L170,290 L210,360 L150,380 Z" />
+                    <path id="TO" d="M340,265 L375,270 L385,400 L330,380 Z" />
+
+                    <path id="MA" d="M375,130 L430,150 L440,250 L385,275 Z" />
+                    <path id="PI" d="M435,155 L475,175 L485,265 L445,255 Z" />
+                    <path id="CE" d="M480,180 L530,195 L525,245 L490,240 Z" />
+                    <path id="RN" d="M535,200 L575,210 L570,240 L530,235 Z" />
+                    <path id="PB" d="M535,245 L575,255 L570,280 L530,275 Z" />
+                    <path id="PE" d="M495,270 L580,290 L570,320 L490,300 Z" />
+                    <path id="AL" d="M540,325 L570,335 L560,360 L530,355 Z" />
+                    <path id="SE" d="M525,365 L555,375 L550,395 L520,385 Z" />
+                    <path id="BA" d="M390,285 L510,310 L480,450 L380,420 Z" />
+
+                    <path id="MT" d="M215,270 L335,270 L325,410 L220,420 Z" />
+                    <path id="MS" d="M225,425 L320,415 L310,510 L235,510 Z" />
+                    <path id="GO" d="M330,385 L385,395 L375,480 L325,475 Z" />
+                    <path id="DF" d="M355,425 L370,425 L370,440 L355,440 Z" />
+
+                    <path id="MG" d="M385,425 L490,440 L470,540 L380,530 Z" />
+                    <path id="ES" d="M495,455 L525,465 L515,515 L485,505 Z" />
+                    <path id="RJ" d="M455,545 L500,555 L495,585 L450,575 Z" />
+                    <path id="SP" d="M320,515 L445,535 L430,590 L310,575 Z" />
+
+                    <path id="PR" d="M270,515 L315,520 L305,565 L260,560 Z" />
+                    <path id="SC" d="M280,570 L340,580 L330,610 L275,610 Z" />
+                    <path id="RS" d="M250,570 L275,575 L265,650 L200,630 Z" />
+                </svg>
+            </div>
+            <p id="contador" style="color: #636e72; font-size: 14px;"></p>
         </div>
     </div>
 
-    <div id="registo" class="aba">
+    <div id="aba-add" class="aba">
         <div class="card">
-            <h2>📍 Onde estivemos?</h2>
-            <select id="estado">
-                <option value="48,78">São Paulo</option>
-                <option value="60,72">Rio de Janeiro</option>
-                <option value="55,60">Minas Gerais</option>
-                <option value="75,45">Bahia</option>
-                <option value="25,30">Amazonas</option>
-                <option value="38,90">Rio Grande do Sul</option>
-                <option value="42,82">Paraná</option>
-                <option value="45,86">Santa Catarina</option>
-                <option value="82,28">Ceará</option>
-                <option value="78,35">Pernambuco</option>
-                <option value="48,50">Goiás</option>
-                <option value="35,15">Pará</option>
-            </select>
-            <input type="text" id="cidade" placeholder="Nome da cidade">
-            <button onclick="marcarPino()">Marcar Viagem! 📌</button>
-            <button onclick="limparTudo()" style="background:#888; margin-top: 20px;">Resetar Mapa</button>
+            <h2>📍 Nova Memória</h2>
+            <select id="sel-estado">
+                </select>
+            <input type="text" id="txt-cidade" placeholder="Qual cidade visitaram?">
+            <button onclick="salvarViagem()">Acender no Mapa 🚩</button>
+            <button onclick="limparTudo()" style="background: #b2bec3; font-size: 12px; margin-top: 20px;">Apagar Tudo</button>
         </div>
     </div>
 
     <nav class="menu">
-        <button class="btn-menu active" onclick="mudarAba('mapa', this)">🗺️</button>
-        <button class="btn-menu" onclick="mudarAba('registo', this)">➕</button>
+        <button class="btn active" onclick="trocar('mapa', this)">🗺️</button>
+        <button class="btn" onclick="trocar('add', this)">➕</button>
     </nav>
 
 <script>
-    // 1. CARREGAR PINOS AO ABRIR
-    window.onload = function() {
-        const salvos = JSON.parse(localStorage.getItem('minhasViagens')) || [];
-        salvos.forEach(v => criarPinoNoMapa(v.x, v.y));
+    const nomesEstados = {
+        "AC": "Acre", "AL": "Alagoas", "AP": "Amapá", "AM": "Amazonas", "BA": "Bahia", "CE": "Ceará", "DF": "Distrito Federal", "ES": "Espírito Santo", "GO": "Goiás", "MA": "Maranhão", "MT": "Mato Grosso", "MS": "Mato Grosso do Sul", "MG": "Minas Gerais", "PA": "Pará", "PB": "Paraíba", "PR": "Paraná", "PE": "Pernambuco", "PI": "Piauí", "RJ": "Rio de Janeiro", "RN": "Rio Grande do Norte", "RS": "Rio Grande do Sul", "RO": "Rondônia", "RR": "Roraima", "SC": "Santa Catarina", "SP": "São Paulo", "SE": "Sergipe", "TO": "Tocantins"
     };
 
-    function mudarAba(id, btn) {
+    // Inicializar o Select
+    const select = document.getElementById('sel-estado');
+    Object.keys(nomesEstados).sort().forEach(sigla => {
+        select.innerHTML += `<option value="${sigla}">${nomesEstados[sigla]}</option>`;
+    });
+
+    // Carregar dados salvos
+    function carregar() {
+        const memorias = JSON.parse(localStorage.getItem('viagens')) || [];
+        document.querySelectorAll('path').forEach(p => p.classList.remove('visitado'));
+        memorias.forEach(v => {
+            const el = document.getElementById(v.estado);
+            if(el) el.classList.add('visitado');
+        });
+        document.getElementById('contador').innerText = `Vocês já visitaram ${memorias.length} estados!`;
+    }
+
+    window.onload = carregar;
+
+    function trocar(id, btn) {
         document.querySelectorAll('.aba').forEach(a => a.classList.remove('ativa'));
-        document.querySelectorAll('.btn-menu').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).classList.add('ativa');
+        document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('aba-' + id).classList.add('ativa');
         btn.classList.add('active');
     }
 
-    function marcarPino() {
-        const coordenadas = document.getElementById('estado').value.split(',');
-        const cidade = document.getElementById('cidade').value;
+    function salvarViagem() {
+        const est = document.getElementById('sel-estado').value;
+        const cid = document.getElementById('txt-cidade').value;
         
-        if(!cidade) return alert("Escreve o nome da cidade!");
+        if(!cid) return alert("Por favor, escreva o nome da cidade!");
 
-        const x = coordenadas[0];
-        const y = coordenadas[1];
+        const memorias = JSON.parse(localStorage.getItem('viagens')) || [];
+        
+        // Evita duplicar o mesmo estado na contagem
+        if(!memorias.find(m => m.estado === est)) {
+            memorias.push({ estado: est, cidade: cid });
+            localStorage.setItem('viagens', JSON.stringify(memorias));
+        }
 
-        // Criar o pino visualmente
-        criarPinoNoMapa(x, y);
-
-        // SALVAR NO NAVEGADOR (LocalStorage)
-        const viagens = JSON.parse(localStorage.getItem('minhasViagens')) || [];
-        viagens.push({ x, y, cidade });
-        localStorage.setItem('minhasViagens', JSON.stringify(viagens));
-
-        alert(`Pino colocado em ${cidade}!`);
-        mudarAba('mapa', document.querySelectorAll('.btn-menu')[0]);
-    }
-
-    function criarPinoNoMapa(x, y) {
-        const container = document.getElementById('container-mapa');
-        const pino = document.createElement('div');
-        pino.className = 'pino-marcador';
-        pino.innerHTML = '📌';
-        pino.style.left = x + '%';
-        pino.style.top = y + '%';
-        container.appendChild(pino);
+        alert(`Boa! O estado ${nomesEstados[est]} agora faz parte da vossa história.`);
+        document.getElementById('txt-cidade').value = "";
+        carregar();
+        trocar('mapa', document.querySelectorAll('.btn')[0]);
     }
 
     function limparTudo() {
-        if(confirm("Queres mesmo apagar todas as viagens do mapa?")) {
-            localStorage.removeItem('minhasViagens');
+        if(confirm("Tens a certeza que queres apagar todas as viagens registadas?")) {
+            localStorage.clear();
             location.reload();
         }
     }
 </script>
-
 </body>
 </html>
