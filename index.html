@@ -1,134 +1,152 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nosso Mapa 👩‍❤️‍👨</title>
+    <title>Nosso Diário de Viagens 👩‍❤️‍👨</title>
     <style>
-        :root { --primary: #ff4b5c; }
-        body { font-family: sans-serif; background: #f0f2f5; margin: 0; padding-bottom: 80px; text-align: center; }
+        :root { --primary: #ff4b5c; --bg: #f4f7f6; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; }
         
-        /* Container do Mapa */
-        .card { background: white; margin: 15px; padding: 15px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .mapa-wrapper { position: relative; width: 100%; max-width: 450px; margin: auto; }
-        
-        /* O MAPA REAL (SVG EMBUTIDO) */
-        svg { width: 100%; height: auto; display: block; }
-        path { fill: #dcdde1; stroke: #fff; stroke-width: 1; transition: fill 0.4s; }
-        .visitado { fill: var(--primary) !important; }
+        .card { background: white; margin: 15px; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        h2 { color: var(--primary); text-align: center; margin-top: 0; }
 
-        /* Abas e Menu */
-        .aba { display: none; padding: 15px; }
+        /* Estilo do Mapa */
+        #br_mine { width: 100%; max-width: 550px; margin: auto; }
+        
+        /* Abas */
+        .aba { display: none; }
         .ativa { display: block; }
-        .menu { position: fixed; bottom: 0; width: 100%; background: white; display: flex; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); }
-        .btn-menu { flex: 1; padding: 20px; border: none; background: none; font-size: 24px; color: #ccc; }
+        
+        /* Menu Inferior */
+        .menu { position: fixed; bottom: 0; width: 100%; background: white; display: flex; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); border-top-left-radius: 20px; border-top-right-radius: 20px; }
+        .btn-menu { flex: 1; padding: 20px; border: none; background: none; font-size: 24px; color: #ccc; cursor: pointer; }
         .btn-menu.active { color: var(--primary); }
 
-        /* Form */
+        /* Formulário e Listagem */
         select, input, button { width: 100%; padding: 15px; margin: 8px 0; border-radius: 12px; border: 1px solid #ddd; font-size: 16px; box-sizing: border-box; }
         button { background: var(--primary); color: white; border: none; font-weight: bold; }
+        .memoria-card { border-left: 5px solid var(--primary); padding: 10px; margin-top: 10px; background: #fff; border-radius: 10px; }
+        .foto-preview { width: 48%; height: 100px; object-fit: cover; border-radius: 10px; margin-top: 10px; }
     </style>
 </head>
 <body>
 
     <div id="aba-mapa" class="aba ativa">
         <div class="card">
-            <h2 style="color:var(--primary)">🇧🇷 Nossa Jornada</h2>
-            <div class="mapa-wrapper">
-                <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-                    <g id="mapa-brasil">
-                        <path id="AC" d="M18,245l15,-10l20,15l0,30l-20,15l-15,-10z" />
-                        <path id="AM" d="M25,125l130,-10l30,100l-70,40l-90,-20z" />
-                        <path id="RR" d="M130,50l40,15l-5,40l-35,-5z" />
-                        <path id="PA" d="M160,110l130,10l10,120l-100,10l-25,-55z" />
-                        <path id="AP" d="M260,50l40,20l-10,40l-30,-5z" />
-                        <path id="MA" d="M300,115l50,15l10,80l-50,25z" />
-                        <path id="PI" d="M355,135l30,15l15,80l-35,-5z" />
-                        <path id="CE" d="M390,160l45,15l-5,40l-35,5z" />
-                        <path id="RN" d="M440,180l30,10l-5,25l-25,-5z" />
-                        <path id="PB" d="M440,215l35,5l-5,20l-30,-5z" />
-                        <path id="PE" d="M410,240l70,10l-5,20l-70,-10z" />
-                        <path id="AL" d="M445,275l25,5l-5,15l-20,-5z" />
-                        <path id="SE" d="M435,300l25,5l-5,15l-20,-5z" />
-                        <path id="BA" d="M315,245l100,20l-20,120l-80,-20z" />
-                        <path id="TO" d="M290,250l30,10l10,100l-40,-10z" />
-                        <path id="MT" d="M170,250l120,0l-10,110l-100,10z" />
-                        <path id="GO" d="M280,355l40,10l-10,70l-40,-5z" />
-                        <path id="DF" d="M305,395l10,0l0,10l-10,0z" />
-                        <path id="MS" d="M185,390l90,-10l-10,90l-70,-5z" />
-                        <path id="MG" d="M315,385l90,15l-20,90l-70,-10z" />
-                        <path id="ES" d="M410,415l20,10l-5,35l-20,-10z" />
-                        <path id="RJ" d="M380,485l40,5l-5,20l-35,-5z" />
-                        <path id="SP" d="M270,470l100,15l-10,50l-80,-10z" />
-                        <path id="PR" d="M230,475l40,5l-5,40l-35,-5z" />
-                        <path id="SC" d="M240,530l45,5l-5,20l-40,0z" />
-                        <path id="RS" d="M210,530l25,5l-10,65l-50,-15z" />
-                        <path id="RO" d="M90,250l40,-5l35,60l-50,10z" />
-                    </g>
-                </svg>
-            </div>
-            <p id="contador" style="color:#888; font-size: 14px; margin-top: 10px;"></p>
+            <h2>🇧🇷 Nossa Jornada</h2>
+            <div id="br_mine"></div>
+            <p id="info-mapa" style="text-align:center; color:#888; font-size: 14px;"></p>
         </div>
     </div>
 
     <div id="aba-add" class="aba">
         <div class="card">
-            <h2>📍 Registar Viagem</h2>
-            <select id="sel-estado">
-                <option value="SP">São Paulo</option>
-                <option value="RJ">Rio de Janeiro</option>
-                <option value="MG">Minas Gerais</option>
-                <option value="BA">Bahia</option>
-                <option value="AM">Amazonas</option>
-                <option value="RS">Rio Grande do Sul</option>
-                <option value="PR">Paraná</option>
-                <option value="SC">Santa Catarina</option>
-                <option value="CE">Ceará</option>
+            <h2>📍 Nova Memória</h2>
+            <select id="uf">
+                <option value="ac">Acre</option><option value="al">Alagoas</option><option value="ap">Amapá</option>
+                <option value="am">Amazonas</option><option value="ba">Bahia</option><option value="ce">Ceará</option>
+                <option value="df">Distrito Federal</option><option value="es">Espírito Santo</option>
+                <option value="go">Goiás</option><option value="ma">Maranhão</option><option value="mt">Mato Grosso</option>
+                <option value="ms">Mato Grosso do Sul</option><option value="mg">Minas Gerais</option>
+                <option value="pa">Pará</option><option value="pb">Paraíba</option><option value="pr">Paraná</option>
+                <option value="pe">Pernambuco</option><option value="pi">Piauí</option><option value="rj">Rio de Janeiro</option>
+                <option value="rn">Rio Grande do Norte</option><option value="rs">Rio Grande do Sul</option>
+                <option value="ro">Rondônia</option><option value="rr">Roraima</option><option value="sc">Santa Catarina</option>
+                <option value="sp">São Paulo</option><option value="se">Sergipe</option><option value="to">Tocantins</option>
             </select>
-            <input type="text" id="txt-cidade" placeholder="Qual cidade?">
-            <button onclick="salvar()">Acender no Mapa 🚩</button>
+            <input type="text" id="cidade" placeholder="Cidade visitada">
+            <label style="font-size: 12px; color: #666;">Anexe 2 fotos da viagem:</label>
+            <input type="file" id="fotos" multiple accept="image/*">
+            <button onclick="salvarViagem()">Registar e Colorir 🚩</button>
+        </div>
+    </div>
+
+    <div id="aba-feed" class="aba">
+        <div class="card">
+            <h2>📸 Nossas Fotos</h2>
+            <div id="lista-viagens"></div>
         </div>
     </div>
 
     <nav class="menu">
-        <button class="btn-menu active" onclick="mudar('mapa', this)">🗺️</button>
-        <button class="btn-menu" onclick="mudar('add', this)">➕</button>
+        <button class="btn-menu active" onclick="mudarAba('mapa', this)">🗺️</button>
+        <button class="btn-menu" onclick="mudarAba('add', this)">➕</button>
+        <button class="btn-menu" onclick="mudarAba('feed', this)">📸</button>
     </nav>
 
-<script>
-    window.onload = atualizarMapa;
+    <script src="brmap.js"></script>
 
-    function mudar(id, btn) {
-        document.querySelectorAll('.aba').forEach(a => a.classList.remove('ativa'));
-        document.querySelectorAll('.btn-menu').forEach(b => b.classList.remove('active'));
-        document.getElementById('aba-' + id).classList.add('ativa');
-        btn.classList.add('active');
-    }
+    <script>
+        // 1. INICIALIZAÇÃO E CARREGAMENTO
+        function carregarMapa() {
+            const viagens = JSON.parse(localStorage.getItem('viagens_casal')) || [];
+            const ufsVisitadas = viagens.map(v => v.uf.toLowerCase());
 
-    function salvar() {
-        const est = document.getElementById('sel-estado').value;
-        const cid = document.getElementById('txt-cidade').value;
-        if(!cid) return alert("Escreve a cidade!");
+            document.querySelector('#br_mine').innerHTML = ''; // Limpa antes de redesenhar
 
-        let viagens = JSON.parse(localStorage.getItem('viagens')) || [];
-        if(!viagens.includes(est)) {
-            viagens.push(est);
-            localStorage.setItem('viagens', JSON.stringify(viagens));
+            BrMap.Draw({
+                wrapper: '#br_mine',
+                selectStates: ufsVisitadas, // Pinta os estados salvos
+                cssFill: {
+                    shape: "#D8D6D6",
+                    selected: "#ff4b5c" // Cor quando o estado está visitado
+                },
+                callbacks: {
+                    click: (el, uf) => { alert("Já estivemos em: " + uf.toUpperCase()); }
+                }
+            });
+            document.getElementById('info-mapa').innerText = `Vocês já conquistaram ${ufsVisitadas.length} estados!`;
         }
-        
-        atualizarMapa();
-        alert("Estado aceso!");
-        mudar('mapa', document.querySelectorAll('.btn-menu')[0]);
-    }
 
-    function atualizarMapa() {
-        const viagens = JSON.parse(localStorage.getItem('viagens')) || [];
-        viagens.forEach(sigla => {
-            const el = document.getElementById(sigla);
-            if(el) el.classList.add('visitado');
-        });
-        document.getElementById('contador').innerText = `Visitados: ${viagens.length} estados`;
-    }
-</script>
+        window.onload = () => {
+            carregarMapa();
+            renderizarFeed();
+        };
+
+        // 2. NAVEGAÇÃO
+        function mudarAba(id, btn) {
+            document.querySelectorAll('.aba').forEach(a => a.classList.remove('ativa'));
+            document.querySelectorAll('.btn-menu').forEach(b => b.classList.remove('active'));
+            document.getElementById('aba-' + id).classList.add('ativa');
+            btn.classList.add('active');
+        }
+
+        // 3. LÓGICA DE SALVAMENTO
+        function salvarViagem() {
+            const uf = document.getElementById('uf').value;
+            const cidade = document.getElementById('cidade').value;
+            const inputFotos = document.getElementById('fotos');
+
+            if (!cidade) return alert("Escreve o nome da cidade!");
+
+            // Nota: No GitHub Pages, não conseguimos salvar ficheiros de imagem permanentemente no localStorage (é muito pesado).
+            // Vamos salvar os textos e os estados.
+            let viagens = JSON.parse(localStorage.getItem('viagens_casal')) || [];
+            
+            viagens.push({ uf, cidade, data: new Date().toLocaleDateString() });
+            localStorage.setItem('viagens_casal', JSON.stringify(viagens));
+
+            alert("Viagem guardada! O mapa vai acender.");
+            carregarMapa();
+            renderizarFeed();
+            mudarAba('mapa', document.querySelectorAll('.btn-menu')[0]);
+        }
+
+        function renderizarFeed() {
+            const viagens = JSON.parse(localStorage.getItem('viagens_casal')) || [];
+            const lista = document.getElementById('lista-viagens');
+            lista.innerHTML = viagens.length ? "" : "Ainda não há memórias registadas.";
+
+            viagens.reverse().forEach(v => {
+                lista.innerHTML += `
+                    <div class="memoria-card">
+                        <strong>📍 ${v.cidade} (${v.uf.toUpperCase()})</strong><br>
+                        <small>Visitado em: ${v.data}</small>
+                    </div>
+                `;
+            });
+        }
+    </script>
 </body>
 </html>
