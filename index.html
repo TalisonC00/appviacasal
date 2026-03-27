@@ -3,70 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nosso Mapa 🇧🇷</title>
+    <title>Nosso Mapa 👩‍❤️‍👨</title>
     <style>
         :root { --primary: #ff4b5c; }
         body { font-family: sans-serif; background: #f0f2f5; margin: 0; padding-bottom: 80px; text-align: center; }
         
-        /* O MAPA REAL */
-        .mapa-wrapper { 
-            position: relative; 
-            width: 95%; max-width: 500px; 
-            margin: 20px auto;
-            background: white; border-radius: 20px; padding: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-        .img-brasil { width: 100%; height: auto; display: block; }
+        /* Container do Mapa */
+        .card { background: white; margin: 15px; padding: 15px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .mapa-wrapper { position: relative; width: 100%; max-width: 450px; margin: auto; }
+        
+        /* O MAPA REAL (SVG EMBUTIDO) */
+        svg { width: 100%; height: auto; display: block; }
+        path { fill: #dcdde1; stroke: #fff; stroke-width: 1; transition: fill 0.4s; }
+        .visitado { fill: var(--primary) !important; }
 
-        /* O PINO 📌 */
-        .pino {
-            position: absolute;
-            font-size: 22px;
-            transform: translate(-50%, -100%);
-            z-index: 10;
-        }
-
-        /* MENU E ABAS */
-        .aba { display: none; padding: 20px; }
+        /* Abas e Menu */
+        .aba { display: none; padding: 15px; }
         .ativa { display: block; }
         .menu { position: fixed; bottom: 0; width: 100%; background: white; display: flex; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); }
         .btn-menu { flex: 1; padding: 20px; border: none; background: none; font-size: 24px; color: #ccc; }
         .btn-menu.active { color: var(--primary); }
 
-        /* ESTILO DOS CARDS */
-        .card { background: white; padding: 20px; border-radius: 15px; margin-bottom: 15px; }
-        select, input, button { width: 100%; padding: 15px; margin: 8px 0; border-radius: 10px; border: 1px solid #ddd; font-size: 16px; }
+        /* Form */
+        select, input, button { width: 100%; padding: 15px; margin: 8px 0; border-radius: 12px; border: 1px solid #ddd; font-size: 16px; box-sizing: border-box; }
         button { background: var(--primary); color: white; border: none; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div id="aba-mapa" class="aba ativa">
-        <div class="mapa-wrapper" id="container-mapa">
+        <div class="card">
             <h2 style="color:var(--primary)">🇧🇷 Nossa Jornada</h2>
-            <img src="https://cdn.jsdelivr.net/gh/codebymarcos/maps-svg-brazil@main/brazil.svg" class="img-brasil">
+            <div class="mapa-wrapper">
+                <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+                    <g id="mapa-brasil">
+                        <path id="AC" d="M18,245l15,-10l20,15l0,30l-20,15l-15,-10z" />
+                        <path id="AM" d="M25,125l130,-10l30,100l-70,40l-90,-20z" />
+                        <path id="RR" d="M130,50l40,15l-5,40l-35,-5z" />
+                        <path id="PA" d="M160,110l130,10l10,120l-100,10l-25,-55z" />
+                        <path id="AP" d="M260,50l40,20l-10,40l-30,-5z" />
+                        <path id="MA" d="M300,115l50,15l10,80l-50,25z" />
+                        <path id="PI" d="M355,135l30,15l15,80l-35,-5z" />
+                        <path id="CE" d="M390,160l45,15l-5,40l-35,5z" />
+                        <path id="RN" d="M440,180l30,10l-5,25l-25,-5z" />
+                        <path id="PB" d="M440,215l35,5l-5,20l-30,-5z" />
+                        <path id="PE" d="M410,240l70,10l-5,20l-70,-10z" />
+                        <path id="AL" d="M445,275l25,5l-5,15l-20,-5z" />
+                        <path id="SE" d="M435,300l25,5l-5,15l-20,-5z" />
+                        <path id="BA" d="M315,245l100,20l-20,120l-80,-20z" />
+                        <path id="TO" d="M290,250l30,10l10,100l-40,-10z" />
+                        <path id="MT" d="M170,250l120,0l-10,110l-100,10z" />
+                        <path id="GO" d="M280,355l40,10l-10,70l-40,-5z" />
+                        <path id="DF" d="M305,395l10,0l0,10l-10,0z" />
+                        <path id="MS" d="M185,390l90,-10l-10,90l-70,-5z" />
+                        <path id="MG" d="M315,385l90,15l-20,90l-70,-10z" />
+                        <path id="ES" d="M410,415l20,10l-5,35l-20,-10z" />
+                        <path id="RJ" d="M380,485l40,5l-5,20l-35,-5z" />
+                        <path id="SP" d="M270,470l100,15l-10,50l-80,-10z" />
+                        <path id="PR" d="M230,475l40,5l-5,40l-35,-5z" />
+                        <path id="SC" d="M240,530l45,5l-5,20l-40,0z" />
+                        <path id="RS" d="M210,530l25,5l-10,65l-50,-15z" />
+                        <path id="RO" d="M90,250l40,-5l35,60l-50,10z" />
+                    </g>
+                </svg>
             </div>
+            <p id="contador" style="color:#888; font-size: 14px; margin-top: 10px;"></p>
+        </div>
     </div>
 
     <div id="aba-add" class="aba">
         <div class="card">
-            <h2>📍 Nova Viagem</h2>
+            <h2>📍 Registar Viagem</h2>
             <select id="sel-estado">
-                <option value="48,78">São Paulo</option>
-                <option value="61,73">Rio de Janeiro</option>
-                <option value="55,60">Minas Gerais</option>
-                <option value="74,45">Bahia</option>
-                <option value="25,30">Amazonas</option>
-                <option value="38,90">Rio Grande do Sul</option>
-                <option value="45,86">Santa Catarina</option>
-                <option value="42,82">Paraná</option>
-                <option value="82,28">Ceará</option>
-                <option value="78,35">Pernambuco</option>
-                <option value="48,50">Goiás</option>
-                <option value="35,15">Pará</option>
+                <option value="SP">São Paulo</option>
+                <option value="RJ">Rio de Janeiro</option>
+                <option value="MG">Minas Gerais</option>
+                <option value="BA">Bahia</option>
+                <option value="AM">Amazonas</option>
+                <option value="RS">Rio Grande do Sul</option>
+                <option value="PR">Paraná</option>
+                <option value="SC">Santa Catarina</option>
+                <option value="CE">Ceará</option>
             </select>
-            <input type="text" id="txt-cidade" placeholder="Nome da cidade">
-            <button onclick="salvar()">Registar 📌</button>
+            <input type="text" id="txt-cidade" placeholder="Qual cidade?">
+            <button onclick="salvar()">Acender no Mapa 🚩</button>
         </div>
     </div>
 
@@ -76,11 +96,7 @@
     </nav>
 
 <script>
-    // Carregar pinos salvos
-    window.onload = function() {
-        const salvos = JSON.parse(localStorage.getItem('viagens')) || [];
-        salvos.forEach(v => criarPino(v.x, v.y));
-    };
+    window.onload = atualizarMapa;
 
     function mudar(id, btn) {
         document.querySelectorAll('.aba').forEach(a => a.classList.remove('ativa'));
@@ -90,31 +106,28 @@
     }
 
     function salvar() {
-        const coords = document.getElementById('sel-estado').value.split(',');
+        const est = document.getElementById('sel-estado').value;
         const cid = document.getElementById('txt-cidade').value;
         if(!cid) return alert("Escreve a cidade!");
 
-        const x = coords[0];
-        const y = coords[1];
-
-        criarPino(x, y);
-
-        // Guardar no telemóvel
-        const viagens = JSON.parse(localStorage.getItem('viagens')) || [];
-        viagens.push({ x, y, cidade: cid });
-        localStorage.setItem('viagens', JSON.stringify(viagens));
-
-        alert("Registado!");
+        let viagens = JSON.parse(localStorage.getItem('viagens')) || [];
+        if(!viagens.includes(est)) {
+            viagens.push(est);
+            localStorage.setItem('viagens', JSON.stringify(viagens));
+        }
+        
+        atualizarMapa();
+        alert("Estado aceso!");
         mudar('mapa', document.querySelectorAll('.btn-menu')[0]);
     }
 
-    function criarPino(x, y) {
-        const p = document.createElement('div');
-        p.className = 'pino';
-        p.innerHTML = '📌';
-        p.style.left = x + '%';
-        p.style.top = y + '%';
-        document.getElementById('container-mapa').appendChild(p);
+    function atualizarMapa() {
+        const viagens = JSON.parse(localStorage.getItem('viagens')) || [];
+        viagens.forEach(sigla => {
+            const el = document.getElementById(sigla);
+            if(el) el.classList.add('visitado');
+        });
+        document.getElementById('contador').innerText = `Visitados: ${viagens.length} estados`;
     }
 </script>
 </body>
