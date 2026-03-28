@@ -6,63 +6,51 @@
     <title>Nossa Jornada 👩‍❤️‍👨</title>
     <style>
         :root { --primary: #ff4b5c; --bg: #f4f7f6; }
-        body { font-family: sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; overflow-x: hidden; }
+        body { font-family: sans-serif; background: var(--bg); margin: 0; padding-bottom: 90px; overflow: hidden; }
         
+        /* CABEÇALHO */
         .header { background: white; padding: 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: relative; z-index: 10; }
         
-        .aba { display: none; animation: fadeIn 0.3s; }
+        .aba { display: none; height: calc(100vh - 140px); overflow-y: auto; animation: fadeIn 0.3s; }
         .ativa { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* AJUSTE PARA O MAPA CHEGAR ATÉ A ABA */
-        .mapa-card { 
+        /* MAPA CENTRALIZADO */
+        .mapa-container { 
             background: white; 
-            margin: 0; /* Removemos as margens para ganhar espaço */
-            height: calc(100vh - 140px); /* Ocupa quase a tela toda entre o topo e a aba */
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            overflow: hidden; 
-            position: relative;
-        }
-        
-        #svg-container { 
-            width: 100%; 
             height: 100%; 
             display: flex; 
             align-items: center; 
             justify-content: center;
         }
 
-        #svg-container svg { 
-            width: 180% !important; /* Aumentado para preencher a largura */
-            height: auto !important;
-            max-height: 100%;
-            object-fit: contain;
-            margin-left: -40%; /* Ajuste fino de centralização para o seu arquivo br.svg */
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.08));
+        svg { 
+            width: 90%; 
+            height: auto; 
+            max-height: 85%;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));
         }
 
-        path { fill: #e6e6e6; stroke: #fff; stroke-width: 0.6; transition: 0.4s; }
+        path { fill: #e6e6e6; stroke: #fff; stroke-width: 1; transition: 0.4s; cursor: pointer; }
         .visitado { fill: var(--primary) !important; }
 
-        /* FORMULÁRIO E FEED */
+        /* FORMULÁRIO */
         .card-form { background: white; padding: 25px; margin: 15px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         select, input, button { width: 100%; padding: 15px; margin: 8px 0; border-radius: 12px; border: 1px solid #eee; font-size: 16px; box-sizing: border-box; }
         button { background: var(--primary); color: white; border: none; font-weight: bold; }
 
-        #feed-fotos { padding: 10px; }
-        .feed-item { background: white; margin-bottom: 10px; padding: 15px; border-radius: 15px; border-left: 5px solid var(--primary); }
+        /* FEED */
+        .feed-item { background: white; margin: 10px; padding: 15px; border-radius: 15px; border-left: 5px solid var(--primary); }
         .galeria { display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; }
         .foto-trip { width: 140px; height: 100px; object-fit: cover; border-radius: 10px; }
 
-        /* MENU NAVEGAÇÃO (ABA) */
+        /* MENU INFERIOR */
         .menu-nav { 
             position: fixed; bottom: 0; left: 0; width: 100%; background: white; 
             display: flex; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 1000;
-            border-top-left-radius: 20px; border-top-right-radius: 20px;
+            border-top-left-radius: 25px; border-top-right-radius: 25px;
         }
-        .btn-aba { flex: 1; padding: 18px; border: none; background: none; font-size: 24px; color: #ccc; }
+        .btn-aba { flex: 1; padding: 20px; border: none; background: none; font-size: 24px; color: #ccc; }
         .btn-aba.active { color: var(--primary); }
     </style>
 </head>
@@ -74,8 +62,36 @@
     </div>
 
     <div id="aba-mapa" class="aba ativa">
-        <div class="mapa-card">
-            <div id="svg-container"></div>
+        <div class="mapa-container" id="svg-host">
+            <svg viewBox="0 0 550 550">
+                <path id="BRAC" d="M25,270l35,-20l30,20l0,40l-30,20l-35,-10z"/>
+                <path id="BRAM" d="M35,115l155,-10l30,120l-75,40l-100,-20z"/>
+                <path id="BRRR" d="M155,35l50,20l-10,45l-40,0z"/>
+                <path id="BRPA" d="M195,110l150,5l10,140l-130,-15l-30,-50z"/>
+                <path id="BRAP" d="M300,45l45,15l-10,45l-35,-5z"/>
+                <path id="BRMA" d="M350,115l55,20l10,90l-55,30z"/>
+                <path id="BRPI" d="M410,140l35,20l10,85l-45,0z"/>
+                <path id="BRCE" d="M450,165l45,15l-5,45l-40,0z"/>
+                <path id="BRRN" d="M500,185l35,10l-5,25l-30,0z"/>
+                <path id="BRPB" d="M500,225l35,10l-5,20l-30,0z"/>
+                <path id="BRPE" d="M465,250l75,15l-10,25l-65,-10z"/>
+                <path id="BRAL" d="M505,300l25,10l-10,25l-15,0z"/>
+                <path id="BRSE" d="M495,340l20,10l-5,25l-15,0z"/>
+                <path id="BRBA" d="M365,265l115,20l-25,130l-90,-20z"/>
+                <path id="BRTO" d="M320,245l35,10l10,115l-45,0z"/>
+                <path id="BRMT" d="M190,245l120,0l-10,125l-110,15z"/>
+                <path id="BRGO" d="M310,360l50,10l-10,75l-40,0z"/>
+                <path id="BRDF" d="M335,400l10,0l0,10l-10,0z"/>
+                <path id="BRMS" d="M200,395l95,-10l-10,100l-85,-10z"/>
+                <path id="BRMG" d="M360,395l100,15l-15,100l-85,-10z"/>
+                <path id="BRES" d="M465,430l25,10l-10,45l-15,-5z"/>
+                <path id="BRRJ" d="M430,515l40,5l-5,25l-35,-5z"/>
+                <path id="BRSP" d="M295,490l120,15l-10,55l-110,-10z"/>
+                <path id="BRPR" d="M250,490l40,5l-5,40l-35,-5z"/>
+                <path id="BRSC" d="M255,545l55,10l-5,25l-50,0z"/>
+                <path id="BRRS" d="M225,545l25,5l-10,75l-40,-15z"/>
+                <path id="BRRO" d="M100,270l45,-10l35,70l-80,10z"/>
+            </svg>
         </div>
         <div id="feed-fotos"></div>
     </div>
@@ -98,18 +114,6 @@
     </nav>
 
 <script>
-    fetch('br.svg')
-        .then(res => res.text())
-        .then(svgText => {
-            const container = document.getElementById('svg-container');
-            container.innerHTML = svgText;
-            const svgEl = container.querySelector('svg');
-            svgEl.removeAttribute('width'); 
-            svgEl.removeAttribute('height');
-            if(!svgEl.getAttribute('viewBox')) svgEl.setAttribute('viewBox', '0 0 550 550');
-            atualizarInterface();
-        });
-
     function trocarAba(id, btn) {
         document.querySelectorAll('.aba').forEach(a => a.classList.remove('ativa'));
         document.querySelectorAll('.btn-aba').forEach(b => b.classList.remove('active'));
@@ -122,7 +126,7 @@
         const cidade = document.getElementById('txt-cidade').value;
         const inputFotos = document.getElementById('inp-fotos');
 
-        if(!cidade) return alert("Escreva o nome da cidade!");
+        if(!cidade) return alert("Escreve o nome da cidade!");
 
         const fotosBase64 = [];
         for (let i = 0; i < Math.min(inputFotos.files.length, 2); i++) {
@@ -130,20 +134,20 @@
             fotosBase64.push(f);
         }
 
-        const viagens = JSON.parse(localStorage.getItem('viagens_vFinal')) || [];
+        const viagens = JSON.parse(localStorage.getItem('viagens_casal_final_v2')) || [];
         viagens.push({ uf, cidade, fotos: fotosBase64, data: new Date().toLocaleDateString() });
-        localStorage.setItem('viagens_vFinal', JSON.stringify(viagens));
+        localStorage.setItem('viagens_casal_final_v2', JSON.stringify(viagens));
         location.reload(); 
     }
 
     function atualizarInterface() {
-        const viagens = JSON.parse(localStorage.getItem('viagens_vFinal')) || [];
+        const viagens = JSON.parse(localStorage.getItem('viagens_casal_final_v2')) || [];
         const feed = document.getElementById('feed-fotos');
         const visitados = new Set();
 
         viagens.reverse().forEach(v => {
             visitados.add(v.uf);
-            const el = document.getElementById(v.uf) || document.querySelector(`[id="${v.uf}"]`);
+            const el = document.getElementById(v.uf);
             if(el) el.classList.add('visitado');
 
             const fotosHtml = v.fotos.map(f => `<img src="${f}" class="foto-trip">`).join('');
@@ -165,14 +169,16 @@
                 img.src = e.target.result;
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    const scale = 400 / img.width;
-                    canvas.width = 400; canvas.height = img.height * scale;
+                    const scale = 300 / img.width;
+                    canvas.width = 300; canvas.height = img.height * scale;
                     canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-                    resolve(canvas.toDataURL('image/jpeg', 0.7));
+                    resolve(canvas.toDataURL('image/jpeg', 0.6));
                 }
             }
         });
     }
+
+    window.onload = atualizarInterface;
 </script>
 </body>
 </html>
