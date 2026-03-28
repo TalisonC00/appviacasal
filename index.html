@@ -4,36 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nossa Jornada 👩‍❤️‍👨</title>
+    
     <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+
     <style>
         :root { --primary: #ff4b5c; --bg: #f4f7f6; --text: #2c3e50; }
         body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 0; overflow: hidden; touch-action: none; color: var(--text); }
+        
         .header { background: white; padding: 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: relative; z-index: 10; }
         .aba { display: none; width: 100%; height: calc(100vh - 165px); overflow-y: auto; }
         .ativa { display: block; }
-        .mapa-card { background: white; margin: 10px; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+
+        /* MOLDURA DO MAPA */
+        .mapa-card { 
+            background: white; margin: 10px; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            height: 100%; display: flex; align-items: center; justify-content: center;
+            overflow: hidden; position: relative;
+        }
         #svg-container { width: 100%; height: 100%; cursor: move; }
         #svg-container svg { width: 100%; height: 100%; }
+
         path { fill: #e0e0e0; stroke: #fff; stroke-width: 0.5; transition: 0.4s; cursor: pointer; }
         .visitado { fill: var(--primary) !important; }
-        
-        /* POP-UP */
-        #photo-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: white; padding: 20px; border-radius: 25px; box-shadow: 0 15px 50px rgba(0,0,0,0.3); z-index: 2000; width: 85%; max-width: 320px; text-align: center; opacity: 0; visibility: hidden; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+        /* --- 📸 NOVO: BALÃO DE FOTO (POP-UP) ORGANIZADO --- */
+        #photo-popup {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
+            background: white; padding: 15px; border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            z-index: 2000; width: 280px; text-align: center;
+            opacity: 0; visibility: hidden; transition: 0.3s ease;
+        }
         #photo-popup.show { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
-        .lista-memorias { max-height: 380px; overflow-y: auto; padding-right: 5px; margin-top: 15px; }
-        .memoria-item { border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; text-align: left; }
-        .foto-memoria { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; background: #eee; }
-        .close-popup { position: absolute; top: -10px; right: -10px; background: var(--primary); color: white; border: none; border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; box-shadow: 0 4px 10px rgba(255,75,92,0.4); }
-        #popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1999; opacity: 0; visibility: hidden; transition: 0.3s; backdrop-filter: blur(2px); }
+        #popup-photo-img { width: 100%; height: 180px; object-fit: cover; border-radius: 12px; margin-bottom: 10px; }
+        #popup-title { font-weight: bold; font-size: 16px; margin: 0; color: var(--primary); }
+        #popup-date { font-size: 11px; color: #999; margin: 2px 0 10px 0; display: block; }
+        
+        /* 🛠️ CORREÇÃO DO BOTÃO FECHAR (CENTRALIZADO) */
+        .close-popup { 
+            position: absolute; top: -10px; right: -10px; 
+            background: var(--primary); color: white; border: none; border-radius: 50%; 
+            width: 32px; height: 32px; 
+            font-weight: bold; font-size: 20px; cursor: pointer; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); 
+            /* Centralização perfeita do texto X */
+            display: flex; align-items: center; justify-content: center; 
+            padding: 0; 
+        }
+
+        #popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 1999; opacity: 0; visibility: hidden; transition: 0.3s; }
         #popup-overlay.show { opacity: 1; visibility: visible; }
 
-        /* FORM */
+        /* FORMULÁRIO DE REGISTRO */
         .card-form { background: white; padding: 25px; margin: 15px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         select, input, button { width: 100%; padding: 15px; margin: 8px 0; border-radius: 12px; border: 1px solid #eee; font-size: 16px; box-sizing: border-box; }
-        button { background: var(--primary); color: white; border: none; font-weight: bold; cursor: pointer; }
+        button { background: var(--primary); color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button:active { transform: scale(0.98); }
+        input[type="file"] { font-size: 12px; padding: 10px; }
         label { font-size: 12px; color: #888; display: block; margin-top: 10px; }
+
+        /* NAVEGAÇÃO INFERIOR */
         .menu-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; display: flex; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); z-index: 1000; border-top-left-radius: 25px; border-top-right-radius: 25px; height: 75px; }
-        .btn-aba { flex: 1; border: none; background: none; font-size: 28px; color: #ccc; }
+        .btn-aba { flex: 1; border: none; background: none; font-size: 28px; color: #ccc; cursor: pointer; transition: 0.3s; }
         .btn-aba.active { color: var(--primary); }
     </style>
 </head>
@@ -41,14 +73,13 @@
 
     <div class="header">
         <h3 style="color:var(--primary); margin:0;">👩‍❤️‍👨 Nossa Jornada</h3>
-        <span id="info" style="font-size: 11px; color:#999;">Carregando...</span>
+        <span id="info" style="font-size: 11px; color:#999;">Carregando mapa...</span>
     </div>
 
     <div id="popup-overlay" onclick="fecharPopup()"></div>
     <div id="photo-popup">
         <button class="close-popup" onclick="fecharPopup()">×</button>
-        <div id="popup-content"></div>
-    </div>
+        <div id="popup-content"></div> </div>
 
     <div id="aba-mapa" class="aba ativa">
         <div class="mapa-card">
@@ -60,14 +91,17 @@
         <div class="card-form">
             <h3 style="margin-top:0; color: var(--primary);">📍 Registrar Visita</h3>
             <select id="sel-uf">
-                <option value="BRAC">Acre</option><option value="BRAL">Alagoas</option><option value="BRAM">Amazonas</option><option value="BRAP">Amapá</option><option value="BRBA">Bahia</option><option value="BRCE">Ceará</option><option value="BRDF">Distrito Federal</option><option value="BRES">Espírito Santo</option><option value="BRGO">Goiás</option><option value="BRMA">Maranhão</option><option value="BRMG">Minas Gerais</option><option value="BRMS">Mato Grosso do Sul</option><option value="BRMT">Mato Grosso</option><option value="BRPA">Pará</option><option value="BRPB">Paraíba</option><option value="BRPE">Pernambuco</option><option value="BRPI">Piauí</option><option value="BRPR">Paraná</option><option value="BRRJ">Rio de Janeiro</option><option value="BRRN">Rio Grande do Norte</option><option value="BRRO">Rondônia</option><option value="BRRR">Roraima</option><option value="BRRS">Rio Grande do Sul</option><option value="BRSC">Santa Catarina</option><option value="BRSE">Sergipe</option><option value="BRSP" selected>São Paulo</option><option value="BRTO">Tocantins</option>
+                <option value="BRAC">Acre</option><option value="BRAL">Alagoas</option><option value="BRAM">Amazonas</option><option value="BRAP">Amapá</option><option value="BRBA">Bahia</option><option value="BRCE">Ceará</option><option value="BRDF">Distrito Federal</option><option value="BRES">Espírito Santo</option><option value="BRGO">Goiás</option><option value="BRMA">Maranhão</option><option value="BRMG">Minas Gerais</option><option value="BRMS">Mato Grosso do Sul</option><option value="BRMT">Mato Grosso</option><option value="BRPA">Pará</option><option value="BRPB">Paraíba</option><option value="BRPE">Pernambuco</option><option value="BRPI">Piauí</option><option value="BRPR">Paraná</option><option value="BRRJ">Rio de Janeiro</option><option value="BRRN">Rio Grande do Norte</option><option value="BRRO">Rondônia</option><option value="BRRR">Roraima</option><option value="BRRS">Rio Grande do Sul</option><option value="BRSC">Santa Catarina</option><option value="BRSE">Sergipe</option><option value="BRSP">São Paulo</option><option value="BRTO">Tocantins</option>
             </select>
-            <input type="text" id="txt-cidade" placeholder="Qual cidade visitaram?">
+            <input type="text" id="txt-cidade" placeholder="Nome da Cidade (Ex: Santos)">
+            
             <label>Data da visita (Opcional):</label>
             <input type="date" id="txt-data">
-            <label>Foto da aventura (Opcional):</label>
+
+            <label>Foto principal (máx 1):</label>
             <input type="file" id="inp-foto" accept="image/*">
-            <button onclick="salvarViagem()">Salvar Memória 🚩</button>
+            
+            <button onclick="salvarViagem()">Pintar e Guardar🚩</button>
         </div>
     </div>
 
@@ -79,31 +113,59 @@
 <script>
     let panZoomMapa;
 
-    // Carregar Mapa
+    // 1. CARREGAR O MAPA E CONFIGURAR O CLIQUE (TOUCH BLINDADO)
     fetch('br.svg')
         .then(res => res.text())
         .then(svgText => {
             const container = document.getElementById('svg-container');
             container.innerHTML = svgText;
             const svgEl = container.querySelector('svg');
-            svgEl.removeAttribute('width'); svgEl.removeAttribute('height');
+            
+            svgEl.removeAttribute('width'); 
+            svgEl.removeAttribute('height');
             svgEl.id = "mapa-svg-real"; 
 
+            // Ativa zoom e arrastar
             panZoomMapa = svgPanZoom('#mapa-svg-real', {
-                zoomEnabled: true, controlIconsEnabled: false,
-                fit: true, center: true, minZoom: 1, maxZoom: 15,
-                onPan: function() { svgEl.classList.add('panning'); },
-                onZoom: function() { svgEl.classList.add('panning'); }
+                zoomEnabled: true,
+                controlIconsEnabled: false,
+                fit: true,
+                center: true,
+                minZoom: 1,
+                maxZoom: 15,
+                // Lógica de "panning" movida para evitar falsos positivos
+                onPan: function() { svgEl.setAttribute('isPanning', 'true'); },
+                onZoom: function() { svgEl.setAttribute('isPanning', 'true'); }
             });
 
+            // Configuração dos eventos de clique/toque nos estados
             document.querySelectorAll('path').forEach(estado => {
-                estado.addEventListener('click', function() {
-                    if (svgEl.classList.contains('panning')) {
-                        svgEl.classList.remove('panning'); return;
+                // Evento de toque para telemóveis (mais rápido e fiável)
+                estado.addEventListener('touchend', function(e) {
+                    // Previne o comportamento padrão e o clique simulado
+                    if(e.cancelable) e.preventDefault(); 
+                    
+                    // Se estivermos a arrastar ou fazer zoom, cancela o pop-up
+                    if (svgEl.getAttribute('isPanning') === 'true') {
+                        svgEl.setAttribute('isPanning', 'false'); // Reseta
+                        return;
+                    }
+                    
+                    // Abre o pop-up
+                    abrirHistorico(this.id);
+                });
+                
+                // Evento de clique (backup para desktop)
+                estado.addEventListener('click', function(e) {
+                    // Ignora se estiver arrastando
+                    if (svgEl.getAttribute('isPanning') === 'true') {
+                         svgEl.setAttribute('isPanning', 'false');
+                         return;
                     }
                     abrirHistorico(this.id);
                 });
             });
+
             atualizarInterface();
         });
 
@@ -115,54 +177,37 @@
         btn.classList.add('active');
     }
 
-    async function salvarViagem() {
-        const uf = document.getElementById('sel-uf').value;
-        const cidade = document.getElementById('txt-cidade').value;
-        const dataInput = document.getElementById('txt-data').value;
-        const inputFoto = document.getElementById('inp-foto');
-        
-        if(!cidade) return alert("Escreva o nome da cidade!");
-
-        let fotoBase64 = null;
-        if (inputFoto.files && inputFoto.files[0]) {
-            try {
-                fotoBase64 = await otimizarFoto(inputFoto.files[0]);
-            } catch (e) {
-                console.error("Erro na foto:", e);
-            }
-        }
-
-        let dataFinal = dataInput ? dataInput.split('-').reverse().join('/') : new Date().toLocaleDateString('pt-BR');
-
-        // CHAVE UNIFICADA: viagens_vHist
-        let banco = JSON.parse(localStorage.getItem('viagens_vHist')) || {};
-        if (!banco[uf]) banco[uf] = [];
-        
-        banco[uf].unshift({ cidade, foto: fotoBase64, data: dataFinal });
-        localStorage.setItem('viagens_vHist', JSON.stringify(banco));
-        
-        alert(`Memória em ${cidade} guardada!`);
-        location.reload(); 
-    }
-
+    // 📸 NOVO: LÓGICA DO BALÃO DE HISTÓRICO (POP-UP) - LISTA COMPLETA
     function abrirHistorico(ufId) {
-        const banco = JSON.parse(localStorage.getItem('viagens_vHist')) || {};
-        const lista = banco[ufId];
+        // Usa a chave viagens_vHist_v1 para garantir dados limpos e organizados
+        const viagensDB = JSON.parse(localStorage.getItem('viagens_vHist_v1')) || {};
+        const listaDeViagens = viagensDB[ufId];
 
-        if (lista && lista.length > 0) {
-            const content = document.getElementById('popup-content');
-            let html = `<h2 style="margin:0; color:var(--primary);">🚩 ${ufId.replace('BR','')}</h2>`;
-            html += `<div class="lista-memorias">`;
-            lista.forEach(v => {
-                html += `
-                <div class="memoria-item">
-                    ${v.foto ? `<img src="${v.foto}" class="foto-memoria">` : '<div class="foto-memoria" style="display:flex;align-items:center;justify-content:center;color:#ccc">Sem foto</div>'}
-                    <p style="margin: 10px 0 2px 0; font-weight: bold; font-size: 18px;">${v.cidade}</p>
-                    <span style="font-size: 12px; color: #aaa;">📅 ${v.data}</span>
-                </div>`;
+        if (listaDeViagens && listaDeViagens.length > 0) {
+            const popupContent = document.getElementById('popup-content');
+            
+            // Cria o cabeçalho do pop-up
+            let htmlHTML = `
+                <h3 style="color:var(--primary); margin:0; text-align:center;">🚩 ${ufId.replace('BR','')}</h3>
+                <div style="max-height: 380px; overflow-y: auto; padding-right: 5px; margin-top:15px;">
+            `;
+
+            // Cria cada item da lista (cidade + foto)
+            listaDeViagens.forEach(v => {
+                htmlHTML += `
+                    <div style="border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; text-align:left;">
+                        <img src="${v.foto || 'https://via.placeholder.com/300x200?text=Sem+Foto'}" 
+                             style="width: 100%; height: 160px; object-fit: cover; border-radius: 12px; margin-bottom:10px;">
+                        <p style="font-weight: bold; font-size: 16px; margin: 0; color: var(--text);">${v.cidade}</p>
+                        <span style="font-size: 11px; color: #999; margin-top:2px; display:block;">📅 Visitado em: ${v.data}</span>
+                    </div>
+                `;
             });
-            html += `</div>`;
-            content.innerHTML = html;
+
+            htmlHTML += `</div>`; // Fecha a div rolável
+
+            // Preenche o pop-up e mostra
+            popupContent.innerHTML = htmlHTML;
             document.getElementById('photo-popup').classList.add('show');
             document.getElementById('popup-overlay').classList.add('show');
         }
@@ -173,18 +218,68 @@
         document.getElementById('popup-overlay').classList.remove('show');
     }
 
+    // 3. SALVAR VIAGEM COM FOTO (JSON ORGANIZADO EM ARRAY)
+    async function salvarViagem() {
+        const uf = document.getElementById('sel-uf').value;
+        const cidade = document.getElementById('txt-cidade').value;
+        const dataInput = document.getElementById('txt-data').value;
+        const inputFoto = document.getElementById('inp-foto');
+        
+        if(!cidade) return alert("Por favor, digite o nome da cidade!");
+
+        let fotoBase64 = null;
+        if (inputFoto.files && inputFoto.files[0]) {
+            fotoBase64 = await converterEComprimirFoto(inputFoto.files[0]);
+        }
+
+        // 📅 PROCESSAMENTO DE DATA (OPCIONAL)
+        let dataFinal;
+        if(dataInput) {
+            // Converte YYYY-MM-DD para DD/MM/YYYY
+            const partes = dataInput.split('-');
+            dataFinal = `${partes[2]}/${partes[1]}/${partes[0]}`;
+        } else {
+            // Se vazio, usa a data do registro
+            dataFinal = new Date().toLocaleDateString('pt-BR');
+        }
+
+        // Salva num formato de objeto de arrays { BRSP: [{cidade: 'Sampa', ...}, {cidade: 'Santos', ...}] }
+        // CHAVE NOVA viagens_vHist_v1 PARA DADOS ORGANIZADOS
+        let viagensDB = JSON.parse(localStorage.getItem('viagens_vHist_v1')) || {};
+        
+        // Se o estado ainda não tem viagens, cria a lista
+        if (!viagensDB[uf]) {
+            viagensDB[uf] = [];
+        }
+
+        // ADICIONA A NOVA CIDADE NO TOPO DA LISTA
+        viagensDB[uf].unshift({
+            cidade: cidade,
+            foto: fotoBase64,
+            data: dataFinal
+        });
+        
+        localStorage.setItem('viagens_vHist_v1', JSON.stringify(viagensDB));
+        
+        alert(`Aventura em ${cidade} guardada! O mapa vai recarregar.`);
+        location.reload(); 
+    }
+
+    // 4. ATUALIZAR INTERFACE (PINTURA)
     function atualizarInterface() {
-        const banco = JSON.parse(localStorage.getItem('viagens_vHist')) || {};
-        const ufs = Object.keys(banco);
-        ufs.forEach(uf => {
+        const viagensDB = JSON.parse(localStorage.getItem('viagens_vHist_v1')) || {};
+        const ufsSalvas = Object.keys(viagensDB); 
+
+        ufsSalvas.forEach(uf => {
             const el = document.getElementById(uf) || document.querySelector(`[id="${uf}"]`);
             if(el) el.classList.add('visitado');
         });
-        document.getElementById('info').innerText = `Vocês conquistaram ${ufs.length} estados!`;
+        document.getElementById('info').innerText = `Vocês conquistaram ${ufsSalvas.length} estados!`;
     }
 
-    function otimizarFoto(file) {
-        return new Promise((resolve, reject) => {
+    // TRANSFORMAR FOTO EM TEXTO LEVE (BASE64) E REDUZIR TAMANHO
+    function converterEComprimirFoto(file) {
+        return new Promise((resolve) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = (e) => {
@@ -192,17 +287,15 @@
                 img.src = e.target.result;
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    const max = 400; 
-                    let scale = max / Math.max(img.width, img.height);
+                    const ctx = canvas.getContext('2d');
+                    const maxDim = 300; // Tamanho da miniatura (leve)
+                    let scale = maxDim / Math.max(img.width, img.height);
                     canvas.width = img.width * scale;
                     canvas.height = img.height * scale;
-                    const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    resolve(canvas.toDataURL('image/jpeg', 0.6));
-                };
-                img.onerror = reject;
-            };
-            reader.onerror = reject;
+                    resolve(canvas.toDataURL('image/jpeg', 0.6)); // JPEG comprimido
+                }
+            }
         });
     }
 </script>
