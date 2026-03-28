@@ -6,60 +6,54 @@
     <title>Nossa Jornada 👩‍❤️‍👨</title>
     <style>
         :root { --primary: #ff4b5c; --bg: #f4f7f6; }
-        body { font-family: sans-serif; background: var(--bg); margin: 0; padding-bottom: 90px; }
+        body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 0; overflow: hidden; }
         
-        .header { background: white; padding: 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        /* CABEÇALHO */
+        .header { background: white; padding: 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: relative; z-index: 10; }
         
-        /* ABAS */
-        .aba { display: none; padding: 10px; animation: fadeIn 0.3s; }
+        .aba { display: none; width: 100%; }
         .ativa { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* MOLDURA DO MAPA (Garante a centralização) */
+        /* MOLDURA ESTICADA ATÉ A ABA */
         .mapa-card { 
-            background: white; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-            height: 400px; /* Altura fixa para o telemóvel */
-            margin: 10px;
-            display: flex; /* ATIVA O FLEXBOX */
-            align-items: center; /* CENTRALIZA VERTICALMENTE */
-            justify-content: center; /* CENTRALIZA HORIZONTALMENTE */
-            overflow: hidden; position: relative;
-        }
-        
-        #svg-container { 
-            width: 100%; 
-            height: 100%; 
+            background: white; 
+            margin: 10px; 
+            border-radius: 20px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            /* O SEGREDO: Cálculo para encostar na aba inferior */
+            height: calc(100vh - 165px); 
             display: flex; 
             align-items: center; 
             justify-content: center;
+            overflow: hidden;
         }
+        
+        #svg-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
 
-        /* O SEGREDO: Força o SVG a caber sem deformar */
+        /* AJUSTE DO SVG PARA NÃO CORTAR */
         #svg-container svg { 
             width: 100% !important; 
             height: 100% !important; 
-            object-fit: contain; /* Encolhe o mapa até ele caber inteiro na moldura */
+            object-fit: contain; 
+            padding: 10px; /* Margem interna para o mapa não tocar nas bordas da moldura */
         }
 
         path { fill: #e0e0e0; stroke: #fff; stroke-width: 0.5; transition: 0.4s; }
         .visitado { fill: var(--primary) !important; }
 
-        /* FEED E FORMULÁRIO */
-        .card-form { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        /* FORMULÁRIO */
+        .card-form { background: white; padding: 25px; margin: 15px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         select, input, button { width: 100%; padding: 15px; margin: 8px 0; border-radius: 12px; border: 1px solid #eee; font-size: 16px; box-sizing: border-box; }
         button { background: var(--primary); color: white; border: none; font-weight: bold; }
 
-        .feed-item { background: white; margin-top: 15px; padding: 15px; border-radius: 15px; border-left: 5px solid var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .galeria { display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; padding-bottom: 5px; }
-        .foto-trip { width: 140px; height: 100px; object-fit: cover; border-radius: 10px; flex-shrink: 0; }
-
-        /* MENU NAVEGAÇÃO */
+        /* MENU DE NAVEGAÇÃO (A ABA) */
         .menu-nav { 
             position: fixed; bottom: 0; left: 0; width: 100%; background: white; 
             display: flex; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 1000;
             border-top-left-radius: 25px; border-top-right-radius: 25px;
+            height: 75px;
         }
-        .btn-aba { flex: 1; padding: 20px; border: none; background: none; font-size: 24px; color: #ccc; }
+        .btn-aba { flex: 1; padding: 0; border: none; background: none; font-size: 28px; color: #ccc; }
         .btn-aba.active { color: var(--primary); }
     </style>
 </head>
@@ -72,9 +66,8 @@
 
     <div id="aba-mapa" class="aba ativa">
         <div class="mapa-card">
-            <div id="svg-container">A carregar br.svg...</div>
+            <div id="svg-container"></div>
         </div>
-        <div id="feed-fotos"></div>
     </div>
 
     <div id="aba-registro" class="aba">
@@ -83,8 +76,7 @@
             <select id="sel-uf">
                 <option value="BRAC">Acre</option><option value="BRAL">Alagoas</option><option value="BRAM">Amazonas</option><option value="BRAP">Amapá</option><option value="BRBA">Bahia</option><option value="BRCE">Ceará</option><option value="BRDF">Distrito Federal</option><option value="BRES">Espírito Santo</option><option value="BRGO">Goiás</option><option value="BRMA">Maranhão</option><option value="BRMG">Minas Gerais</option><option value="BRMS">Mato Grosso do Sul</option><option value="BRMT">Mato Grosso</option><option value="BRPA">Pará</option><option value="BRPB">Paraíba</option><option value="BRPR">Paraná</option><option value="BRPE">Pernambuco</option><option value="BRPI">Piauí</option><option value="BRRJ">Rio de Janeiro</option><option value="BRRN">Rio Grande do Norte</option><option value="BRRS">Rio Grande do Sul</option><option value="BRRO">Rondônia</option><option value="BRRR">Roraima</option><option value="BRSC">Santa Catarina</option><option value="BRSP">São Paulo</option><option value="BRSE">Sergipe</option><option value="BRTO">Tocantins</option>
             </select>
-            <input type="text" id="txt-cidade" placeholder="Cidade visitada">
-            <input type="file" id="inp-fotos" multiple accept="image/*">
+            <input type="text" id="txt-cidade" placeholder="Nome da Cidade">
             <button onclick="salvarViagem()">Registrar e Colorir 🚩</button>
         </div>
     </div>
@@ -95,7 +87,7 @@
     </nav>
 
 <script>
-    // 1. CARREGA O MAPA E AJUSTA O TAMANHO
+    // Carrega o arquivo br.svg
     fetch('br.svg')
         .then(res => res.text())
         .then(svgText => {
@@ -103,7 +95,7 @@
             container.innerHTML = svgText;
             const svgEl = container.querySelector('svg');
             
-            // Remove larguras fixas que causam o erro de zoom
+            // Remove tamanhos fixos para o CSS controlar
             svgEl.removeAttribute('width'); 
             svgEl.removeAttribute('height');
             
@@ -117,67 +109,29 @@
         btn.classList.add('active');
     }
 
-    async function salvarViagem() {
+    function salvarViagem() {
         const uf = document.getElementById('sel-uf').value;
         const cidade = document.getElementById('txt-cidade').value;
-        const inputFotos = document.getElementById('inp-fotos');
 
         if(!cidade) return alert("Escreva o nome da cidade!");
 
-        const fotosBase64 = [];
-        for (let i = 0; i < Math.min(inputFotos.files.length, 2); i++) {
-            const f = await converter(inputFotos.files[i]);
-            fotosBase64.push(f);
+        const viagens = JSON.parse(localStorage.getItem('viagens_vFinal')) || [];
+        if(!viagens.includes(uf)) {
+            viagens.push(uf);
+            localStorage.setItem('viagens_vFinal', JSON.stringify(viagens));
         }
 
-        const viagens = JSON.parse(localStorage.getItem('viagens_vFinal')) || [];
-        viagens.push({ uf, cidade, fotos: fotosBase64, data: new Date().toLocaleDateString() });
-        localStorage.setItem('viagens_vFinal', JSON.stringify(viagens));
-
+        alert("Estado colorido! 🚩");
         location.reload(); 
     }
 
     function atualizarInterface() {
         const viagens = JSON.parse(localStorage.getItem('viagens_vFinal')) || [];
-        const feed = document.getElementById('feed-fotos');
-        const visitados = new Set();
-
-        viagens.reverse().forEach(v => {
-            visitados.add(v.uf);
-            // Colore o estado usando o ID (BRXX)
-            const el = document.getElementById(v.uf) || document.querySelector(`[id="${v.uf}"]`);
+        viagens.forEach(uf => {
+            const el = document.getElementById(uf) || document.querySelector(`[id="${uf}"]`);
             if(el) el.classList.add('visitado');
-
-            // Renderiza as fotos
-            const fotosHtml = v.fotos.map(f => `<img src="${f}" class="foto-trip">`).join('');
-            feed.innerHTML += `
-                <div class="feed-item">
-                    <strong>📍 ${v.cidade}</strong> <small style="color:#999">(${v.data})</small>
-                    <div class="galeria">${fotosHtml}</div>
-                </div>`;
         });
-        document.getElementById('info').innerText = `Vocês visitaram ${visitados.size} estados!`;
-    }
-
-    function converter(file) {
-        return new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = (e) => {
-                const img = new Image();
-                img.src = e.target.result;
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    const maxDim = 350; // Tamanho leve para não estourar a memória
-                    let scale = maxDim / Math.max(img.width, img.height);
-                    canvas.width = img.width * scale;
-                    canvas.height = img.height * scale;
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    resolve(canvas.toDataURL('image/jpeg', 0.6));
-                }
-            }
-        });
+        document.getElementById('info').innerText = `Vocês visitaram ${viagens.length} estados!`;
     }
 </script>
 </body>
