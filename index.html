@@ -6,7 +6,7 @@
     <title>Nossa Jornada 👩‍❤️‍👨</title>
     <style>
         :root { --primary: #ff4b5c; --bg: #f4f7f6; }
-        body { font-family: sans-serif; background: var(--bg); margin: 0; padding-bottom: 90px; }
+        body { font-family: sans-serif; background: var(--bg); margin: 0; padding-bottom: 90px; overflow-x: hidden; }
         
         .header { background: white; padding: 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         
@@ -15,38 +15,45 @@
         .ativa { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* AJUSTE DO MAPA PARA NÃO FICAR GIGANTE */
+        /* MOLDURA DO MAPA */
         .mapa-card { 
             background: white; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-            height: 400px; /* Altura ideal para a tela do celular */
+            height: 420px; /* Altura ideal para a maioria dos celulares */
+            margin: 10px;
             display: flex; align-items: center; justify-content: center;
-            overflow: hidden; margin-bottom: 20px; position: relative;
+            overflow: hidden; position: relative;
         }
         
-        #svg-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
-
-        /* O SEGREDO: Força o SVG a caber na moldura */
-        #svg-container svg { 
-            width: 100% !important; 
-            height: 100% !important; 
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain; /* Faz o Brasil inteiro caber sem cortar */
-            transform: scale(0.95); /* Dá uma pequena margem nas bordas */
+        /* O SEGREDO DA CENTRALIZAÇÃO FORÇADA */
+        #svg-container { 
+            width: 100%; 
+            height: 100%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
         }
 
-        path { fill: #e0e0e0; stroke: #fff; stroke-width: 0.8; transition: 0.4s; }
+        #svg-container svg { 
+            width: 160% !important; /* Aumentamos para ele "estourar" as bordas invisíveis */
+            height: auto !important;
+            max-height: 140%;
+            object-fit: contain;
+            /* AJUSTE MANUAL: Move o desenho para a esquerda para compensar o vácuo do arquivo */
+            margin-left: -35%; 
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
+        }
+
+        path { fill: #e0e0e0; stroke: #fff; stroke-width: 0.5; transition: 0.4s; }
         .visitado { fill: var(--primary) !important; }
 
-        /* FORMULÁRIO */
-        .card-form { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        /* FEED E FORMULÁRIO */
+        .card-form { background: white; padding: 20px; border-radius: 20px; }
         select, input, button { width: 100%; padding: 15px; margin: 8px 0; border-radius: 12px; border: 1px solid #eee; font-size: 16px; box-sizing: border-box; }
         button { background: var(--primary); color: white; border: none; font-weight: bold; }
 
-        /* FOTOS */
-        .feed-item { background: white; margin-top: 15px; padding: 15px; border-radius: 15px; border-left: 5px solid var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .galeria { display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; padding-bottom: 5px; }
-        .foto-trip { width: 140px; height: 100px; object-fit: cover; border-radius: 10px; flex-shrink: 0; }
+        .feed-item { background: white; margin-top: 15px; padding: 15px; border-radius: 15px; border-left: 5px solid var(--primary); }
+        .galeria { display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; }
+        .foto-trip { width: 140px; height: 100px; object-fit: cover; border-radius: 10px; }
 
         /* MENU NAVEGAÇÃO */
         .menu-nav { 
@@ -90,18 +97,16 @@
     </nav>
 
 <script>
-    // 1. CARREGA O MAPA E AJUSTA O TAMANHO
     fetch('br.svg')
         .then(res => res.text())
         .then(svgText => {
             const container = document.getElementById('svg-container');
             container.innerHTML = svgText;
             const svgEl = container.querySelector('svg');
-            
-            // Remove larguras fixas do arquivo original
             svgEl.removeAttribute('width'); 
             svgEl.removeAttribute('height');
-            
+            // Tenta forçar uma visão de câmera que foque no Brasil
+            if(!svgEl.getAttribute('viewBox')) svgEl.setAttribute('viewBox', '0 0 550 550');
             atualizarInterface();
         });
 
@@ -128,7 +133,6 @@
         const viagens = JSON.parse(localStorage.getItem('viagens_vFinal')) || [];
         viagens.push({ uf, cidade, fotos: fotosBase64, data: new Date().toLocaleDateString() });
         localStorage.setItem('viagens_vFinal', JSON.stringify(viagens));
-
         location.reload(); 
     }
 
@@ -161,8 +165,8 @@
                 img.src = e.target.result;
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    const scale = 350 / img.width;
-                    canvas.width = 350; canvas.height = img.height * scale;
+                    const scale = 400 / img.width;
+                    canvas.width = 400; canvas.height = img.height * scale;
                     canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
                     resolve(canvas.toDataURL('image/jpeg', 0.7));
                 }
