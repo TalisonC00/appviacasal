@@ -6,25 +6,26 @@
     <title>Nossa Jornada 👩‍❤️‍👨</title>
     <style>
         :root { --primary: #ff4b5c; --bg: #f4f7f6; }
-        body { font-family: sans-serif; background: var(--bg); margin: 0; padding-bottom: 90px; overflow-x: hidden; }
+        body { font-family: sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; overflow-x: hidden; }
         
-        .header { background: white; padding: 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .header { background: white; padding: 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: relative; z-index: 10; }
         
-        /* ABAS */
-        .aba { display: none; padding: 10px; animation: fadeIn 0.3s; }
+        .aba { display: none; animation: fadeIn 0.3s; }
         .ativa { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* MOLDURA DO MAPA */
+        /* AJUSTE PARA O MAPA CHEGAR ATÉ A ABA */
         .mapa-card { 
-            background: white; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-            height: 420px; /* Altura ideal para a maioria dos celulares */
-            margin: 10px;
-            display: flex; align-items: center; justify-content: center;
-            overflow: hidden; position: relative;
+            background: white; 
+            margin: 0; /* Removemos as margens para ganhar espaço */
+            height: calc(100vh - 140px); /* Ocupa quase a tela toda entre o topo e a aba */
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            overflow: hidden; 
+            position: relative;
         }
         
-        /* O SEGREDO DA CENTRALIZAÇÃO FORÇADA */
         #svg-container { 
             width: 100%; 
             height: 100%; 
@@ -34,34 +35,34 @@
         }
 
         #svg-container svg { 
-            width: 160% !important; /* Aumentamos para ele "estourar" as bordas invisíveis */
+            width: 180% !important; /* Aumentado para preencher a largura */
             height: auto !important;
-            max-height: 140%;
+            max-height: 100%;
             object-fit: contain;
-            /* AJUSTE MANUAL: Move o desenho para a esquerda para compensar o vácuo do arquivo */
-            margin-left: -35%; 
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
+            margin-left: -40%; /* Ajuste fino de centralização para o seu arquivo br.svg */
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.08));
         }
 
-        path { fill: #e0e0e0; stroke: #fff; stroke-width: 0.5; transition: 0.4s; }
+        path { fill: #e6e6e6; stroke: #fff; stroke-width: 0.6; transition: 0.4s; }
         .visitado { fill: var(--primary) !important; }
 
-        /* FEED E FORMULÁRIO */
-        .card-form { background: white; padding: 20px; border-radius: 20px; }
+        /* FORMULÁRIO E FEED */
+        .card-form { background: white; padding: 25px; margin: 15px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         select, input, button { width: 100%; padding: 15px; margin: 8px 0; border-radius: 12px; border: 1px solid #eee; font-size: 16px; box-sizing: border-box; }
         button { background: var(--primary); color: white; border: none; font-weight: bold; }
 
-        .feed-item { background: white; margin-top: 15px; padding: 15px; border-radius: 15px; border-left: 5px solid var(--primary); }
+        #feed-fotos { padding: 10px; }
+        .feed-item { background: white; margin-bottom: 10px; padding: 15px; border-radius: 15px; border-left: 5px solid var(--primary); }
         .galeria { display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; }
         .foto-trip { width: 140px; height: 100px; object-fit: cover; border-radius: 10px; }
 
-        /* MENU NAVEGAÇÃO */
+        /* MENU NAVEGAÇÃO (ABA) */
         .menu-nav { 
             position: fixed; bottom: 0; left: 0; width: 100%; background: white; 
             display: flex; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 1000;
-            border-top-left-radius: 25px; border-top-right-radius: 25px;
+            border-top-left-radius: 20px; border-top-right-radius: 20px;
         }
-        .btn-aba { flex: 1; padding: 20px; border: none; background: none; font-size: 24px; color: #ccc; }
+        .btn-aba { flex: 1; padding: 18px; border: none; background: none; font-size: 24px; color: #ccc; }
         .btn-aba.active { color: var(--primary); }
     </style>
 </head>
@@ -81,13 +82,13 @@
 
     <div id="aba-registro" class="aba">
         <div class="card-form">
-            <h3 style="margin-top:0;">📍 Nova Memória</h3>
+            <h3 style="margin-top:0; color:var(--primary);">📍 Nova Memória</h3>
             <select id="sel-uf">
                 <option value="BRAC">Acre</option><option value="BRAL">Alagoas</option><option value="BRAM">Amazonas</option><option value="BRAP">Amapá</option><option value="BRBA">Bahia</option><option value="BRCE">Ceará</option><option value="BRDF">Distrito Federal</option><option value="BRES">Espírito Santo</option><option value="BRGO">Goiás</option><option value="BRMA">Maranhão</option><option value="BRMG">Minas Gerais</option><option value="BRMS">Mato Grosso do Sul</option><option value="BRMT">Mato Grosso</option><option value="BRPA">Pará</option><option value="BRPB">Paraíba</option><option value="BRPR">Paraná</option><option value="BRPE">Pernambuco</option><option value="BRPI">Piauí</option><option value="BRRJ">Rio de Janeiro</option><option value="BRRN">Rio Grande do Norte</option><option value="BRRS">Rio Grande do Sul</option><option value="BRRO">Rondônia</option><option value="BRRR">Roraima</option><option value="BRSC">Santa Catarina</option><option value="BRSP">São Paulo</option><option value="BRSE">Sergipe</option><option value="BRTO">Tocantins</option>
             </select>
-            <input type="text" id="txt-cidade" placeholder="Cidade visitada">
+            <input type="text" id="txt-cidade" placeholder="Nome da Cidade">
             <input type="file" id="inp-fotos" multiple accept="image/*">
-            <button onclick="salvarViagem()">Registrar e Colorir 🚩</button>
+            <button onclick="salvarViagem()">Salvar e Colorir 🚩</button>
         </div>
     </div>
 
@@ -105,7 +106,6 @@
             const svgEl = container.querySelector('svg');
             svgEl.removeAttribute('width'); 
             svgEl.removeAttribute('height');
-            // Tenta forçar uma visão de câmera que foque no Brasil
             if(!svgEl.getAttribute('viewBox')) svgEl.setAttribute('viewBox', '0 0 550 550');
             atualizarInterface();
         });
