@@ -4,64 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nossa Jornada 👩‍❤️‍👨</title>
-    
     <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
-
     <style>
         :root { --primary: #ff4b5c; --bg: #f4f7f6; --text: #2c3e50; }
         body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 0; overflow: hidden; touch-action: none; color: var(--text); }
-        
         .header { background: white; padding: 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: relative; z-index: 10; }
         .aba { display: none; width: 100%; height: calc(100vh - 165px); overflow-y: auto; }
         .ativa { display: block; }
-
-        /* MOLDURA DO MAPA */
-        .mapa-card { 
-            background: white; margin: 10px; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-            height: 100%; display: flex; align-items: center; justify-content: center;
-            overflow: hidden; position: relative;
-        }
+        .mapa-card { background: white; margin: 10px; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
         #svg-container { width: 100%; height: 100%; cursor: move; }
         #svg-container svg { width: 100%; height: 100%; }
-
         path { fill: #e0e0e0; stroke: #fff; stroke-width: 0.5; transition: 0.4s; cursor: pointer; }
         .visitado { fill: var(--primary) !important; }
-
-        /* POP-UP DE HISTÓRICO */
-        #photo-popup {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
-            background: white; padding: 20px; border-radius: 25px;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
-            z-index: 2000; width: 85%; max-width: 320px; text-align: center;
-            opacity: 0; visibility: hidden; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        #photo-popup.show { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
         
+        /* POP-UP */
+        #photo-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: white; padding: 20px; border-radius: 25px; box-shadow: 0 15px 50px rgba(0,0,0,0.3); z-index: 2000; width: 85%; max-width: 320px; text-align: center; opacity: 0; visibility: hidden; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        #photo-popup.show { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
         .lista-memorias { max-height: 380px; overflow-y: auto; padding-right: 5px; margin-top: 15px; }
         .memoria-item { border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; text-align: left; }
-        .memoria-item:last-child { border-bottom: none; }
         .foto-memoria { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; background: #eee; }
-
-        /* BOTÃO FECHAR CENTRALIZADO */
-        .close-popup { 
-            position: absolute; top: -10px; right: -10px; 
-            background: var(--primary); color: white; border: none; border-radius: 50%; 
-            width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
-            font-weight: bold; font-size: 20px; cursor: pointer; box-shadow: 0 4px 10px rgba(255,75,92,0.4);
-        }
-
+        .close-popup { position: absolute; top: -10px; right: -10px; background: var(--primary); color: white; border: none; border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; box-shadow: 0 4px 10px rgba(255,75,92,0.4); }
         #popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1999; opacity: 0; visibility: hidden; transition: 0.3s; backdrop-filter: blur(2px); }
         #popup-overlay.show { opacity: 1; visibility: visible; }
 
-        /* FORMULÁRIO */
+        /* FORM */
         .card-form { background: white; padding: 25px; margin: 15px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         select, input, button { width: 100%; padding: 15px; margin: 8px 0; border-radius: 12px; border: 1px solid #eee; font-size: 16px; box-sizing: border-box; }
         button { background: var(--primary); color: white; border: none; font-weight: bold; cursor: pointer; }
-        label { font-size: 12px; color: #888; display: block; margin-top: 10px; margin-left: 5px; }
-
-        /* MENU INFERIOR */
+        label { font-size: 12px; color: #888; display: block; margin-top: 10px; }
         .menu-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; display: flex; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); z-index: 1000; border-top-left-radius: 25px; border-top-right-radius: 25px; height: 75px; }
-        .btn-aba { flex: 1; border: none; background: none; font-size: 28px; color: #ccc; cursor: pointer; }
+        .btn-aba { flex: 1; border: none; background: none; font-size: 28px; color: #ccc; }
         .btn-aba.active { color: var(--primary); }
     </style>
 </head>
@@ -69,7 +41,7 @@
 
     <div class="header">
         <h3 style="color:var(--primary); margin:0;">👩‍❤️‍👨 Nossa Jornada</h3>
-        <span id="info" style="font-size: 11px; color:#999;">Carregando mapa...</span>
+        <span id="info" style="font-size: 11px; color:#999;">Carregando...</span>
     </div>
 
     <div id="popup-overlay" onclick="fecharPopup()"></div>
@@ -88,16 +60,13 @@
         <div class="card-form">
             <h3 style="margin-top:0; color: var(--primary);">📍 Registrar Visita</h3>
             <select id="sel-uf">
-                <option value="BRAC">Acre</option><option value="BRAL">Alagoas</option><option value="BRAM">Amazonas</option><option value="BRAP">Amapá</option><option value="BRBA">Bahia</option><option value="BRCE">Ceará</option><option value="BRDF">Distrito Federal</option><option value="BRES">Espírito Santo</option><option value="BRGO">Goiás</option><option value="BRMA">Maranhão</option><option value="BRMG">Minas Gerais</option><option value="BRMS">Mato Grosso do Sul</option><option value="BRMT">Mato Grosso</option><option value="BRPA">Pará</option><option value="BRPB">Paraíba</option><option value="BRPE">Pernambuco</option><option value="BRPI">Piauí</option><option value="BRPR">Paraná</option><option value="BRRJ">Rio de Janeiro</option><option value="BRRN">Rio Grande do Norte</option><option value="BRRO">Rondônia</option><option value="BRRR">Roraima</option><option value="BRRS">Rio Grande do Sul</option><option value="BRSC">Santa Catarina</option><option value="BRSE">Sergipe</option><option value="BRSP">São Paulo</option><option value="BRTO">Tocantins</option>
+                <option value="BRAC">Acre</option><option value="BRAL">Alagoas</option><option value="BRAM">Amazonas</option><option value="BRAP">Amapá</option><option value="BRBA">Bahia</option><option value="BRCE">Ceará</option><option value="BRDF">Distrito Federal</option><option value="BRES">Espírito Santo</option><option value="BRGO">Goiás</option><option value="BRMA">Maranhão</option><option value="BRMG">Minas Gerais</option><option value="BRMS">Mato Grosso do Sul</option><option value="BRMT">Mato Grosso</option><option value="BRPA">Pará</option><option value="BRPB">Paraíba</option><option value="BRPE">Pernambuco</option><option value="BRPI">Piauí</option><option value="BRPR">Paraná</option><option value="BRRJ">Rio de Janeiro</option><option value="BRRN">Rio Grande do Norte</option><option value="BRRO">Rondônia</option><option value="BRRR">Roraima</option><option value="BRRS">Rio Grande do Sul</option><option value="BRSC">Santa Catarina</option><option value="BRSE">Sergipe</option><option value="BRSP" selected>São Paulo</option><option value="BRTO">Tocantins</option>
             </select>
             <input type="text" id="txt-cidade" placeholder="Qual cidade visitaram?">
-            
             <label>Data da visita (Opcional):</label>
             <input type="date" id="txt-data">
-
             <label>Foto da aventura (Opcional):</label>
             <input type="file" id="inp-foto" accept="image/*">
-            
             <button onclick="salvarViagem()">Salvar Memória 🚩</button>
         </div>
     </div>
@@ -110,7 +79,7 @@
 <script>
     let panZoomMapa;
 
-    // 1. CARREGAR MAPA
+    // Carregar Mapa
     fetch('br.svg')
         .then(res => res.text())
         .then(svgText => {
@@ -135,11 +104,9 @@
                     abrirHistorico(this.id);
                 });
             });
-
             atualizarInterface();
         });
 
-    // 2. NAVEGAÇÃO
     function trocarAba(id, btn) {
         fecharPopup();
         document.querySelectorAll('.aba').forEach(a => a.classList.remove('ativa'));
@@ -148,25 +115,52 @@
         btn.classList.add('active');
     }
 
-    // 3. LOGICA DE HISTÓRICO NO POPUP
+    async function salvarViagem() {
+        const uf = document.getElementById('sel-uf').value;
+        const cidade = document.getElementById('txt-cidade').value;
+        const dataInput = document.getElementById('txt-data').value;
+        const inputFoto = document.getElementById('inp-foto');
+        
+        if(!cidade) return alert("Escreva o nome da cidade!");
+
+        let fotoBase64 = null;
+        if (inputFoto.files && inputFoto.files[0]) {
+            try {
+                fotoBase64 = await otimizarFoto(inputFoto.files[0]);
+            } catch (e) {
+                console.error("Erro na foto:", e);
+            }
+        }
+
+        let dataFinal = dataInput ? dataInput.split('-').reverse().join('/') : new Date().toLocaleDateString('pt-BR');
+
+        // CHAVE UNIFICADA: viagens_vHist
+        let banco = JSON.parse(localStorage.getItem('viagens_vHist')) || {};
+        if (!banco[uf]) banco[uf] = [];
+        
+        banco[uf].unshift({ cidade, foto: fotoBase64, data: dataFinal });
+        localStorage.setItem('viagens_vHist', JSON.stringify(banco));
+        
+        alert(`Memória em ${cidade} guardada!`);
+        location.reload(); 
+    }
+
     function abrirHistorico(ufId) {
-        const banco = JSON.parse(localStorage.getItem('viagens_vFinal_Historico')) || {};
+        const banco = JSON.parse(localStorage.getItem('viagens_vHist')) || {};
         const lista = banco[ufId];
 
         if (lista && lista.length > 0) {
             const content = document.getElementById('popup-content');
             let html = `<h2 style="margin:0; color:var(--primary);">🚩 ${ufId.replace('BR','')}</h2>`;
             html += `<div class="lista-memorias">`;
-
             lista.forEach(v => {
                 html += `
                 <div class="memoria-item">
-                    ${v.foto ? `<img src="${v.foto}" class="foto-memoria">` : ''}
+                    ${v.foto ? `<img src="${v.foto}" class="foto-memoria">` : '<div class="foto-memoria" style="display:flex;align-items:center;justify-content:center;color:#ccc">Sem foto</div>'}
                     <p style="margin: 10px 0 2px 0; font-weight: bold; font-size: 18px;">${v.cidade}</p>
                     <span style="font-size: 12px; color: #aaa;">📅 ${v.data}</span>
                 </div>`;
             });
-
             html += `</div>`;
             content.innerHTML = html;
             document.getElementById('photo-popup').classList.add('show');
@@ -179,34 +173,8 @@
         document.getElementById('popup-overlay').classList.remove('show');
     }
 
-    // 4. SALVAR VIAGEM (ADICIONA AO ARRAY)
-    async function salvarViagem() {
-        const uf = document.getElementById('sel-uf').value;
-        const cidade = document.getElementById('txt-cidade').value;
-        const dataInput = document.getElementById('txt-data').value;
-        const inputFoto = document.getElementById('inp-foto');
-        
-        if(!cidade) return alert("Escreva o nome da cidade!");
-
-        let fotoBase64 = null;
-        if (inputFoto.files && inputFoto.files[0]) {
-            fotoBase64 = await otimizarFoto(inputFotos.files[0]);
-        }
-
-        let dataFinal = dataInput ? dataInput.split('-').reverse().join('/') : new Date().toLocaleDateString('pt-BR');
-
-        let banco = JSON.parse(localStorage.getItem('viagens_vFinal_Historico')) || {};
-        if (!banco[uf]) banco[uf] = [];
-        
-        banco[uf].unshift({ cidade, foto: fotoBase64, data: dataFinal });
-        localStorage.setItem('viagens_vFinal_Historico', JSON.stringify(banco));
-        
-        alert(`Memória em ${cidade} guardada!`);
-        location.reload(); 
-    }
-
     function atualizarInterface() {
-        const banco = JSON.parse(localStorage.getItem('viagens_vFinal_Historico')) || {};
+        const banco = JSON.parse(localStorage.getItem('viagens_vHist')) || {};
         const ufs = Object.keys(banco);
         ufs.forEach(uf => {
             const el = document.getElementById(uf) || document.querySelector(`[id="${uf}"]`);
@@ -216,7 +184,7 @@
     }
 
     function otimizarFoto(file) {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = (e) => {
@@ -228,10 +196,13 @@
                     let scale = max / Math.max(img.width, img.height);
                     canvas.width = img.width * scale;
                     canvas.height = img.height * scale;
-                    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     resolve(canvas.toDataURL('image/jpeg', 0.6));
-                }
-            }
+                };
+                img.onerror = reject;
+            };
+            reader.onerror = reject;
         });
     }
 </script>
