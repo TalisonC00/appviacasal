@@ -116,17 +116,13 @@
         }
         .btn-aba { flex: 1; border: none; background: none; font-size: 26px; color: #CBD5E1; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
         .btn-aba.active { color: var(--primary); transform: translateY(-4px); }
-
-        /* Scrollbar custom */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 10px; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <h3 style="color:var(--primary);"><span style="font-weight:400; color:var(--text-main)">Nossa</span> Jornada 👩‍❤️‍👨</h3>
-        <span id="info" style="font-size: 11px; font-weight: 600; color:var(--text-sub); text-transform: uppercase; letter-spacing: 1px;">Sincronizando...</span>
+        <span id="info" style="font-size: 11px; font-weight: 600; color:var(--text-sub); text-transform: uppercase; letter-spacing: 1px;">Carregando...</span>
     </div>
 
     <div id="popup-overlay" onclick="fecharPopup()"></div>
@@ -151,7 +147,7 @@
             </select>
 
             <label>Cidade</label>
-            <input type="text" id="txt-cidade" placeholder="Ex: Rio de Janeiro">
+            <input type="text" id="txt-cidade" placeholder="Ex: Santos">
             
             <label>Quando foi?</label>
             <input type="date" id="txt-data">
@@ -281,7 +277,7 @@
             const el = document.getElementById(uf) || document.querySelector(`[id="${uf}"]`);
             if(el) el.classList.add('visitado');
         });
-        document.getElementById('info').innerText = `${ufsSalvas.length} estados conquistados`;
+        document.getElementById('info').innerText = `${ufsSalvas.length} ESTADOS CONQUISTADOS`;
     }
 
     function converterEComprimirFoto(file) {
