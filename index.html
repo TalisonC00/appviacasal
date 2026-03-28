@@ -29,19 +29,18 @@
             position: relative;
         }
         
-        /* O container agora permite que o SVG "flutue" dentro dele */
         #svg-container { width: 100%; height: 100%; cursor: move; }
-
         #svg-container svg { width: 100%; height: 100%; }
 
         path { fill: #e0e0e0; stroke: #fff; stroke-width: 0.5; transition: 0.4s; }
         .visitado { fill: var(--primary) !important; }
 
-        /* INTERFACE */
+        /* FORMULÁRIO DE REGISTRO */
         .card-form { background: white; padding: 25px; margin: 15px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         select, input, button { width: 100%; padding: 15px; margin: 8px 0; border-radius: 12px; border: 1px solid #eee; font-size: 16px; box-sizing: border-box; }
-        button { background: var(--primary); color: white; border: none; font-weight: bold; }
+        button { background: var(--primary); color: white; border: none; font-weight: bold; cursor: pointer; }
 
+        /* NAVEGAÇÃO INFERIOR */
         .menu-nav { 
             position: fixed; bottom: 0; left: 0; width: 100%; background: white; 
             display: flex; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); z-index: 1000;
@@ -67,13 +66,38 @@
 
     <div id="aba-registro" class="aba">
         <div class="card-form">
-            <h3 style="margin-top:0;">📍 Nova Memória</h3>
+            <h3 style="margin-top:0; color: var(--primary);">📍 Registrar Visita</h3>
             <select id="sel-uf">
-                <option value="BRAC">Acre</option><option value="BRAL">Alagoas</option>
-                <option value="BRSP">São Paulo</option><option value="BRTO">Tocantins</option>
+                <option value="BRAC">Acre</option>
+                <option value="BRAL">Alagoas</option>
+                <option value="BRAM">Amazonas</option>
+                <option value="BRAP">Amapá</option>
+                <option value="BRBA">Bahia</option>
+                <option value="BRCE">Ceará</option>
+                <option value="BRDF">Distrito Federal</option>
+                <option value="BRES">Espírito Santo</option>
+                <option value="BRGO">Goiás</option>
+                <option value="BRMA">Maranhão</option>
+                <option value="BRMG">Minas Gerais</option>
+                <option value="BRMS">Mato Grosso do Sul</option>
+                <option value="BRMT">Mato Grosso</option>
+                <option value="BRPA">Pará</option>
+                <option value="BRPB">Paraíba</option>
+                <option value="BRPE">Pernambuco</option>
+                <option value="BRPI">Piauí</option>
+                <option value="BRPR">Paraná</option>
+                <option value="BRRJ">Rio de Janeiro</option>
+                <option value="BRRN">Rio Grande do Norte</option>
+                <option value="BRRO">Rondônia</option>
+                <option value="BRRR">Roraima</option>
+                <option value="BRRS">Rio Grande do Sul</option>
+                <option value="BRSC">Santa Catarina</option>
+                <option value="BRSE">Sergipe</option>
+                <option value="BRSP">São Paulo</option>
+                <option value="BRTO">Tocantins</option>
             </select>
-            <input type="text" id="txt-cidade" placeholder="Nome da Cidade">
-            <button onclick="salvarViagem()">Registrar 🚩</button>
+            <input type="text" id="txt-cidade" placeholder="Nome da Cidade (Ex: Gramado)">
+            <button onclick="salvarViagem()">Pintar no Mapa 🚩</button>
         </div>
     </div>
 
@@ -83,6 +107,7 @@
     </nav>
 
 <script>
+    // Carregar o arquivo br.svg e ativar zoom/movimento
     fetch('br.svg')
         .then(res => res.text())
         .then(svgText => {
@@ -92,16 +117,16 @@
             
             svgEl.removeAttribute('width'); 
             svgEl.removeAttribute('height');
-            svgEl.id = "mapa-svg-real"; // ID para a biblioteca encontrar
+            svgEl.id = "mapa-svg-real"; 
 
-            // ATIVA O ZOOM E MOVIMENTAÇÃO
+            // Ativa zoom e arrastar
             svgPanZoom('#mapa-svg-real', {
                 zoomEnabled: true,
                 controlIconsEnabled: false,
                 fit: true,
                 center: true,
                 minZoom: 1,
-                maxZoom: 10
+                maxZoom: 15
             });
 
             atualizarInterface();
@@ -117,23 +142,28 @@
     function salvarViagem() {
         const uf = document.getElementById('sel-uf').value;
         const cid = document.getElementById('txt-cidade').value;
-        if(!cid) return alert("Escreva a cidade!");
+        
+        if(!cid) return alert("Por favor, digite o nome da cidade visitada!");
 
+        // Salva apenas o ID do estado para pintar
         let viagens = JSON.parse(localStorage.getItem('viagens_vFinal')) || [];
         if(!viagens.includes(uf)) {
             viagens.push(uf);
             localStorage.setItem('viagens_vFinal', JSON.stringify(viagens));
         }
+        
+        alert("Estado " + uf.replace("BR", "") + " registrado com sucesso!");
         location.reload(); 
     }
 
     function atualizarInterface() {
         const viagens = JSON.parse(localStorage.getItem('viagens_vFinal')) || [];
         viagens.forEach(uf => {
+            // Procura o ID no SVG e aplica a classe de cor
             const el = document.getElementById(uf) || document.querySelector(`[id="${uf}"]`);
             if(el) el.classList.add('visitado');
         });
-        document.getElementById('info').innerText = `Visitados: ${viagens.length} estados`;
+        document.getElementById('info').innerText = `Vocês já conquistaram ${viagens.length} estados!`;
     }
 </script>
 </body>
