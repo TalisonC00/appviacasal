@@ -10,32 +10,20 @@
         :root { --primary: #FF4B5C; --sky: #BAE6FD; --card: #FFFFFF; --text-main: #1E293B; --text-sub: #64748B; --money: #10B981; }
         
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--sky); margin: 0; padding: 0; overflow: hidden; touch-action: none; color: var(--text-main); }
-        
-        /* HEADER */
         .header { background: #fff; padding: 20px 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.03); position: relative; z-index: 100; }
         .header h3 { margin: 0; font-size: 20px; color: var(--primary) !important; font-weight: 800; }
         #info { font-size: 11px; font-weight: 800; color: #000; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; display: block; }
 
-        /* CORREÇÃO DA ROLAGEM (SCROLL) */
-        .aba { 
-            display: none; 
-            width: 100%; 
-            /* Altura total menos header e nav inferior */
-            height: calc(100vh - 175px); 
-            overflow-y: auto; /* Permite rolar verticalmente */
-            padding-bottom: 30px; /* Respiro no final para o botão */
-            -webkit-overflow-scrolling: touch; /* Rolagem suave no iOS */
-        }
+        .aba { display: none; width: 100%; height: calc(100vh - 175px); overflow-y: auto; padding-bottom: 30px; -webkit-overflow-scrolling: touch; }
         .ativa { display: block; }
         
+        /* CARDS */
         .card { background: var(--card); padding: 24px; margin: 16px; border-radius: 32px; box-shadow: 0 12px 40px rgba(0,0,0,0.06); }
-
-        /* MAPA */
         .mapa-card { background: var(--card); margin: 16px; border-radius: 28px; height: calc(100% - 32px); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
         #svg-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #fff; }
         path { fill: #F1F5F9; stroke: #fff; stroke-width: 0.8; transition: all 0.5s ease; cursor: pointer; }
         
-        /* CORES POR REGIÃO */
+        /* CORES REGIÕES */
         .visitado[id^="BRAC"], .visitado[id^="BRAM"], .visitado[id^="BRRR"], .visitado[id^="BRRO"], .visitado[id^="BRPA"], .visitado[id^="BRAP"], .visitado[id^="BRTO"] { fill: #22C55E !important; }
         .visitado[id^="BRMA"], .visitado[id^="BRPI"], .visitado[id^="BRCE"], .visitado[id^="BRRN"], .visitado[id^="BRPB"], .visitado[id^="BRPE"], .visitado[id^="BRAL"], .visitado[id^="BRSE"], .visitado[id^="BRBA"] { fill: #FACC15 !important; }
         .visitado[id^="BRMT"], .visitado[id^="BRMS"], .visitado[id^="BRGO"], .visitado[id^="BRDF"] { fill: #FB923C !important; }
@@ -51,48 +39,44 @@
         .t-img { width: 100%; height: 160px; object-fit: cover; border-radius: 18px; margin-bottom: 12px; }
 
         /* CONQUISTAS */
-        .badge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px 10px; justify-items: center; align-items: start; }
-        .badge { display: flex; flex-direction: column; align-items: center; width: 80px; opacity: 0.15; filter: grayscale(1); transition: 0.4s; }
-        .badge.active { opacity: 1; filter: grayscale(0); transform: scale(1.05); }
+        .badge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px 10px; justify-items: center; }
+        .badge { display: flex; flex-direction: column; align-items: center; opacity: 0.15; filter: grayscale(1); transition: 0.4s; }
+        .badge.active { opacity: 1; filter: grayscale(0); }
         .b-icon { width: 56px; height: 56px; background: #F1F5F9; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 6px; }
         .badge-name { font-size: 9px; font-weight: 800; color: var(--text-sub); text-align: center; text-transform: uppercase; }
-        
-        #b-norte.active .b-icon { background: #DCFCE7; color: #166534; }
-        #b-nordeste.active .b-icon { background: #FEF9C3; color: #854D0E; }
-        #b-centro.active .b-icon { background: #FFEDD5; color: #9A3412; }
-        #b-sudeste.active .b-icon { background: #FCE7F3; color: #9D174D; }
-        #b-sul.active .b-icon { background: #F3E8FF; color: #6B21A8; }
-        #b-praia.active .b-icon { background: #E0F2FE; color: #0369A1; }
 
         /* GASTOS */
         .resumo-uf-card { background: #fff; border-radius: 24px; padding: 20px; margin-bottom: 16px; border: 1.5px solid #F1F5F9; }
-        .pill { background: #F8FAFC; padding: 6px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; color: var(--text-sub); display: flex; align-items: center; gap: 4px; border: 1px solid #f1f5f9; }
+        .pill { background: #F8FAFC; padding: 6px 10px; border-radius: 10px; font-size: 10px; font-weight: 700; color: var(--text-sub); display: flex; align-items: center; gap: 4px; border: 1px solid #f1f5f9; }
 
         /* NAV INFERIOR */
         .menu-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; height: 85px; border-top-left-radius: 30px; border-top-right-radius: 30px; z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.05); }
         .btn-aba { flex: 1; border: none; background: none; font-size: 24px; color: #CBD5E1; cursor: pointer; -webkit-tap-highlight-color: transparent; outline: none; }
         .btn-aba.active { color: var(--primary); transform: translateY(-5px); transition: 0.3s; }
 
-        /* FORMULÁRIO E BOTÃO CORRIGIDO */
+        /* FORMULÁRIO */
         input, select { width: 100%; padding: 16px; border-radius: 16px; border: 1.5px solid #F1F5F9; font-family: inherit; background: #F8FAFC; box-sizing: border-box; font-size: 15px; }
         label { font-size: 11px; font-weight: 800; color: var(--text-sub); text-transform: uppercase; margin: 15px 0 5px 5px; display: block; }
         .check-container { display: flex; align-items: center; gap: 12px; margin-top: 15px; background: #F8FAFC; padding: 16px; border-radius: 16px; border: 1.5px solid #F1F5F9; cursor: pointer; }
-        .check-container input { width: 20px; height: 20px; }
-        .btn-acao { background: var(--primary); color: #fff; border: none; padding: 18px; border-radius: 20px; width: 100%; font-weight: 800; font-size: 16px; margin-top: 25px; margin-bottom: 10px; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 75, 92, 0.2); }
+        .btn-acao { background: var(--primary); color: #fff; border: none; padding: 18px; border-radius: 20px; width: 100%; font-weight: 800; font-size: 16px; margin-top: 25px; cursor: pointer; }
 
-        /* POP-UP */
+        /* POP-UP CARROSSEL */
         #photo-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: #fff; padding: 24px; border-radius: 32px; box-shadow: 0 25px 60px rgba(0,0,0,0.3); z-index: 2100; width: 90%; max-width: 340px; text-align: center; opacity: 0; visibility: hidden; transition: 0.3s; }
         #photo-popup.show { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
-        .close-popup { position: absolute; top: -10px; right: -10px; background: var(--primary); color: white; border: none; border-radius: 50%; width: 36px; height: 36px; font-weight: bold; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(255, 75, 92, 0.3); }
+        .carousel-main { position: relative; width: 100%; overflow: hidden; border-radius: 20px; }
+        .carousel-track { display: flex; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .city-slide { min-width: 100%; box-sizing: border-box; padding: 0 5px; text-align: left; }
+        .img-slider { width: 100%; height: 180px; object-fit: cover; border-radius: 18px; background: #f1f5f9; margin-bottom: 10px; }
+        .carousel-nav { display: flex; justify-content: center; gap: 5px; margin-top: 10px; }
+        .nav-dot { width: 6px; height: 6px; background: #ddd; border-radius: 50%; transition: 0.3s; }
+        .nav-dot.active { background: var(--primary); width: 18px; border-radius: 10px; }
+
+        .close-popup { position: absolute; top: -10px; right: -10px; background: var(--primary); color: white; border: none; border-radius: 50%; width: 36px; height: 36px; font-weight: bold; display: flex; align-items: center; justify-content: center; z-index: 2200; }
         #popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; opacity: 0; visibility: hidden; transition: 0.3s; backdrop-filter: blur(4px); }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h3>Nossa Jornada 👩‍❤️‍👨</h3>
-        <span id="info">ESTADOS CONQUISTADOS: 0</span>
-    </div>
-
+    <div class="header"><h3>Nossa Jornada 👩‍❤️‍👨</h3><span id="info">ESTADOS CONQUISTADOS: 0</span></div>
     <div id="popup-overlay" onclick="fecharPopup()"></div>
     <div id="photo-popup"><button class="close-popup" onclick="fecharPopup()">✕</button><div id="popup-content"></div></div>
     
@@ -108,7 +92,7 @@
     <div id="aba-jornada" class="aba">
         <div class="card">
             <h3 style="margin:0 0 25px 0; color:var(--primary); font-size: 22px;">🏆 Conquistas</h3>
-            <div class="badge-grid">
+            <div class="badge-grid" id="badge-container">
                 <div class="badge" id="b-1"><div class="b-icon">🌱</div><div class="badge-name">Início</div></div>
                 <div class="badge" id="b-5"><div class="b-icon">🏃</div><div class="badge-name">5 Estados</div></div>
                 <div class="badge" id="b-10"><div class="b-icon">⭐</div><div class="badge-name">10 Estados</div></div>
@@ -133,17 +117,9 @@
             </select>
             <label>Cidade</label><input type="text" id="txt-cidade" placeholder="Ex: Gramado">
             <label>Data da Visita</label><input type="date" id="txt-data">
-            
-            <label class="check-container">
-                <input type="checkbox" id="chk-praia">
-                <span style="font-size:14px; font-weight:700; color:var(--text-main)">Viagem de Praia? 🏖️</span>
-            </label>
-
+            <label class="check-container"><input type="checkbox" id="chk-praia"><span style="font-size:14px; font-weight:700;">Viagem de Praia? 🏖️</span></label>
             <label>Gastos (R$)</label>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                <input type="number" id="v-hosp" placeholder="Hotel"><input type="number" id="v-trans" placeholder="Transporte">
-                <input type="number" id="v-alime" placeholder="Comida"><input type="number" id="v-atrac" placeholder="Atrações">
-            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"><input type="number" id="v-hosp" placeholder="Hotel"><input type="number" id="v-trans" placeholder="Transporte"><input type="number" id="v-alime" placeholder="Comida"><input type="number" id="v-atrac" placeholder="Atrações"></div>
             <label>Fotos (Máx 3)</label><input type="file" id="inp-foto" accept="image/*" multiple>
             <button class="btn-acao" onclick="salvarViagem()">Salvar Memória 🚩</button>
         </div>
@@ -173,8 +149,7 @@
             const svgText = await res.text();
             document.getElementById('svg-container').innerHTML = svgText;
             const svgEl = document.querySelector('#svg-container svg');
-            svgEl.id = "mapa-svg-real";
-            svgEl.style.width = "100%"; svgEl.style.height = "100%";
+            svgEl.id = "mapa-svg-real"; svgEl.style.width = "100%"; svgEl.style.height = "100%";
             panZoomMapa = svgPanZoom('#mapa-svg-real', { zoomEnabled: true, controlIconsEnabled: false, fit: true, center: true });
             document.getElementById('svg-container').addEventListener('touchend', (e) => {
                 const target = e.target.closest('path');
@@ -203,35 +178,92 @@
         let fotos = [];
         for (let i = 0; i < Math.min(files.length, 3); i++) { fotos.push(await converter(files[i])); }
         const trip = { cidade, uf, data: rawDate.split('-').reverse().join('/'), rawDate, fotos, h: parseFloat(document.getElementById('v-hosp').value || 0), t: parseFloat(document.getElementById('v-trans').value || 0), al: parseFloat(document.getElementById('v-alime').value || 0), at: parseFloat(document.getElementById('v-atrac').value || 0), praia: document.getElementById('chk-praia').checked, total: (parseFloat(document.getElementById('v-hosp').value || 0) + parseFloat(document.getElementById('v-trans').value || 0) + parseFloat(document.getElementById('v-alime').value || 0) + parseFloat(document.getElementById('v-atrac').value || 0)) };
-        let db = JSON.parse(localStorage.getItem('viagens_vFinal_v9')) || {};
+        let db = JSON.parse(localStorage.getItem('viagens_vFinal_v10')) || {};
         if(!db[uf]) db[uf] = [];
         db[uf].unshift(trip);
-        localStorage.setItem('viagens_vFinal_v9', JSON.stringify(db));
+        localStorage.setItem('viagens_vFinal_v10', JSON.stringify(db));
         location.reload();
     }
 
     function renderTimeline() {
-        const db = JSON.parse(localStorage.getItem('viagens_vFinal_v9')) || {};
-        let todas = [];
-        for(let uf in db) db[uf].forEach(v => todas.push(v));
+        const db = JSON.parse(localStorage.getItem('viagens_vFinal_v10')) || {};
+        let todas = []; for(let uf in db) db[uf].forEach(v => todas.push(v));
         todas.sort((a,b) => new Date(b.rawDate) - new Date(a.rawDate));
         let html = '';
         todas.forEach(v => {
-            html += `<div class="timeline-item"><div class="t-dot"></div><div class="t-card"><span style="font-size:10px; font-weight:800; color:var(--primary)">${v.data}</span><h4 style="margin:2px 0; font-size:17px; font-weight:800;">${v.cidade} - ${v.uf.replace('BR','')}</h4><p style="margin:0; font-size:13px; color:var(--money); font-weight:700;">R$ ${v.total.toFixed(2)}</p>${v.fotos[0] ? `<img src="${v.fotos[0]}" class="t-img">` : ''}</div></div>`;
+            html += `<div class="timeline-item"><div class="t-dot"></div><div class="t-card">
+                <span style="font-size:12px; font-weight:800; color:var(--text-sub)">${v.cidade} - ${v.data}</span>
+                <h4 style="margin:5px 0; font-size:18px; font-weight:800; color:var(--money)">R$ ${v.total.toFixed(2)}</h4>
+                ${v.fotos[0] ? `<img src="${v.fotos[0]}" class="t-img">` : ''}
+            </div></div>`;
         });
-        document.getElementById('timeline-list').innerHTML = html || '<p style="text-align:center;color:#999;margin-top:20px;">Nenhuma memória registrada.</p>';
+        document.getElementById('timeline-list').innerHTML = html || '<p style="text-align:center;color:#999;margin-top:20px;">Nenhuma memória.</p>';
     }
 
+    function renderGastos() {
+        const db = JSON.parse(localStorage.getItem('viagens_vFinal_v10')) || {};
+        let html = '', totalGeral = 0;
+        for (const uf in db) {
+            let totalUF = 0; let cidadesHtml = '';
+            db[uf].forEach(c => {
+                totalUF += c.total;
+                cidadesHtml += `<div style="padding:15px 0; border-bottom:1px solid #f8fafc;">
+                    <div style="font-size:11px; font-weight:800; color:var(--text-sub); margin-bottom:4px;">${c.data} - ${c.cidade} - R$ ${c.total.toFixed(2)}</div>
+                    <div style="display:flex; gap:8px;"><div class="pill">🏨 ${c.h.toFixed(0)}</div><div class="pill">🚗 ${c.t.toFixed(0)}</div><div class="pill">🍴 ${c.al.toFixed(0)}</div><div class="pill">🎡 ${c.at.toFixed(0)}</div></div>
+                </div>`;
+            });
+            totalGeral += totalUF;
+            html += `<div class="resumo-uf-card"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;"><strong>🚩 ${uf.replace('BR','')}</strong><strong style="color:var(--money); font-size:18px;">R$ ${totalUF.toFixed(2)}</strong></div>${cidadesHtml}</div>`;
+        }
+        document.getElementById('lista-detalhada-gastos').innerHTML = html || '<p style="text-align:center; padding:20px; color:#999;">Sem gastos.</p>';
+        document.getElementById('total-geral-brasil').innerText = `Total Brasil: R$ ${totalGeral.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+    }
+
+    function abrirHistorico(id) {
+        const db = JSON.parse(localStorage.getItem('viagens_vFinal_v10')) || {};
+        const lista = db[id]; if (!lista) return;
+        let track = '', dots = '';
+        lista.forEach((v, idx) => {
+            track += `<div class="city-slide">
+                <img src="${v.fotos[0] || ''}" class="img-slider">
+                <p style="margin:0; font-size:13px; font-weight:800; color:var(--text-sub);">${v.cidade} - ${v.data}</p>
+                <h4 style="margin:5px 0 0 0; color:var(--money); font-weight:800; font-size:20px;">R$ ${v.total.toFixed(2)}</h4>
+            </div>`;
+            dots += `<div class="nav-dot ${idx === 0 ? 'active' : ''}" id="dot-${id}-${idx}"></div>`;
+        });
+        document.getElementById('popup-content').innerHTML = `<h2 style="color:var(--primary); margin-bottom:15px;">🚩 ${id.replace('BR','')}</h2><div class="carousel-main" ontouchstart="hTS(event)" ontouchmove="hTM(event, '${id}', ${lista.length})"><div class="carousel-track" id="track-${id}">${track}</div></div><div class="carousel-nav">${dots}</div>`;
+        document.getElementById('photo-popup').classList.add('show');
+        document.getElementById('popup-overlay').style.visibility = 'visible'; document.getElementById('popup-overlay').style.opacity = '1';
+    }
+
+    let sX = 0; function hTS(e) { sX = e.touches[0].clientX; }
+    function hTM(e, id, len) {
+        if (!sX) return; let d = sX - e.touches[0].clientX;
+        let tr = document.getElementById(`track-${id}`);
+        let currentIdx = Math.round(Math.abs(getTranslateX(tr) / tr.offsetWidth));
+        if (Math.abs(d) > 50) {
+            if (d > 0 && currentIdx < len - 1) currentIdx++; else if (d < 0 && currentIdx > 0) currentIdx--;
+            tr.style.transform = `translateX(-${currentIdx * 100}%)`;
+            document.querySelectorAll('.nav-dot').forEach((dt, i) => dt.classList.toggle('active', i === currentIdx));
+            sX = 0;
+        }
+    }
+    function getTranslateX(el) { let style = window.getComputedStyle(el); let matrix = new WebKitCSSMatrix(style.transform); return matrix.m41; }
+    function fecharPopup() { document.getElementById('photo-popup').classList.remove('show'); document.getElementById('popup-overlay').style.opacity = '0'; setTimeout(() => document.getElementById('popup-overlay').style.visibility = 'hidden', 300); }
+    function atualizarInterface() {
+        const db = JSON.parse(localStorage.getItem('viagens_vFinal_v10')) || {};
+        Object.keys(db).forEach(u => { const el = document.getElementById(u); if(el) el.classList.add('visitado'); });
+        document.getElementById('info').innerText = `ESTADOS CONQUISTADOS: ${Object.keys(db).length}`;
+    }
     function renderJornada() {
-        const db = JSON.parse(localStorage.getItem('viagens_vFinal_v9')) || {};
-        const ufs = Object.keys(db);
-        const n = ufs.length;
+        const db = JSON.parse(localStorage.getItem('viagens_vFinal_v10')) || {};
+        const n = Object.keys(db).length;
         if(n >= 1) document.getElementById('b-1').classList.add('active');
         if(n >= 5) document.getElementById('b-5').classList.add('active');
         if(n >= 10) document.getElementById('b-10').classList.add('active');
         if(n >= 20) document.getElementById('b-20').classList.add('active');
         if(n >= 26) document.getElementById('b-brasil').classList.add('active');
-        let reg = { norte:0, nordeste:0, centro:0, sudeste:0, sul:0 }; let temPraia = false;
+        let temPraia = false; let reg = { norte:0, nordeste:0, centro:0, sudeste:0, sul:0 };
         for(let uf in db) {
             db[uf].forEach(v => { if(v.praia) temPraia = true; });
             if(["BRAC","BRAM","BRRR","BRRO","BRPA","BRAP","BRTO"].includes(uf)) reg.norte++;
@@ -246,46 +278,6 @@
         if(reg.centro > 0) document.getElementById('b-centro').classList.add('active');
         if(reg.sudeste > 0) document.getElementById('b-sudeste').classList.add('active');
         if(reg.sul > 0) document.getElementById('b-sul').classList.add('active');
-    }
-
-    function renderGastos() {
-        const db = JSON.parse(localStorage.getItem('viagens_vFinal_v9')) || {};
-        let html = '', totalGeral = 0;
-        for (const uf in db) {
-            let totalUF = 0, cidadesHtml = '';
-            db[uf].forEach(c => {
-                totalUF += c.total;
-                cidadesHtml += `<div style="padding:12px 0; border-bottom:1px solid #f8fafc;"><div style="display:flex; justify-content:space-between; font-size:14px; font-weight:700;"><span>🏙️ ${c.cidade}</span><span>R$ ${c.total.toFixed(2)}</span></div><div style="display:flex; gap:8px; margin-top:6px;"><div class="pill">🏨 ${c.h.toFixed(0)}</div><div class="pill">🚗 ${c.t.toFixed(0)}</div><div class="pill">🍴 ${c.al.toFixed(0)}</div><div class="pill">🎡 ${c.at.toFixed(0)}</div></div></div>`;
-            });
-            totalGeral += totalUF;
-            html += `<div class="card" style="margin:0 0 16px 0; padding:20px;"><div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:18px;"><strong>🚩 ${uf.replace('BR','')}</strong><strong style="color:var(--money)">R$ ${totalUF.toFixed(2)}</strong></div>${cidadesHtml}</div>`;
-        }
-        document.getElementById('lista-detalhada-gastos').innerHTML = html || '<p style="text-align:center; padding:20px; color:#999;">Sem gastos registrados.</p>';
-        document.getElementById('total-geral-brasil').innerText = `Total Brasil: R$ ${totalGeral.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
-    }
-
-    function abrirHistorico(id) {
-        const db = JSON.parse(localStorage.getItem('viagens_vFinal_v9')) || {};
-        const lista = db[id]; if (!lista) return;
-        let h = `<h2 style="color:var(--primary); margin-bottom:10px; font-size: 24px;">🚩 ${id.replace('BR','')}</h2><div style="max-height:450px; overflow-y:auto; overflow-x:hidden; padding:5px;">`;
-        lista.forEach((v, vIdx) => {
-            let track = '', dots = '';
-            v.fotos.forEach((f, fIdx) => { track += `<img src="${f}" class="carousel-item">`; dots += `<div class="dot ${fIdx === 0 ? 'active' : ''}"></div>`; });
-            h += `<div style="padding:15px 0; border-bottom:1px solid #eee; text-align:left;"><div class="carousel-container" id="carousel-${vIdx}" ontouchstart="hTS(event)" ontouchmove="hTM(event, ${vIdx})"><div class="carousel-track">${track || '<div class="carousel-item" style="background:#eee"></div>'}</div><div class="carousel-dots" style="display:flex; justify-content:center; gap:5px; margin-top:-20px; position:relative;">${dots}</div></div><p style="margin:10px 0 2px 0; font-weight:800; font-size:18px;">${v.cidade}</p><span style="font-size:12px; font-weight:700; color:var(--text-sub);">📅 ${v.data}</span><p style="margin:5px 0 0 0; color:var(--money); font-weight:800; font-size:16px;">Total: R$ ${v.total.toFixed(2)}</p></div>`;
-        });
-        document.getElementById('popup-content').innerHTML = h + '</div>';
-        document.getElementById('photo-popup').classList.add('show');
-        document.getElementById('popup-overlay').classList.add('show');
-    }
-
-    let sX = 0; function hTS(e) { sX = e.touches[0].clientX; }
-    function hTM(e, vIdx) { if (!sX) return; let d = sX - e.touches[0].clientX; let tr = document.getElementById(`carousel-${vIdx}`).querySelector('.carousel-track'); let dots = document.getElementById(`carousel-${vIdx}`).querySelectorAll('.dot'); let idx = Array.from(dots).findIndex(x => x.classList.contains('active')); if (Math.abs(d) > 50) { if (d > 0 && idx < dots.length - 1) idx++; else if (d < 0 && idx > 0) idx--; tr.style.transform = `translateX(-${idx * 100}%)`; dots.forEach((x, i) => x.classList.toggle('active', i === idx)); sX = 0; } }
-    function fecharPopup() { document.getElementById('photo-popup').classList.remove('show'); document.getElementById('popup-overlay').classList.remove('show'); }
-    function atualizarInterface() {
-        const db = JSON.parse(localStorage.getItem('viagens_vFinal_v9')) || {};
-        const n = Object.keys(db).length;
-        Object.keys(db).forEach(u => { const el = document.getElementById(u); if(el) el.classList.add('visitado'); });
-        document.getElementById('info').innerText = `ESTADOS CONQUISTADOS: ${n}`;
     }
     function converter(f) { return new Promise(r => { const rd = new FileReader(); rd.readAsDataURL(f); rd.onload = e => { const img = new Image(); img.src = e.target.result; img.onload = () => { const cv = document.createElement('canvas'); const ctx = cv.getContext('2d'); cv.width = 600; cv.height = 600 * (img.height/img.width); ctx.drawImage(img, 0, 0, cv.width, cv.height); r(cv.toDataURL('image/jpeg', 0.5)); }; }; }); }
     init();
