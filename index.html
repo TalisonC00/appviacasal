@@ -6,105 +6,126 @@
     <title>Nossa Jornada 👩‍❤️‍👨</title>
     <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
-        :root { 
-            --primary: #FF4B5C; 
-            --sky: #BAE6FD; 
-            --card: #FFFFFF; 
-            --text-main: #1E293B; 
-            --text-sub: #64748B; 
-            --money: #10B981; 
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        :root { --primary: #FF4B5C; --sky: #BAE6FD; --card: #FFFFFF; --text-main: #1E293B; --text-sub: #64748B; --money: #10B981; }
         
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--sky); margin: 0; padding: 0; overflow: hidden; touch-action: none; color: var(--text-main); }
-        
         .header { background: #fff; padding: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.03); position: relative; z-index: 100; }
         .header h3 { margin: 0; font-size: 18px; color: var(--primary) !important; font-weight: 800; }
         #info { font-size: 11px; font-weight: 700; color: #000; text-transform: uppercase; letter-spacing: 1px; }
-        
-        .aba { display: none; width: 100%; height: calc(100vh - 165px); overflow-y: auto; padding-bottom: 30px; }
+        .aba { display: none; width: 100%; height: calc(100vh - 165px); overflow-y: auto; padding-bottom: 50px; }
         .ativa { display: block; }
+        .card { background: var(--card); padding: 20px; margin: 16px; border-radius: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
         
-        .mapa-card { background: var(--card); margin: 12px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); height: calc(100% - 24px); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+        /* MAPA E TEXTO */
+        .mapa-card { background: var(--card); margin: 12px; border-radius: 24px; height: calc(100% - 24px); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
         #svg-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #fff; }
-        #svg-container svg { width: 100% !important; height: 100% !important; object-fit: contain; }
-        
         path { fill: #F1F5F9; stroke: #fff; stroke-width: 0.8; transition: all 0.5s ease; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        
+        /* SIGLAS DOS ESTADOS */
+        .sigla-estado { 
+            fill: #64748B; 
+            font-size: 6px; 
+            font-weight: 800; 
+            pointer-events: none; 
+            text-anchor: middle; 
+            dominant-baseline: central;
+            text-transform: uppercase;
+            font-family: sans-serif;
+            opacity: 0.6;
+        }
+        .visitado + .sigla-estado { fill: #fff; opacity: 1; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
 
-        /* CORES POR REGIÃO */
+        /* CORES REGIÕES (Visitados) */
         .visitado[id^="BRAC"], .visitado[id^="BRAM"], .visitado[id^="BRRR"], .visitado[id^="BRRO"], .visitado[id^="BRPA"], .visitado[id^="BRAP"], .visitado[id^="BRTO"] { fill: #22C55E !important; }
         .visitado[id^="BRMA"], .visitado[id^="BRPI"], .visitado[id^="BRCE"], .visitado[id^="BRRN"], .visitado[id^="BRPB"], .visitado[id^="BRPE"], .visitado[id^="BRAL"], .visitado[id^="BRSE"], .visitado[id^="BRBA"] { fill: #FACC15 !important; }
         .visitado[id^="BRMT"], .visitado[id^="BRMS"], .visitado[id^="BRGO"], .visitado[id^="BRDF"] { fill: #FB923C !important; }
         .visitado[id^="BRMG"], .visitado[id^="BRSP"], .visitado[id^="BRRJ"], .visitado[id^="BRES"] { fill: #EC4899 !important; }
         .visitado[id^="BRPR"], .visitado[id^="BRSC"], .visitado[id^="BRRS"] { fill: #A855F7 !important; }
 
-        /* POP-UP & CARROSSEL */
-        #photo-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: #fff; padding: 20px; border-radius: 28px; box-shadow: 0 25px 60px rgba(0,0,0,0.3); z-index: 2100; width: 88%; max-width: 340px; text-align: center; opacity: 0; visibility: hidden; transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        /* POP-UP */
+        #photo-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: #fff; padding: 20px; border-radius: 28px; box-shadow: 0 25px 60px rgba(0,0,0,0.3); z-index: 2100; width: 88%; max-width: 340px; text-align: center; opacity: 0; visibility: hidden; transition: 0.3s; }
         #photo-popup.show { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
-        
         .carousel-container { position: relative; width: 100%; height: 180px; margin: 10px 0; border-radius: 18px; overflow: hidden; background: #f1f5f9; }
-        .carousel-track { display: flex; transition: transform 0.4s ease-in-out; height: 100%; }
+        .carousel-track { display: flex; transition: transform 0.4s ease; height: 100%; }
         .carousel-item { min-width: 100%; height: 100%; object-fit: cover; }
-        .carousel-dots { display: flex; justify-content: center; gap: 6px; margin-top: -20px; position: relative; z-index: 10; padding-bottom: 10px; }
-        .dot { width: 6px; height: 6px; background: rgba(255,255,255,0.6); border-radius: 50%; }
+        .dot { width: 6px; height: 6px; background: rgba(255,255,255,0.6); border-radius: 50%; margin: 0 3px; }
         .dot.active { background: #fff; width: 15px; border-radius: 10px; }
-
-        .cidade-entry { padding: 15px 0; border-bottom: 1px solid #eee; }
-        .cidade-entry:last-child { border-bottom: none; }
-
-        .close-popup { position: absolute; top: -10px; right: -10px; background: var(--primary); color: white; border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; z-index: 2200; font-weight: bold; }
+        .close-popup { position: absolute; top: -10px; right: -10px; background: var(--primary); color: white; border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 20px; z-index: 2200; }
         #popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; opacity: 0; visibility: hidden; transition: 0.3s; backdrop-filter: blur(4px); }
         #popup-overlay.show { opacity: 1; visibility: visible; }
 
-        /* FORMULÁRIO & GASTOS */
-        .card-form, .card-gastos { background: var(--card); padding: 25px; margin: 16px; border-radius: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .estado-item-relatorio { margin-bottom: 20px; border-top: 2px solid #f1f5f9; padding-top: 10px; }
-        .header-relatorio-uf { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .btn-vermelho { background: var(--primary); color: white; border: none; font-weight: 700; border-radius: 20px; padding: 18px; width: 100%; margin-top: 15px; cursor: pointer; font-size: 16px; }
+        /* RELATÓRIO */
+        .resumo-uf-card { background: #fff; border-radius: 20px; padding: 15px; margin-bottom: 12px; border: 1px solid #f1f5f9; }
+        .row-total { display: flex; justify-content: space-between; align-items: center; font-weight: 800; border-bottom: 2px solid #f8fafc; padding-bottom: 8px; margin-bottom: 8px; }
+        .categoria-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; text-align: center; font-size: 10px; color: var(--text-sub); font-weight: 700; }
+        .categoria-row span { background: #F8FAFC; padding: 4px; border-radius: 8px; }
 
-        select, input { width: 100%; padding: 14px; margin: 6px 0; border-radius: 14px; border: 1px solid #E2E8F0; font-size: 14px; font-family: inherit; box-sizing: border-box; background: #F8FAFC; outline: none; }
-        label { font-size: 11px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; margin-top: 12px; display: block; margin-left: 4px; }
-
+        /* NAV */
         .menu-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255,255,255,0.9); backdrop-filter: blur(15px); display: flex; height: 85px; border-top-left-radius: 32px; border-top-right-radius: 32px; z-index: 1000; }
-        .btn-aba { flex: 1; border: none; background: none; font-size: 26px; color: #CBD5E1; cursor: pointer; }
+        .btn-aba { flex: 1; border: none; background: none; font-size: 24px; color: #CBD5E1; cursor: pointer; }
         .btn-aba.active { color: var(--primary); transform: translateY(-4px); transition: 0.3s; }
+        
+        .badge-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+        .badge { text-align: center; opacity: 0.2; filter: grayscale(1); }
+        .badge.active { opacity: 1; filter: grayscale(0); }
+        
+        input, select { width: 100%; padding: 12px; margin: 5px 0; border-radius: 12px; border: 1px solid #eee; font-family: inherit; }
+        .btn-acao { background: var(--primary); color: #fff; border: none; padding: 15px; border-radius: 15px; width: 100%; font-weight: 800; margin-top: 10px; }
     </style>
 </head>
 <body>
-    <div class="header"><h3>Nossa Jornada 👩‍❤️‍👨</h3><span id="info">SINCRONIZANDO...</span></div>
+    <div class="header"><h3>Nossa Jornada 👩‍❤️‍👨</h3><span id="info">0 ESTADOS CONQUISTADOS</span></div>
     <div id="popup-overlay" onclick="fecharPopup()"></div>
     <div id="photo-popup"><button class="close-popup" onclick="fecharPopup()">✕</button><div id="popup-content"></div></div>
     
     <div id="aba-mapa" class="aba ativa"><div class="mapa-card"><div id="svg-container"></div></div></div>
     
-    <div id="aba-registro" class="aba"><div class="card-form">
-        <h3 style="margin:0 0 15px 0; color: var(--primary);">📍 Nova Memória</h3>
-        <label>Estado</label>
-        <select id="sel-uf">
-            <option value="BRAC">Acre</option><option value="BRAL">Alagoas</option><option value="BRAM">Amazonas</option><option value="BRAP">Amapá</option><option value="BRBA">Bahia</option><option value="BRCE">Ceará</option><option value="BRDF">Distrito Federal</option><option value="BRES">Espírito Santo</option><option value="BRGO">Goiás</option><option value="BRMA">Maranhão</option><option value="BRMG">Minas Gerais</option><option value="BRMS">Mato Grosso do Sul</option><option value="BRMT">Mato Grosso</option><option value="BRPA">Pará</option><option value="BRPB">Paraíba</option><option value="BRPE">Pernambuco</option><option value="BRPI">Piauí</option><option value="BRPR">Paraná</option><option value="BRRJ">Rio de Janeiro</option><option value="BRRN">Rio Grande do Norte</option><option value="BRRO">Rondônia</option><option value="BRRR">Roraima</option><option value="BRRS">Rio Grande do Sul</option><option value="BRSC">Santa Catarina</option><option value="BRSE">Sergipe</option><option value="BRSP" selected>São Paulo</option><option value="BRTO">Tocantins</option>
-        </select>
-        <label>Nome da Cidade</label>
-        <input type="text" id="txt-cidade" placeholder="Ex: Santos">
-        <label>Data da Visita</label>
-        <input type="date" id="txt-data">
-        <label>Gastos (R$)</label>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-            <input type="number" id="v-hosp" placeholder="Hospedagem"><input type="number" id="v-trans" placeholder="Transporte">
-            <input type="number" id="v-alime" placeholder="Alimentação"><input type="number" id="v-atrac" placeholder="Atrações">
+    <div id="aba-jornada" class="aba">
+        <div class="card">
+            <h3 style="margin:0 0 15px 0; color:var(--primary)">🏆 Conquistas</h3>
+            <div class="badge-grid" id="conquistas-grid">
+                <div class="badge" id="b-1">🚩<br><span style="font-size:9px">Início</span></div>
+                <div class="badge" id="b-5">🏃<br><span style="font-size:9px">5 Estados</span></div>
+                <div class="badge" id="b-10">⭐<br><span style="font-size:9px">10 Estados</span></div>
+                <div class="badge" id="b-nordeste">🌵<br><span style="font-size:9px">Nordeste</span></div>
+                <div class="badge" id="b-sul">❄️<br><span style="font-size:9px">Sul</span></div>
+                <div class="badge" id="b-brasil">👑<br><span style="font-size:9px">Brasil</span></div>
+            </div>
         </div>
-        <label>Fotos da Viagem (Máx 3)</label>
-        <input type="file" id="inp-foto" accept="image/*" multiple>
-        <button class="btn-vermelho" onclick="salvarViagem()">Salvar Memória 🚩</button>
-    </div></div>
+        <div id="timeline-container"></div>
+    </div>
 
-    <div id="aba-gastos" class="aba"><div class="card-gastos">
-        <h3 style="margin:0 0 20px 0; color: var(--money);">💰 Relatório Financeiro</h3>
-        <div id="lista-detalhada-gastos"></div>
-        <button class="btn-vermelho" style="background: var(--money); margin-top:20px;" id="total-geral-brasil">Total Brasil: R$ 0,00</button>
-    </div></div>
+    <div id="aba-registro" class="aba">
+        <div class="card">
+            <h3 style="margin:0 0 10px 0; color:var(--primary)">📍 Nova Memória</h3>
+            <label>Estado</label>
+            <select id="sel-uf">
+                <option value="BRSP">São Paulo</option><option value="BRRJ">Rio de Janeiro</option><option value="BRMG">Minas Gerais</option><option value="BRBA">Bahia</option><option value="BRSC">Santa Catarina</option><option value="BRPR">Paraná</option><option value="BRRS">Rio Grande do Sul</option><option value="BRGO">Goiás</option><option value="BRDF">Distrito Federal</option><option value="BRES">Espírito Santo</option><option value="BRCE">Ceará</option><option value="BRPE">Pernambuco</option><option value="BRRN">Rio Grande do Norte</option><option value="BRPB">Paraíba</option><option value="BRAL">Alagoas</option><option value="BRSE">Sergipe</option><option value="BRMA">Maranhão</option><option value="BRPI">Piauí</option><option value="BRMT">Mato Grosso</option><option value="BRMS">Mato Grosso do Sul</option><option value="BRTO">Tocantins</option><option value="BRPA">Pará</option><option value="BRAM">Amazonas</option><option value="BRRO">Rondônia</option><option value="BRAC">Acre</option><option value="BRRR">Roraima</option><option value="BRAP">Amapá</option>
+            </select>
+            <label>Cidade</label><input type="text" id="txt-cidade" placeholder="Ex: Gramado">
+            <label>Data</label><input type="date" id="txt-data">
+            <label>Gastos</label>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;">
+                <input type="number" id="v-hosp" placeholder="Hotel"><input type="number" id="v-trans" placeholder="Transp.">
+                <input type="number" id="v-alime" placeholder="Aliment."><input type="number" id="v-atrac" placeholder="Atrações">
+            </div>
+            <label>Fotos (Até 3)</label><input type="file" id="inp-foto" accept="image/*" multiple>
+            <button class="btn-acao" onclick="salvarViagem()">Salvar no Mapa 🚩</button>
+        </div>
+    </div>
+
+    <div id="aba-gastos" class="aba">
+        <div class="card">
+            <h3 style="margin:0 0 15px 0; color:var(--money)">💰 Gastos</h3>
+            <div id="lista-detalhada-gastos"></div>
+            <div style="background:var(--money); color:#fff; padding:15px; border-radius:15px; text-align:center; font-weight:800; margin-top:10px;" id="total-geral-brasil">Total: R$ 0,00</div>
+        </div>
+    </div>
 
     <nav class="menu-nav">
         <button class="btn-aba active" onclick="trocarAba('mapa', this)">🗺️</button>
+        <button class="btn-aba" onclick="trocarAba('jornada', this)">🏆</button>
         <button class="btn-aba" onclick="trocarAba('registro', this)">➕</button>
         <button class="btn-aba" onclick="trocarAba('gastos', this)">💰</button>
     </nav>
@@ -112,23 +133,42 @@
 <script>
     let panZoomMapa;
     async function init() {
-        const res = await fetch('br.svg');
-        const svg = await res.text();
-        const container = document.getElementById('svg-container');
-        container.innerHTML = svg;
-        const svgEl = container.querySelector('svg');
-        svgEl.id = "mapa-svg-real";
-        svgEl.style.width = "100%"; svgEl.style.height = "100%";
-        panZoomMapa = svgPanZoom('#mapa-svg-real', { zoomEnabled: true, controlIconsEnabled: false, fit: true, center: true,
-            onPan: () => svgEl.setAttribute('data-panning', 'true'),
-            onZoom: () => svgEl.setAttribute('data-panning', 'true')
-        });
-        container.addEventListener('touchend', (e) => {
-            if (svgEl.getAttribute('data-panning') === 'true') { svgEl.setAttribute('data-panning', 'false'); return; }
-            const target = e.target.closest('path');
-            if (target && target.id) abrirHistorico(target.id);
-        });
-        atualizarInterface();
+        try {
+            const res = await fetch('br.svg');
+            const svgText = await res.text();
+            const container = document.getElementById('svg-container');
+            container.innerHTML = svgText;
+            const svgEl = container.querySelector('svg');
+            svgEl.id = "mapa-svg-real";
+            svgEl.style.width = "100%"; svgEl.style.height = "100%";
+            
+            // ADICIONAR SIGLAS DINAMICAMENTE
+            const paths = svgEl.querySelectorAll('path');
+            paths.forEach(p => {
+                const bbox = p.getBBox();
+                const sigla = p.id.replace('BR', '');
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                
+                // Ajustes finos de posição para siglas que ficam fora do centro do bbox
+                let x = bbox.x + bbox.width/2;
+                let y = bbox.y + bbox.height/2;
+                if(sigla === 'RN') x += 2; if(sigla === 'PB') x += 2;
+                if(sigla === 'PI') x -= 1; if(sigla === 'BA') y += 2;
+
+                text.setAttribute("x", x);
+                text.setAttribute("y", y);
+                text.setAttribute("class", "sigla-estado");
+                text.textContent = sigla;
+                p.parentNode.insertBefore(text, p.nextSibling);
+            });
+
+            panZoomMapa = svgPanZoom('#mapa-svg-real', { zoomEnabled: true, controlIconsEnabled: false, fit: true, center: true });
+            container.addEventListener('touchend', (e) => {
+                const target = e.target.closest('path');
+                if (target && target.id) abrirHistorico(target.id);
+            });
+            atualizarInterface();
+        } catch (e) { console.error(e); }
     }
 
     function trocarAba(id, btn) {
@@ -138,44 +178,83 @@
         document.getElementById('aba-' + id).classList.add('ativa');
         btn.classList.add('active');
         if(id === 'gastos') renderGastos();
+        if(id === 'jornada') renderJornada();
     }
 
     async function salvarViagem() {
         const uf = document.getElementById('sel-uf').value;
         const cidade = document.getElementById('txt-cidade').value;
-        if(!cidade) return alert("Digite a cidade!");
+        if(!cidade) return alert("Cidade?");
         const files = document.getElementById('inp-foto').files;
         let fotos = [];
         for (let i = 0; i < Math.min(files.length, 3); i++) { fotos.push(await converter(files[i])); }
-        const vH = parseFloat(document.getElementById('v-hosp').value || 0);
-        const vT = parseFloat(document.getElementById('v-trans').value || 0);
-        const vAl = parseFloat(document.getElementById('v-alime').value || 0);
-        const vAt = parseFloat(document.getElementById('v-atrac').value || 0);
-        let db = JSON.parse(localStorage.getItem('viagens_v5_final')) || {};
+        const db = JSON.parse(localStorage.getItem('viagens_v6_premium')) || {};
         if(!db[uf]) db[uf] = [];
-        db[uf].unshift({ cidade, data: document.getElementById('txt-data').value.split('-').reverse().join('/'), fotos, hosp: vH, trans: vT, alime: vAl, atrac: vAt, total: (vH+vT+vAl+vAt) });
-        localStorage.setItem('viagens_v5_final', JSON.stringify(db));
+        db[uf].unshift({ 
+            cidade, uf, 
+            data: document.getElementById('txt-data').value.split('-').reverse().join('/'), 
+            fotos, 
+            hosp: parseFloat(document.getElementById('v-hosp').value || 0),
+            trans: parseFloat(document.getElementById('v-trans').value || 0),
+            alime: parseFloat(document.getElementById('v-alime').value || 0),
+            atrac: parseFloat(document.getElementById('v-atrac').value || 0),
+            total: (parseFloat(document.getElementById('v-hosp').value || 0) + parseFloat(document.getElementById('v-trans').value || 0) + parseFloat(document.getElementById('v-alime').value || 0) + parseFloat(document.getElementById('v-atrac').value || 0))
+        });
+        localStorage.setItem('viagens_v6_premium', JSON.stringify(db));
         location.reload();
     }
 
+    function renderJornada() {
+        const db = JSON.parse(localStorage.getItem('viagens_v6_premium')) || {};
+        const nUfs = Object.keys(db).length;
+        if(nUfs >= 1) document.getElementById('b-1').classList.add('active');
+        if(nUfs >= 5) document.getElementById('b-5').classList.add('active');
+        if(nUfs >= 10) document.getElementById('b-10').classList.add('active');
+        if(nUfs >= 26) document.getElementById('b-brasil').classList.add('active');
+
+        let html = '<h3 style="margin:16px; color:var(--primary)">📅 Timeline</h3>';
+        for(let uf in db) db[uf].forEach(v => {
+            html += `<div class="card" style="display:flex; gap:15px; align-items:center; padding:12px;">
+                <img src="${v.fotos[0] || ''}" style="width:60px; height:60px; border-radius:12px; object-fit:cover; background:#eee">
+                <div><b>${v.cidade} - ${v.uf.replace('BR','')}</b><br><small>${v.data} • R$ ${v.total.toFixed(2)}</small></div>
+            </div>`;
+        });
+        document.getElementById('timeline-container').innerHTML = html;
+    }
+
+    function renderGastos() {
+        const db = JSON.parse(localStorage.getItem('viagens_v6_premium')) || {};
+        let html = '', total = 0;
+        for (const uf in db) {
+            let tUF = 0, tH = 0, tT = 0, tAl = 0, tAt = 0;
+            db[uf].forEach(c => { tUF += c.total; tH += c.hosp; tT += c.trans; tAl += c.alime; tAt += c.atrac; });
+            total += tUF;
+            html += `<div class="resumo-uf-card">
+                <div class="row-total"><span>🚩 ${uf.replace('BR','')}</span><span style="color:var(--money)">R$ ${tUF.toFixed(2)}</span></div>
+                <div class="categoria-row"><span>🏨 ${tH.toFixed(0)}</span><span>🚗 ${tT.toFixed(0)}</span><span>🍴 ${tAl.toFixed(0)}</span><span>🎡 ${tAt.toFixed(0)}</span></div>
+            </div>`;
+        }
+        document.getElementById('lista-detalhada-gastos').innerHTML = html || '<p style="text-align:center">Sem dados</p>';
+        document.getElementById('total-geral-brasil').innerText = `Total Brasil: R$ ${total.toLocaleString('pt-BR')}`;
+    }
+
     function abrirHistorico(ufId) {
-        const db = JSON.parse(localStorage.getItem('viagens_v5_final')) || {};
+        const db = JSON.parse(localStorage.getItem('viagens_v6_premium')) || {};
         const lista = db[ufId]; if (!lista) return;
-        let h = `<h2 style="color:var(--primary); margin-bottom:5px;">🚩 ${ufId.replace('BR','')}</h2><div style="max-height:400px; overflow-y:auto; overflow-x:hidden; padding:5px;">`;
+        let h = `<h2 style="color:var(--primary)">🚩 ${ufId.replace('BR','')}</h2><div style="max-height:400px; overflow-y:auto; overflow-x:hidden;">`;
         lista.forEach((v, vIdx) => {
-            let trackHtml = ''; let dotsHtml = '';
+            let track = '', dots = '';
             v.fotos.forEach((f, fIdx) => {
-                trackHtml += `<img src="${f}" class="carousel-item">`;
-                dotsHtml += `<div class="dot ${fIdx === 0 ? 'active' : ''}"></div>`;
+                track += `<img src="${f}" class="carousel-item">`;
+                dots += `<div class="dot ${fIdx === 0 ? 'active' : ''}"></div>`;
             });
-            h += `<div class="cidade-entry">
-                <div class="carousel-container" id="carousel-${vIdx}" ontouchstart="handleTouchStart(event)" ontouchmove="handleTouchMove(event, ${vIdx})">
-                    <div class="carousel-track">${trackHtml || '<div class="carousel-item" style="display:flex;align-items:center;justify-content:center;background:#eee;color:#999">Sem fotos</div>'}</div>
-                    <div class="carousel-dots">${dotsHtml}</div>
+            h += `<div style="padding:15px 0; border-bottom:1px solid #eee; text-align:left;">
+                <div class="carousel-container" id="carousel-${vIdx}" ontouchstart="hTS(event)" ontouchmove="hTM(event, ${vIdx})">
+                    <div class="carousel-track">${track || '<div class="carousel-item" style="background:#eee"></div>'}</div>
+                    <div class="carousel-dots">${dots}</div>
                 </div>
-                <p style="margin:5px 0 0 0; font-weight:700; font-size:17px;">${v.cidade}</p>
-                <span style="font-size:12px; color:var(--text-sub);">📅 ${v.data}</span>
-                <p style="margin:3px 0 0 0; color:var(--money); font-weight:800; font-size:15px;">R$ ${v.total.toFixed(2)}</p>
+                <p style="margin:5px 0 0 0; font-weight:800;">${v.cidade}</p>
+                <small>${v.data} • <b>R$ ${v.total.toFixed(2)}</b></small>
             </div>`;
         });
         document.getElementById('popup-content').innerHTML = h + '</div>';
@@ -183,50 +262,28 @@
         document.getElementById('popup-overlay').classList.add('show');
     }
 
-    let startX = 0;
-    function handleTouchStart(e) { startX = e.touches[0].clientX; }
-    function handleTouchMove(e, vIdx) {
-        if (!startX) return;
-        let diff = startX - e.touches[0].clientX;
-        let track = document.getElementById(`carousel-${vIdx}`).querySelector('.carousel-track');
-        let dots = document.getElementById(`carousel-${vIdx}`).querySelectorAll('.dot');
-        let currentIdx = Array.from(dots).findIndex(d => d.classList.contains('active'));
-        if (Math.abs(diff) > 50) {
-            if (diff > 0 && currentIdx < dots.length - 1) currentIdx++;
-            else if (diff < 0 && currentIdx > 0) currentIdx--;
-            track.style.transform = `translateX(-${currentIdx * 100}%)`;
-            dots.forEach((d, i) => d.classList.toggle('active', i === currentIdx));
-            startX = 0;
+    let sX = 0; function hTS(e) { sX = e.touches[0].clientX; }
+    function hTM(e, vIdx) {
+        if (!sX) return;
+        let d = sX - e.touches[0].clientX;
+        let cont = document.getElementById(`carousel-${vIdx}`);
+        let tr = cont.querySelector('.carousel-track');
+        let dots = cont.querySelectorAll('.dot');
+        let idx = Array.from(dots).findIndex(x => x.classList.contains('active'));
+        if (Math.abs(d) > 50) {
+            if (d > 0 && idx < dots.length - 1) idx++; else if (d < 0 && idx > 0) idx--;
+            tr.style.transform = `translateX(-${idx * 100}%)`;
+            dots.forEach((x, i) => x.classList.toggle('active', i === idx));
+            sX = 0;
         }
-    }
-
-    function renderGastos() {
-        const db = JSON.parse(localStorage.getItem('viagens_v5_final')) || {};
-        const container = document.getElementById('lista-detalhada-gastos');
-        let html = ''; let totalGeral = 0;
-        for (const uf in db) {
-            let totalUF = 0; let cidadesHtml = '';
-            db[uf].forEach(c => {
-                totalUF += c.total;
-                cidadesHtml += `<div style="padding:10px 0; border-bottom:1px solid #f8fafc;">
-                    <div style="display:flex; justify-content:space-between; font-size:14px;"><span>🏙️ ${c.cidade}</span><strong>R$ ${c.total.toFixed(2)}</strong></div>
-                    <div style="display:flex; gap:10px; font-size:10px; color:#999; margin-top:4px;">
-                        <span>🏨 ${c.hosp.toFixed(2)}</span><span>🚗 ${c.trans.toFixed(2)}</span><span>🍴 ${c.alime.toFixed(2)}</span><span>🎡 ${c.atrac.toFixed(2)}</span>
-                    </div>
-                </div>`;
-            });
-            totalGeral += totalUF;
-            html += `<div class="estado-item-relatorio"><div class="header-relatorio-uf"><strong>🚩 ${uf.replace('BR','')}</strong><span style="color:var(--money); font-weight:800;">R$ ${totalUF.toFixed(2)}</span></div>${cidadesHtml}</div>`;
-        }
-        container.innerHTML = html || '<p style="text-align:center">Sem gastos!</p>';
-        document.getElementById('total-geral-brasil').innerText = `Total Brasil: R$ ${totalGeral.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
     }
 
     function fecharPopup() { document.getElementById('photo-popup').classList.remove('show'); document.getElementById('popup-overlay').classList.remove('show'); }
     function atualizarInterface() {
-        const db = JSON.parse(localStorage.getItem('viagens_v5_final')) || {};
-        Object.keys(db).forEach(u => { const el = document.getElementById(u); if(el) el.classList.add('visitado'); });
-        document.getElementById('info').innerText = `${Object.keys(db).length} ESTADOS CONQUISTADOS`;
+        const db = JSON.parse(localStorage.getItem('viagens_v6_premium')) || {};
+        const ufs = Object.keys(db);
+        ufs.forEach(u => { const el = document.getElementById(u); if(el) el.classList.add('visitado'); });
+        document.getElementById('info').innerText = `${ufs.length} ESTADOS CONQUISTADOS`;
     }
     function converter(f) { return new Promise(r => { const rd = new FileReader(); rd.readAsDataURL(f); rd.onload = e => { const img = new Image(); img.src = e.target.result; img.onload = () => { const cv = document.createElement('canvas'); const ctx = cv.getContext('2d'); const m = 600; let s = m / Math.max(img.width, img.height); cv.width = img.width * s; cv.height = img.height * s; ctx.drawImage(img, 0, 0, cv.width, cv.height); r(cv.toDataURL('image/jpeg', 0.5)); }; }; }); }
     init();
