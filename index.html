@@ -7,7 +7,14 @@
     <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
-        :root { --primary: #FF4B5C; --sky: #BAE6FD; --card: #FFFFFF; --text-main: #1E293B; --text-sub: #64748B; --money: #10B981; }
+        :root { 
+            --primary: #FF4B5C; 
+            --sky: #BAE6FD; 
+            --card: #FFFFFF; 
+            --text-main: #1E293B; 
+            --text-sub: #64748B; 
+            --money: #10B981; 
+        }
         
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--sky); margin: 0; padding: 0; overflow: hidden; touch-action: none; color: var(--text-main); }
         
@@ -35,30 +42,32 @@
         #photo-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: #fff; padding: 20px; border-radius: 28px; box-shadow: 0 25px 60px rgba(0,0,0,0.3); z-index: 2100; width: 88%; max-width: 340px; text-align: center; opacity: 0; visibility: hidden; transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
         #photo-popup.show { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
         
-        .carousel-container { position: relative; width: 100%; height: 200px; margin-bottom: 15px; border-radius: 18px; overflow: hidden; background: #f1f5f9; }
+        .carousel-container { position: relative; width: 100%; height: 180px; margin: 10px 0; border-radius: 18px; overflow: hidden; background: #f1f5f9; }
         .carousel-track { display: flex; transition: transform 0.4s ease-in-out; height: 100%; }
         .carousel-item { min-width: 100%; height: 100%; object-fit: cover; }
-        .carousel-dots { display: flex; justify-content: center; gap: 6px; margin-top: -25px; position: relative; z-index: 10; }
-        .dot { width: 8px; height: 8px; background: rgba(255,255,255,0.5); border-radius: 50%; transition: 0.3s; }
-        .dot.active { background: #fff; width: 20px; border-radius: 10px; }
+        .carousel-dots { display: flex; justify-content: center; gap: 6px; margin-top: -20px; position: relative; z-index: 10; padding-bottom: 10px; }
+        .dot { width: 6px; height: 6px; background: rgba(255,255,255,0.6); border-radius: 50%; }
+        .dot.active { background: #fff; width: 15px; border-radius: 10px; }
+
+        .cidade-entry { padding: 15px 0; border-bottom: 1px solid #eee; }
+        .cidade-entry:last-child { border-bottom: none; }
 
         .close-popup { position: absolute; top: -10px; right: -10px; background: var(--primary); color: white; border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; z-index: 2200; font-weight: bold; }
         #popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; opacity: 0; visibility: hidden; transition: 0.3s; backdrop-filter: blur(4px); }
         #popup-overlay.show { opacity: 1; visibility: visible; }
 
-        /* FORMULÁRIO & GASTOS DETALHADOS */
+        /* FORMULÁRIO & GASTOS */
         .card-form, .card-gastos { background: var(--card); padding: 25px; margin: 16px; border-radius: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .estado-header { display: flex; justify-content: space-between; align-items: center; margin: 15px 0 10px 0; padding-top: 10px; border-top: 2px solid #f1f5f9; }
-        .categoria-grid { display: flex; gap: 10px; font-size: 11px; color: var(--text-sub); margin-top: 4px; }
-        .cidade-item { padding: 12px 0; border-bottom: 1px solid #f8fafc; }
-        .gasto-total-brasil { margin-top: 10px; padding: 20px; background: var(--money); border-radius: 20px; color: #fff; text-align: center; font-weight: 800; font-size: 18px; }
+        .estado-item-relatorio { margin-bottom: 20px; border-top: 2px solid #f1f5f9; padding-top: 10px; }
+        .header-relatorio-uf { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .btn-vermelho { background: var(--primary); color: white; border: none; font-weight: 700; border-radius: 20px; padding: 18px; width: 100%; margin-top: 15px; cursor: pointer; font-size: 16px; }
 
-        select, input, .btn-submit { width: 100%; padding: 14px; margin: 6px 0; border-radius: 14px; border: 1px solid #E2E8F0; font-size: 14px; font-family: inherit; box-sizing: border-box; background: #F8FAFC; outline: none; }
-        .btn-submit { background: var(--primary); color: white; border: none; font-weight: 700; margin-top: 15px; cursor: pointer; }
+        select, input { width: 100%; padding: 14px; margin: 6px 0; border-radius: 14px; border: 1px solid #E2E8F0; font-size: 14px; font-family: inherit; box-sizing: border-box; background: #F8FAFC; outline: none; }
+        label { font-size: 11px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; margin-top: 12px; display: block; margin-left: 4px; }
+
         .menu-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255,255,255,0.9); backdrop-filter: blur(15px); display: flex; height: 85px; border-top-left-radius: 32px; border-top-right-radius: 32px; z-index: 1000; }
         .btn-aba { flex: 1; border: none; background: none; font-size: 26px; color: #CBD5E1; cursor: pointer; }
-        .btn-aba.active { color: var(--primary); transform: translateY(-4px); }
-        label { font-size: 11px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; margin-top: 8px; display: block; }
+        .btn-aba.active { color: var(--primary); transform: translateY(-4px); transition: 0.3s; }
     </style>
 </head>
 <body>
@@ -70,25 +79,28 @@
     
     <div id="aba-registro" class="aba"><div class="card-form">
         <h3 style="margin:0 0 15px 0; color: var(--primary);">📍 Nova Memória</h3>
+        <label>Estado</label>
         <select id="sel-uf">
             <option value="BRAC">Acre</option><option value="BRAL">Alagoas</option><option value="BRAM">Amazonas</option><option value="BRAP">Amapá</option><option value="BRBA">Bahia</option><option value="BRCE">Ceará</option><option value="BRDF">Distrito Federal</option><option value="BRES">Espírito Santo</option><option value="BRGO">Goiás</option><option value="BRMA">Maranhão</option><option value="BRMG">Minas Gerais</option><option value="BRMS">Mato Grosso do Sul</option><option value="BRMT">Mato Grosso</option><option value="BRPA">Pará</option><option value="BRPB">Paraíba</option><option value="BRPE">Pernambuco</option><option value="BRPI">Piauí</option><option value="BRPR">Paraná</option><option value="BRRJ">Rio de Janeiro</option><option value="BRRN">Rio Grande do Norte</option><option value="BRRO">Rondônia</option><option value="BRRR">Roraima</option><option value="BRRS">Rio Grande do Sul</option><option value="BRSC">Santa Catarina</option><option value="BRSE">Sergipe</option><option value="BRSP" selected>São Paulo</option><option value="BRTO">Tocantins</option>
         </select>
-        <input type="text" id="txt-cidade" placeholder="Cidade">
+        <label>Nome da Cidade</label>
+        <input type="text" id="txt-cidade" placeholder="Ex: Santos">
+        <label>Data da Visita</label>
         <input type="date" id="txt-data">
-        <label>Finanças (R$)</label>
+        <label>Gastos (R$)</label>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-            <input type="number" id="v-hosp" placeholder="Hotel"><input type="number" id="v-trans" placeholder="Transporte">
-            <input type="number" id="v-alime" placeholder="Comida"><input type="number" id="v-atrac" placeholder="Atrações">
+            <input type="number" id="v-hosp" placeholder="Hospedagem"><input type="number" id="v-trans" placeholder="Transporte">
+            <input type="number" id="v-alime" placeholder="Alimentação"><input type="number" id="v-atrac" placeholder="Atrações">
         </div>
-        <label>Fotos (Até 3)</label>
+        <label>Fotos da Viagem (Máx 3)</label>
         <input type="file" id="inp-foto" accept="image/*" multiple>
-        <button class="btn-submit" onclick="salvarViagem()">Salvar Memória 🚩</button>
+        <button class="btn-vermelho" onclick="salvarViagem()">Salvar Memória 🚩</button>
     </div></div>
 
     <div id="aba-gastos" class="aba"><div class="card-gastos">
         <h3 style="margin:0 0 20px 0; color: var(--money);">💰 Relatório Financeiro</h3>
         <div id="lista-detalhada-gastos"></div>
-        <div class="gasto-total-brasil" id="total-geral-brasil">Total Brasil: R$ 0,00</div>
+        <button class="btn-vermelho" style="background: var(--money); margin-top:20px;" id="total-geral-brasil">Total Brasil: R$ 0,00</button>
     </div></div>
 
     <nav class="menu-nav">
@@ -139,31 +151,31 @@
         const vT = parseFloat(document.getElementById('v-trans').value || 0);
         const vAl = parseFloat(document.getElementById('v-alime').value || 0);
         const vAt = parseFloat(document.getElementById('v-atrac').value || 0);
-        let db = JSON.parse(localStorage.getItem('viagens_final_v4')) || {};
+        let db = JSON.parse(localStorage.getItem('viagens_v5_final')) || {};
         if(!db[uf]) db[uf] = [];
         db[uf].unshift({ cidade, data: document.getElementById('txt-data').value.split('-').reverse().join('/'), fotos, hosp: vH, trans: vT, alime: vAl, atrac: vAt, total: (vH+vT+vAl+vAt) });
-        localStorage.setItem('viagens_final_v4', JSON.stringify(db));
+        localStorage.setItem('viagens_v5_final', JSON.stringify(db));
         location.reload();
     }
 
     function abrirHistorico(ufId) {
-        const db = JSON.parse(localStorage.getItem('viagens_final_v4')) || {};
+        const db = JSON.parse(localStorage.getItem('viagens_v5_final')) || {};
         const lista = db[ufId]; if (!lista) return;
-        let h = `<h2 style="color:var(--primary); margin-bottom:10px;">🚩 ${ufId.replace('BR','')}</h2><div style="max-height:400px; overflow-y:auto; overflow-x:hidden;">`;
+        let h = `<h2 style="color:var(--primary); margin-bottom:5px;">🚩 ${ufId.replace('BR','')}</h2><div style="max-height:400px; overflow-y:auto; overflow-x:hidden; padding:5px;">`;
         lista.forEach((v, vIdx) => {
             let trackHtml = ''; let dotsHtml = '';
             v.fotos.forEach((f, fIdx) => {
                 trackHtml += `<img src="${f}" class="carousel-item">`;
-                dotsHtml += `<div class="dot ${fIdx === 0 ? 'active' : ''}" data-idx="${fIdx}"></div>`;
+                dotsHtml += `<div class="dot ${fIdx === 0 ? 'active' : ''}"></div>`;
             });
-            h += `<div class="cidade-item">
+            h += `<div class="cidade-entry">
                 <div class="carousel-container" id="carousel-${vIdx}" ontouchstart="handleTouchStart(event)" ontouchmove="handleTouchMove(event, ${vIdx})">
                     <div class="carousel-track">${trackHtml || '<div class="carousel-item" style="display:flex;align-items:center;justify-content:center;background:#eee;color:#999">Sem fotos</div>'}</div>
                     <div class="carousel-dots">${dotsHtml}</div>
                 </div>
-                <p style="margin:0; font-weight:700; font-size:16px;">${v.cidade}</p>
+                <p style="margin:5px 0 0 0; font-weight:700; font-size:17px;">${v.cidade}</p>
                 <span style="font-size:12px; color:var(--text-sub);">📅 ${v.data}</span>
-                <p style="margin:5px 0 0 0; color:var(--money); font-weight:800;">Total: R$ ${v.total.toFixed(2)}</p>
+                <p style="margin:3px 0 0 0; color:var(--money); font-weight:800; font-size:15px;">R$ ${v.total.toFixed(2)}</p>
             </div>`;
         });
         document.getElementById('popup-content').innerHTML = h + '</div>';
@@ -171,15 +183,13 @@
         document.getElementById('popup-overlay').classList.add('show');
     }
 
-    // LÓGICA SIMPLES DE CARROSSEL
     let startX = 0;
     function handleTouchStart(e) { startX = e.touches[0].clientX; }
     function handleTouchMove(e, vIdx) {
         if (!startX) return;
         let diff = startX - e.touches[0].clientX;
-        let container = document.getElementById(`carousel-${vIdx}`);
-        let track = container.querySelector('.carousel-track');
-        let dots = container.querySelectorAll('.dot');
+        let track = document.getElementById(`carousel-${vIdx}`).querySelector('.carousel-track');
+        let dots = document.getElementById(`carousel-${vIdx}`).querySelectorAll('.dot');
         let currentIdx = Array.from(dots).findIndex(d => d.classList.contains('active'));
         if (Math.abs(diff) > 50) {
             if (diff > 0 && currentIdx < dots.length - 1) currentIdx++;
@@ -191,22 +201,22 @@
     }
 
     function renderGastos() {
-        const db = JSON.parse(localStorage.getItem('viagens_final_v4')) || {};
+        const db = JSON.parse(localStorage.getItem('viagens_v5_final')) || {};
         const container = document.getElementById('lista-detalhada-gastos');
         let html = ''; let totalGeral = 0;
         for (const uf in db) {
             let totalUF = 0; let cidadesHtml = '';
             db[uf].forEach(c => {
                 totalUF += c.total;
-                cidadesHtml += `<div class="cidade-item">
-                    <div style="display:flex; justify-content:space-between"><span>🏙️ ${c.cidade}</span><strong>R$ ${c.total.toFixed(2)}</strong></div>
-                    <div class="categoria-grid">
+                cidadesHtml += `<div style="padding:10px 0; border-bottom:1px solid #f8fafc;">
+                    <div style="display:flex; justify-content:space-between; font-size:14px;"><span>🏙️ ${c.cidade}</span><strong>R$ ${c.total.toFixed(2)}</strong></div>
+                    <div style="display:flex; gap:10px; font-size:10px; color:#999; margin-top:4px;">
                         <span>🏨 ${c.hosp.toFixed(2)}</span><span>🚗 ${c.trans.toFixed(2)}</span><span>🍴 ${c.alime.toFixed(2)}</span><span>🎡 ${c.atrac.toFixed(2)}</span>
                     </div>
                 </div>`;
             });
             totalGeral += totalUF;
-            html += `<div class="estado-header"><strong>🚩 ${uf.replace('BR','')}</strong><span class="total-money">R$ ${totalUF.toFixed(2)}</span></div>${cidadesHtml}`;
+            html += `<div class="estado-item-relatorio"><div class="header-relatorio-uf"><strong>🚩 ${uf.replace('BR','')}</strong><span style="color:var(--money); font-weight:800;">R$ ${totalUF.toFixed(2)}</span></div>${cidadesHtml}</div>`;
         }
         container.innerHTML = html || '<p style="text-align:center">Sem gastos!</p>';
         document.getElementById('total-geral-brasil').innerText = `Total Brasil: R$ ${totalGeral.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
@@ -214,7 +224,7 @@
 
     function fecharPopup() { document.getElementById('photo-popup').classList.remove('show'); document.getElementById('popup-overlay').classList.remove('show'); }
     function atualizarInterface() {
-        const db = JSON.parse(localStorage.getItem('viagens_final_v4')) || {};
+        const db = JSON.parse(localStorage.getItem('viagens_v5_final')) || {};
         Object.keys(db).forEach(u => { const el = document.getElementById(u); if(el) el.classList.add('visitado'); });
         document.getElementById('info').innerText = `${Object.keys(db).length} ESTADOS CONQUISTADOS`;
     }
