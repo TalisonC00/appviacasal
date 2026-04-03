@@ -14,9 +14,9 @@
         .header h3 { margin: 0; font-size: 18px; color: var(--primary) !important; font-weight: 800; }
         #info { font-size: 10px; font-weight: 800; color: #000; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; display: block; }
 
-        .aba { display: none; width: 100%; height: calc(100vh - 155px); overflow-y: auto; padding-bottom: 50px; -webkit-overflow-scrolling: touch; }
+        .aba { display: none; width: 100%; height: calc(100vh - 230px); overflow-y: auto; padding-bottom: 80px; -webkit-overflow-scrolling: touch; }
         .ativa { display: block; }
-        .card { background: var(--card); padding: 20px; margin: 16px; border-radius: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
+        .card { background: var(--card); padding: 20px; margin: 16px 16px 30px 16px; border-radius: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
 
         /* MAPA */
         .mapa-card { background: var(--card); margin: 16px; border-radius: 28px; height: calc(100% - 32px); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
@@ -223,34 +223,47 @@
 }
 
     function removerViagem(uf, rawDate, cidade) {
-    // 1. Pedir confirmação para não apagar sem querer
+    // 1. Confirmação para evitar cliques acidentais
     if (!confirm(`Deseja realmente apagar a memória de ${cidade}?`)) return;
 
-    // 2. Pegar os dados atuais
+    // 2. Carrega o banco de dados
     let db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
 
     if (db[uf]) {
-        // 3. Filtrar a lista: manter todos, EXCETO o que queremos apagar
-        // Usamos a data e a cidade como "identificadores"
+        // 3. Filtra a lista para remover a viagem específica
         db[uf] = db[uf].filter(v => !(v.rawDate === rawDate && v.cidade === cidade));
 
-        // 4. Se o estado ficou sem nenhuma viagem, removemos a chave do estado
+        // 4. LÓGICA DO MAPA: Se não restou nenhuma viagem nesse estado, removemos o estado do banco
         if (db[uf].length === 0) {
             delete db[uf];
+            
+            // Remove a classe visual do mapa imediatamente (antes do reload)
+            const elMapa = document.getElementById(uf);
+            if (elMapa) elMapa.classList.remove('visitado');
         }
 
-        // 5. Salvar de volta e atualizar a tela
+        // 5. Salva a nova lista no localStorage
         localStorage.setItem('viagens_master_v1', JSON.stringify(db));
         
-        alert("Memória removida!");
-        location.reload(); // Recarrega para atualizar mapa, gastos e timeline de uma vez
+        // 6. Atualiza tudo automaticamente
+        alert("Memória removida com sucesso!");
+        location.reload(); 
     }
 }
     function renderTimeline() {
     const db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
     let todas = []; 
-    for(let uf in db) db[uf].forEach(v => todas.push(v));
     
+    // Transforma o objeto de estados em uma lista única de viagens
+    for(let uf in db) {
+        db[uf].forEach(v => {
+            // Garante que o objeto da viagem saiba a qual UF pertence para poder apagar
+            v.ufOrigem = uf; 
+            todas.push(v);
+        });
+    }
+    
+    // Ordena da mais recente para a mais antiga
     todas.sort((a,b) => new Date(b.rawDate) - new Date(a.rawDate));
     
     let html = '';
@@ -260,7 +273,7 @@
             <div class="t-dot"></div>
             <div class="t-card" style="position: relative;">
                 <button onclick="removerViagem('${v.uf}', '${v.rawDate}', '${v.cidade}')" 
-                        style="position: absolute; top: 12px; right: 12px; background: #fee2e2; border: none; color: #ef4444; cursor: pointer; font-size: 14px; width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                        style="position: absolute; top: 12px; right: 12px; background: #fee2e2; border: none; color: #ef4444; cursor: pointer; font-size: 14px; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
                     🗑️
                 </button>
 
@@ -271,9 +284,8 @@
         </div>`;
     });
     
-    document.getElementById('timeline-list').innerHTML = html || '<p style="text-align:center;padding:20px;color:#999">Sem memórias ainda.</p>';
+    document.getElementById('timeline-list').innerHTML = html || '<p style="text-align:center;padding:20px;color:#999">Nenhuma memória registrada.</p>';
 }
-
     function renderGastos() {
         const db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
         let html = '', totalGeral = 0;
