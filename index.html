@@ -17,8 +17,6 @@
         .aba { display: none; width: 100%; height: calc(100vh - 175px); overflow-y: auto; padding-bottom: 40px; -webkit-overflow-scrolling: touch; }
         .ativa { display: block; }
         .card { background: var(--card); padding: 24px; margin: 16px; border-radius: 32px; box-shadow: 0 12px 40px rgba(0,0,0,0.06); }
-
-        /* MAPA */
         .mapa-card { background: var(--card); margin: 16px; border-radius: 28px; height: calc(100% - 32px); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
         #svg-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #fff; }
         path { fill: #F1F5F9; stroke: #fff; stroke-width: 0.8; transition: 0.5s; cursor: pointer; }
@@ -35,16 +33,17 @@
         .t-dot { min-width: 12px; height: 12px; background: var(--primary); border: 3px solid #fff; border-radius: 50%; margin-top: 6px; }
         .t-card { background: #fff; padding: 18px; border-radius: 24px; flex: 1; box-shadow: 0 8px 20px rgba(0,0,0,0.04); }
 
-        /* GASTOS */
+        /* GASTOS - ALINHAMENTO CORRIGIDO */
         .resumo-uf-card { background: #fff; border-radius: 24px; padding: 20px; margin-bottom: 20px; border: 1.5px solid #F1F5F9; }
-        .gasto-entry { padding: 15px 0; border-bottom: 1px solid #f8fafc; }
+        .uf-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f8fafc; padding-bottom: 12px; margin-bottom: 12px; }
+        .gasto-entry { padding: 18px 0; border-bottom: 1px solid #f8fafc; }
         .gasto-entry:last-child { border-bottom: none; }
+        .cidade-data-row { display: flex; justify-content: space-between; font-size: 13px; font-weight: 800; color: var(--text-main); margin-bottom: 10px; }
         .pill { background: #F8FAFC; padding: 6px 10px; border-radius: 10px; font-size: 10px; font-weight: 700; color: var(--text-sub); display: flex; align-items: center; gap: 4px; border: 1px solid #eee; }
 
         /* FORMULÁRIO */
         input, select { width: 100%; padding: 14px; border-radius: 14px; border: 1.5px solid #F1F5F9; font-family: inherit; background: #F8FAFC; box-sizing: border-box; }
         label { font-size: 10px; font-weight: 800; color: var(--text-sub); text-transform: uppercase; margin: 12px 0 4px 4px; display: block; }
-        .mini-check { display: flex; align-items: center; gap: 8px; margin: 10px 0; padding: 8px 4px; }
         .btn-acao { background: var(--primary); color: #fff; border: none; padding: 16px; border-radius: 18px; width: 100%; font-weight: 800; margin-top: 15px; cursor: pointer; }
 
         /* POP-UP & CARROSSEL FOTOS */
@@ -93,7 +92,7 @@
                 <div class="badge" id="b-nordeste"><div class="b-icon">🌵</div><div style="font-size:8px;font-weight:800">NORDESTE</div></div>
                 <div class="badge" id="b-centro"><div class="b-icon">☀️</div><div style="font-size:8px;font-weight:800">CENTRO</div></div>
                 <div class="badge" id="b-sudeste"><div class="b-icon">🏢</div><div style="font-size:8px;font-weight:800">SUDESTE</div></div>
-                <div class="badge" id="b-sul"><div class="b-icon">❄️</div><div style="font-size:8px;font-weight:800">SUL</div></div>
+                <div class="badge" id="sul"><div class="b-icon">❄️</div><div style="font-size:8px;font-weight:800">SUL</div></div>
             </div>
         </div>
     </div>
@@ -106,7 +105,7 @@
             </select>
             <label>Cidade</label><input type="text" id="txt-cidade" placeholder="Ex: Gramado">
             <label>Data da Visita</label><input type="date" id="txt-data">
-            <label class="mini-check"><input type="checkbox" id="chk-praia" style="width:18px;height:18px;"><span style="font-size:12px; font-weight:800; color:var(--text-sub)">VIAGEM DE PRAIA? 🏖️</span></label>
+            <label class="mini-check" style="display:flex; align-items:center; gap:8px; margin:10px 0;"><input type="checkbox" id="chk-praia" style="width:18px;height:18px;"><span style="font-size:12px; font-weight:800; color:var(--text-sub)">VIAGEM DE PRAIA? 🏖️</span></label>
             <label>Gastos (R$)</label>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"><input type="number" id="v-hosp" placeholder="Hotel"><input type="number" id="v-trans" placeholder="Transporte"><input type="number" id="v-alime" placeholder="Comida"><input type="number" id="v-atrac" placeholder="Atrações"></div>
             <label>Fotos (Máx 3)</label><input type="file" id="inp-foto" accept="image/*" multiple>
@@ -117,7 +116,7 @@
         <div class="card">
             <h3 style="margin:0 0 20px 0; color:var(--money)">💰 Gastos</h3>
             <div id="lista-detalhada-gastos"></div>
-            <div style="background:var(--money); color:#fff; padding:18px; border-radius:24px; text-align:center; font-weight:800; font-size:18px; margin-top:20px;" id="total-geral-brasil">Total Brasil: R$ 0,00</div>
+            <div style="background:var(--sky); color:#000; padding:18px; border-radius:24px; text-align:center; font-weight:800; font-size:18px; margin-top:20px;" id="total-geral-brasil">Total Brasil: R$ 0,00</div>
         </div>
     </div>
 
@@ -165,21 +164,21 @@
         const files = document.getElementById('inp-foto').files;
         let fotos = []; for (let i = 0; i < Math.min(files.length, 3); i++) { fotos.push(await converter(files[i])); }
         const trip = { cidade, uf, data: rawDate.split('-').reverse().join('/'), rawDate, fotos, h: parseFloat(document.getElementById('v-hosp').value || 0), t: parseFloat(document.getElementById('v-trans').value || 0), al: parseFloat(document.getElementById('v-alime').value || 0), at: parseFloat(document.getElementById('v-atrac').value || 0), praia: document.getElementById('chk-praia').checked, total: (parseFloat(document.getElementById('v-hosp').value || 0) + parseFloat(document.getElementById('v-trans').value || 0) + parseFloat(document.getElementById('v-alime').value || 0) + parseFloat(document.getElementById('v-atrac').value || 0)) };
-        let db = JSON.parse(localStorage.getItem('viagens_vFinal_v12')) || {};
+        let db = JSON.parse(localStorage.getItem('viagens_vFinal_v13')) || {};
         if(!db[uf]) db[uf] = []; db[uf].unshift(trip);
-        localStorage.setItem('viagens_vFinal_v12', JSON.stringify(db));
+        localStorage.setItem('viagens_vFinal_v13', JSON.stringify(db));
         location.reload();
     }
 
     function renderTimeline() {
-        const db = JSON.parse(localStorage.getItem('viagens_vFinal_v12')) || {};
+        const db = JSON.parse(localStorage.getItem('viagens_vFinal_v13')) || {};
         let todas = []; for(let uf in db) db[uf].forEach(v => todas.push(v));
         todas.sort((a,b) => new Date(b.rawDate) - new Date(a.rawDate));
         let html = '<h3 style="margin:0 0 20px 20px; color:var(--primary)">📅 Timeline</h3>';
         todas.forEach(v => {
             html += `<div class="timeline-item"><div class="t-dot"></div><div class="t-card">
                 <span style="font-size:11px; font-weight:800; color:var(--text-sub)">${v.cidade} - ${v.data}</span>
-                <h4 style="margin:5px 0; font-size:18px; font-weight:800; color:var(--money)">R$ ${v.total.toFixed(2)}</h4>
+                <h4 style="margin:5px 0; font-size:15px; font-weight:800; color:var(--money)">R$ ${v.total.toFixed(2)}</h4>
                 ${v.fotos[0] ? `<img src="${v.fotos[0]}" style="width:100%; height:160px; object-fit:cover; border-radius:18px;">` : ''}
             </div></div>`;
         });
@@ -187,26 +186,26 @@
     }
 
     function renderGastos() {
-        const db = JSON.parse(localStorage.getItem('viagens_vFinal_v12')) || {};
+        const db = JSON.parse(localStorage.getItem('viagens_vFinal_v13')) || {};
         let html = '', totalGeral = 0;
         for (const uf in db) {
             let totalUF = 0; let cidadesHtml = '';
             db[uf].forEach(c => {
                 totalUF += c.total;
                 cidadesHtml += `<div class="gasto-entry">
-                    <div style="font-size:12px; font-weight:800; color:var(--text-main); margin-bottom:8px;">${c.data} - ${c.cidade} - R$ ${c.total.toFixed(2)}</div>
+                    <div class="cidade-data-row"><span>${c.cidade} - ${c.data}</span><strong style="color:var(--money)">R$ ${c.total.toFixed(2)}</strong></div>
                     <div style="display:flex; gap:8px;"><div class="pill">🏨 ${c.h.toFixed(0)}</div><div class="pill">🚗 ${c.t.toFixed(0)}</div><div class="pill">🍴 ${c.al.toFixed(0)}</div><div class="pill">🎡 ${c.at.toFixed(0)}</div></div>
                 </div>`;
             });
             totalGeral += totalUF;
-            html += `<div class="resumo-uf-card"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:2px solid #f8fafc; padding-bottom:10px;"><strong>🚩 ${uf.replace('BR','')}</strong><strong style="color:var(--money); font-size:18px;">R$ ${totalUF.toFixed(2)}</strong></div>${cidadesHtml}</div>`;
+            html += `<div class="resumo-uf-card"><div class="uf-header"><strong>🚩 ${uf.replace('BR','')}</strong><strong style="color:var(--money); font-size:18px;">R$ ${totalUF.toFixed(2)}</strong></div>${cidadesHtml}</div>`;
         }
         document.getElementById('lista-detalhada-gastos').innerHTML = html || '<p style="text-align:center; padding:20px; color:#999;">Sem gastos.</p>';
         document.getElementById('total-geral-brasil').innerText = `Total Brasil: R$ ${totalGeral.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
     }
 
     function abrirHistorico(id) {
-        const db = JSON.parse(localStorage.getItem('viagens_vFinal_v12')) || {};
+        const db = JSON.parse(localStorage.getItem('viagens_vFinal_v13')) || {};
         const lista = db[id]; if (!lista) return;
         let h = `<h2 style="color:var(--primary); margin-bottom:15px;">🚩 ${id.replace('BR','')}</h2>`;
         lista.forEach((v, cIdx) => {
@@ -214,7 +213,7 @@
             v.fotos.forEach((f, fIdx) => { track += `<img src="${f}" class="img-slide">`; dots += `<div class="dot ${fIdx === 0 ? 'active' : ''}"></div>`; });
             h += `<div style="margin-bottom:30px; border-bottom:1px solid #eee; padding-bottom:15px;">
                 <p style="margin:0; font-size:14px; font-weight:800; color:var(--text-sub);">${v.cidade} - ${v.data}</p>
-                <h4 style="margin:5px 0 0 0; color:var(--money); font-weight:800; font-size:22px;">R$ ${v.total.toFixed(2)}</h4>
+                <h4 style="margin:5px 0 0 0; color:var(--money); font-weight:800; font-size:16px;">R$ ${v.total.toFixed(2)}</h4>
                 <div class="carousel-fotos" id="car-${cIdx}" ontouchstart="hTS(event)" ontouchmove="hTM(event, ${cIdx}, ${v.fotos.length})">
                     <div class="track-fotos">${track || '<div class="img-slide" style="background:#eee"></div>'}</div>
                 </div>
@@ -242,12 +241,12 @@
 
     function fecharPopup() { document.getElementById('photo-popup').classList.remove('show'); document.getElementById('popup-overlay').style.opacity = '0'; setTimeout(() => document.getElementById('popup-overlay').style.visibility = 'hidden', 300); }
     function atualizarInterface() {
-        const db = JSON.parse(localStorage.getItem('viagens_vFinal_v12')) || {};
+        const db = JSON.parse(localStorage.getItem('viagens_vFinal_v13')) || {};
         Object.keys(db).forEach(u => { const el = document.getElementById(u); if(el) el.classList.add('visitado'); });
         document.getElementById('info').innerText = `ESTADOS CONQUISTADOS: ${Object.keys(db).length}`;
     }
     function renderJornada() {
-        const db = JSON.parse(localStorage.getItem('viagens_vFinal_v12')) || {}; const n = Object.keys(db).length;
+        const db = JSON.parse(localStorage.getItem('viagens_vFinal_v13')) || {}; const n = Object.keys(db).length;
         if(n >= 1) document.getElementById('b-1').classList.add('active'); if(n >= 5) document.getElementById('b-5').classList.add('active'); if(n >= 10) document.getElementById('b-10').classList.add('active'); if(n >= 20) document.getElementById('b-20').classList.add('active'); if(n >= 26) document.getElementById('b-brasil').classList.add('active');
         let temPraia = false; let reg = { norte:0, nordeste:0, centro:0, sudeste:0, sul:0 };
         for(let uf in db) { db[uf].forEach(v => { if(v.praia) temPraia = true; }); if(["BRAC","BRAM","BRRR","BRRO","BRPA","BRAP","BRTO"].includes(uf)) reg.norte++; if(["BRMA","BRPI","BRCE","BRRN","BRPB","BRPE","BRAL","BRSE","BRBA"].includes(uf)) reg.nordeste++; if(["BRMT","BRMS","BRGO","BRDF"].includes(uf)) reg.centro++; if(["BRMG","BRSP","BRRJ","BRES"].includes(uf)) reg.sudeste++; if(["BRPR","BRSC","BRRS"].includes(uf)) reg.sul++; }
