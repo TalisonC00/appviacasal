@@ -9,7 +9,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
         :root { 
             --primary: #EC4899; 
-            --success-green: #22C55E; /* Cor para os seus ajustes */
+            --success-green: #22C55E; 
             --sky: #BAE6FD; 
             --card: #FFFFFF; 
             --text-main: #1E293B; 
@@ -22,8 +22,7 @@
         .header h3 { margin: 0; font-size: 16px; color: var(--primary) !important; font-weight: 800; }
         #info { font-size: 9px; font-weight: 800; color: #000; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; display: block; }
 
-        /* AJUSTE: Altura das abas reduzida */
-        .aba { display: none; width: 100%; height: calc(100vh - 125px); overflow-y: auto; padding-bottom: 50px; -webkit-overflow-scrolling: touch; }
+        .aba { display: none; width: 100%; height: calc(100vh - 120px); overflow-y: auto; padding-bottom: 50px; -webkit-overflow-scrolling: touch; }
         .ativa { display: block; }
         .card { background: var(--card); padding: 20px; margin: 16px; border-radius: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
 
@@ -43,7 +42,7 @@
         .timeline-line { position: absolute; left: 33px; top: 60px; bottom: 20px; width: 3px; background: rgba(255,255,255,0.8); z-index: 0; border-radius: 10px; }
         .timeline-item { display: flex; gap: 15px; margin-bottom: 25px; position: relative; z-index: 2; margin-left: 20px; margin-right: 16px; }
         .t-dot { min-width: 14px; height: 14px; background: var(--primary); border: 3px solid #fff; border-radius: 50%; margin-top: 6px; z-index: 3; }
-        .t-card { background: #fff; padding: 18px; border-radius: 24px; flex: 1; box-shadow: 0 8px 25px rgba(0,0,0,0.04); border: 1px solid #f8fafc; }
+        .t-card { background: #fff; padding: 18px; border-radius: 24px; flex: 1; box-shadow: 0 8px 25px rgba(0,0,0,0.04); }
 
         /* GASTOS */
         .resumo-uf-card { background: #fff; border-radius: 24px; padding: 20px; margin-bottom: 16px; border: 1.5px solid #F1F5F9; }
@@ -59,24 +58,21 @@
         .b-icon { width: 52px; height: 52px; background: #F1F5F9; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 6px; }
         .badge-name { font-size: 9px; font-weight: 800; color: var(--text-sub); text-align: center; text-transform: uppercase; }
 
-        /* AJUSTE: Botão Verde */
+        /* AJUSTES SOLICITADOS */
         .btn-acao { background: var(--success-green); color: #fff; border: none; padding: 16px; border-radius: 18px; width: 100%; font-weight: 800; margin-top: 15px; cursor: pointer; }
-        /* AJUSTE: Total Brasil Verde */
         #total-geral-brasil { background: var(--success-green); color: #fff; padding: 18px; border-radius: 22px; text-align: center; font-weight: 800; font-size: 16px; margin: 16px; }
+        .menu-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; height: 55px; border-top-left-radius: 24px; border-top-right-radius: 24px; z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.05); }
+        .btn-aba { flex: 1; border: none; background: none; font-size: 20px; color: #CBD5E1; cursor: pointer; transition: 0.3s; }
+        .btn-aba.active { color: var(--primary); transform: translateY(-3px); }
 
         /* POP-UP E CARROSSEL */
         #photo-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: #fff; padding: 24px; border-radius: 32px; box-shadow: 0 25px 60px rgba(0,0,0,0.3); z-index: 2100; width: 90%; max-width: 340px; opacity: 0; visibility: hidden; transition: 0.3s; }
         #photo-popup.show { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
         .popup-scroll { max-height: 480px; overflow-y: auto; text-align: left; }
         .carousel-fotos { position: relative; width: 100%; overflow: hidden; border-radius: 20px; margin: 10px 0; height: 180px; background: #f1f5f9; }
-        .track-fotos { display: flex; transition: transform 0.4s ease; height: 100%; }
+        .track-fotos { display: flex; transition: transform 0.4s ease; height: 100%; width: 100%; }
         .img-slide { min-width: 100%; height: 100%; object-fit: cover; }
-        .close-popup { position: absolute; top: 12px; right: 12px; background: var(--primary); color: white; border: none; border-radius: 50%; width: 30px; height: 30px; font-weight: bold; display: flex; align-items: center; justify-content: center; z-index: 3000 !important; cursor: pointer; }
-
-        /* AJUSTE: Menu Reduzido */
-        .menu-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; height: 55px; border-top-left-radius: 24px; border-top-right-radius: 24px; z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.05); }
-        .btn-aba { flex: 1; border: none; background: none; font-size: 20px; color: #CBD5E1; cursor: pointer; transition: 0.3s; -webkit-tap-highlight-color: transparent; }
-        .btn-aba.active { color: var(--primary); transform: translateY(-3px); }
+        .close-popup { position: absolute; top: 12px; right: 12px; background: var(--primary); color: white; border: none; border-radius: 50%; width: 30px; height: 30px; font-weight: bold; z-index: 3000 !important; cursor: pointer; }
 
         input, select { width: 100%; padding: 14px; border-radius: 14px; border: 1.5px solid #F1F5F9; font-family: inherit; background: #F8FAFC; box-sizing: border-box; }
         label { font-size: 10px; font-weight: 800; color: var(--text-sub); text-transform: uppercase; margin: 12px 0 4px 4px; display: block; }
@@ -89,13 +85,7 @@
     
     <div id="aba-mapa" class="aba ativa"><div class="mapa-card"><div id="svg-container"></div></div></div>
     
-    <div id="aba-timeline" class="aba">
-        <div class="timeline-container">
-            <h3 style="margin: 20px; color: var(--primary);">🕒 Timeline</h3>
-            <div class="timeline-line"></div>
-            <div id="timeline-list"></div>
-        </div>
-    </div>
+    <div id="aba-timeline" class="aba"><div class="timeline-container"><h3 style="margin:20px; color:var(--primary)">🕒 Timeline</h3><div class="timeline-line"></div><div id="timeline-list"></div></div></div>
     
     <div id="aba-jornada" class="aba"><div class="card"><h3>🏆 Conquistas</h3><div class="badge-grid" id="grid-conquistas"></div></div></div>
     
@@ -118,7 +108,7 @@
     </div>
 
     <div id="aba-gastos" class="aba">
-        <div id="lista-detalhada-gastos" style="padding-top: 10px;"></div>
+        <div id="lista-detalhada-gastos" style="padding-top:10px;"></div>
         <div id="total-geral-brasil">Total Brasil: R$ 0,00</div>
     </div>
 
@@ -145,7 +135,6 @@
         document.getElementById('svg-container').innerHTML = svg;
         const svgEl = document.querySelector('#svg-container svg');
         svgEl.id = "mapa-svg-real";
-        // AJUSTE: Mapa fixo sem zoom
         svgPanZoom('#mapa-svg-real', { zoomEnabled: false, panEnabled: false, fit: true, center: true });
         document.getElementById('svg-container').addEventListener('click', (e) => {
             const target = e.target.closest('path');
@@ -172,7 +161,6 @@
         const files = document.getElementById('inp-foto').files;
         let fotos = []; for (let i = 0; i < Math.min(files.length, 3); i++) { fotos.push(await converter(files[i])); }
         
-        // RESTAURADO: Coleta de todos os campos de gastos
         const trip = { 
             cidade, uf, data: rawDate.split('-').reverse().join('/'), rawDate, fotos, 
             h: parseFloat(document.getElementById('v-hosp').value || 0), 
@@ -195,11 +183,7 @@
         todas.sort((a,b) => new Date(b.rawDate) - new Date(a.rawDate));
         let html = '';
         todas.forEach(v => {
-            html += `<div class="timeline-item"><div class="t-dot"></div><div class="t-card">
-                <span style="font-size:10px; font-weight:800; color:var(--text-sub)">${v.cidade} - ${v.data}</span>
-                <h4 style="margin:5px 0; color:var(--money);">R$ ${v.total.toFixed(2)}</h4>
-                ${v.fotos[0] ? `<img src="${v.fotos[0]}" style="width:100%; height:140px; object-fit:cover; border-radius:18px; margin-top:8px;">` : ''}
-            </div></div>`;
+            html += `<div class="timeline-item"><div class="t-dot"></div><div class="t-card"><span style="font-size:10px; font-weight:800; color:var(--text-sub)">${v.cidade} - ${v.data}</span><h4 style="margin:5px 0; color:var(--money);">R$ ${v.total.toFixed(2)}</h4>${v.fotos[0] ? `<img src="${v.fotos[0]}" style="width:100%; height:140px; object-fit:cover; border-radius:18px; margin-top:8px;">` : ''}</div></div>`;
         });
         document.getElementById('timeline-list').innerHTML = html || '<p style="text-align:center;padding:20px;color:#999">Sem memórias.</p>';
     }
@@ -215,7 +199,7 @@
                 <div style="display:flex; flex-wrap:wrap; gap:6px;"><div class="pill">🏨 ${c.h.toFixed(0)}</div><div class="pill">🚗 ${c.t.toFixed(0)}</div><div class="pill">🍴 ${c.al.toFixed(0)}</div><div class="pill">🎡 ${c.at.toFixed(0)}</div></div></div>`;
             });
             totalGeral += totalUF;
-            html += `<div class="resumo-uf-card"><div class="uf-header"><span>🚩 ${uf.replace('BR','')}</span><span style="color:var(--money)">R$ ${totalUF.toFixed(2)}</span></div>${cidadesHtml}</div>`;
+            html += `<div class="resumo-uf-card" style="margin: 16px;"><div class="uf-header"><span>🚩 ${uf.replace('BR','')}</span><span style="color:var(--money)">R$ ${totalUF.toFixed(2)}</span></div>${cidadesHtml}</div>`;
         }
         document.getElementById('lista-detalhada-gastos').innerHTML = html || '<p style="text-align:center;padding:20px;color:#999">Sem gastos.</p>';
         document.getElementById('total-geral-brasil').innerText = `Total Brasil: R$ ${totalGeral.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
@@ -225,18 +209,15 @@
         const db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
         const visitados = Object.keys(db);
         let html = '';
-        // Medalhas de Quantidade
         [{n:1, l:'Início', i:'🌱'}, {n:5, l:'5 Estados', i:'🏃'}, {n:10, l:'10 Estados', i:'⭐'}, {n:20, l:'20 Estados', i:'🔥'}, {n:26, l:'Brasil', i:'👑'}].forEach(m => {
             const ok = visitados.length >= m.n;
             html += `<div class="badge ${ok ? 'active' : ''}"><div class="b-icon">${m.i}</div><div class="badge-name">${m.l}</div></div>`;
         });
-        // Medalha Praia
         let temPraia = false; Object.values(db).forEach(u => u.forEach(v => { if(v.praia) temPraia = true; }));
         html += `<div class="badge ${temPraia ? 'active' : ''}"><div class="b-icon">🏖️</div><div class="badge-name">Pé na areia</div></div>`;
-        // Medalhas de Região
         for(let r in REGIOES) {
             const reg = REGIOES[r]; const ok = reg.UFs.every(u => visitados.includes(u));
-            html += `<div class="badge ${ok ? 'active' : ''}"><div class="b-icon" style="${ok ? 'background:'+reg.color+';color:#fff' : ''}">${reg.icon}</div><div class="badge-name">${r}</div></div>`;
+            html += `<div class="badge ${ok ? 'active' : ''}" onclick="if(!${ok}) alert('Faltam: ' + '${reg.UFs.filter(u => !visitados.includes(u)).join(', ')}')"><div class="b-icon" style="${ok ? 'background:'+reg.color+';color:#fff' : ''}">${reg.icon}</div><div class="badge-name">${r}</div></div>`;
         }
         document.getElementById('grid-conquistas').innerHTML = html;
     }
@@ -259,6 +240,7 @@
         document.getElementById('popup-overlay').style.display = 'block';
     }
 
+    /* LÓGICA DO CARROSSEL - CRÍTICA PARA FUNCIONAR */
     let sX = 0; function hTS(e) { sX = e.touches[0].clientX; }
     function hTM(e, cIdx, len) { 
         if (!sX) return; let d = sX - e.touches[0].clientX; 
