@@ -222,16 +222,57 @@
     trocarAba('mapa', document.querySelector('.btn-aba')); // Volta para o mapa automaticamente
 }
 
-    function renderTimeline() {
-        const db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
-        let todas = []; for(let uf in db) db[uf].forEach(v => todas.push(v));
-        todas.sort((a,b) => new Date(b.rawDate) - new Date(a.rawDate));
-        let html = '';
-        todas.forEach(v => {
-            html += `<div class="timeline-item"><div class="t-dot"></div><div class="t-card"><span style="font-size:11px; font-weight:800; color:var(--text-sub)">${v.cidade} - ${v.data}</span><h4 style="margin:6px 0; color:var(--money); font-size:16px;">R$ ${v.total.toFixed(2)}</h4>${v.fotos[0] ? `<img src="${v.fotos[0]}" style="width:100%; height:160px; object-fit:cover; border-radius:18px; margin-top:8px;">` : ''}</div></div>`;
-        });
-        document.getElementById('timeline-list').innerHTML = html || '<p style="text-align:center;padding:20px;color:#999">Sem memórias ainda.</p>';
+    function removerViagem(uf, rawDate, cidade) {
+    // 1. Pedir confirmação para não apagar sem querer
+    if (!confirm(`Deseja realmente apagar a memória de ${cidade}?`)) return;
+
+    // 2. Pegar os dados atuais
+    let db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
+
+    if (db[uf]) {
+        // 3. Filtrar a lista: manter todos, EXCETO o que queremos apagar
+        // Usamos a data e a cidade como "identificadores"
+        db[uf] = db[uf].filter(v => !(v.rawDate === rawDate && v.cidade === cidade));
+
+        // 4. Se o estado ficou sem nenhuma viagem, removemos a chave do estado
+        if (db[uf].length === 0) {
+            delete db[uf];
+        }
+
+        // 5. Salvar de volta e atualizar a tela
+        localStorage.setItem('viagens_master_v1', JSON.stringify(db));
+        
+        alert("Memória removida!");
+        location.reload(); // Recarrega para atualizar mapa, gastos e timeline de uma vez
     }
+}
+    function renderTimeline() {
+    const db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
+    let todas = []; 
+    for(let uf in db) db[uf].forEach(v => todas.push(v));
+    
+    todas.sort((a,b) => new Date(b.rawDate) - new Date(a.rawDate));
+    
+    let html = '';
+    todas.forEach(v => {
+        html += `
+        <div class="timeline-item">
+            <div class="t-dot"></div>
+            <div class="t-card" style="position: relative;">
+                <button onclick="removerViagem('${v.uf}', '${v.rawDate}', '${v.cidade}')" 
+                        style="position: absolute; top: 12px; right: 12px; background: #fee2e2; border: none; color: #ef4444; cursor: pointer; font-size: 14px; width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                    🗑️
+                </button>
+
+                <span style="font-size:11px; font-weight:800; color:var(--text-sub)">${v.cidade} - ${v.data}</span>
+                <h4 style="margin:6px 0; color:var(--money); font-size:16px;">R$ ${v.total.toFixed(2)}</h4>
+                ${v.fotos[0] ? `<img src="${v.fotos[0]}" style="width:100%; height:160px; object-fit:cover; border-radius:18px; margin-top:8px;">` : ''}
+            </div>
+        </div>`;
+    });
+    
+    document.getElementById('timeline-list').innerHTML = html || '<p style="text-align:center;padding:20px;color:#999">Sem memórias ainda.</p>';
+}
 
     function renderGastos() {
         const db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
