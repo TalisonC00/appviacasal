@@ -4,48 +4,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nossa Jornada 👩‍❤️‍👨</title>
+    
     <script src="mapdata.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
         :root { --primary: #FF4B5C; --sky: #BAE6FD; --card: #FFFFFF; --text-main: #1E293B; --text-sub: #64748B; --money: #10B981; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--sky); margin: 0; padding: 0; overflow: hidden; touch-action: none; }
+        
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--sky); margin: 0; padding: 0; overflow: hidden; touch-action: none; color: var(--text-main); }
+        
         .header { background: #fff; padding: 12px 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.03); position: relative; z-index: 100; }
         .header h3 { margin: 0; font-size: 18px; color: var(--primary) !important; font-weight: 800; }
         #info { font-size: 10px; font-weight: 800; color: #000; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; display: block; }
+
         .aba { display: none; width: 100%; height: calc(100vh - 120px); overflow-y: auto; padding-bottom: 20px; }
         .ativa { display: block; }
+        
         .card { background: var(--card); padding: 20px; margin: 16px; border-radius: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
+        .card h3 { margin: 0 0 20px 0; font-size: 20px; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+
         .mapa-card { background: var(--card); margin: 16px; border-radius: 28px; height: calc(100% - 32px); position: relative; overflow: hidden; }
         #svg-container { width: 100%; height: 100%; cursor: grab; background: #fff; }
         path { fill: #F1F5F9; stroke: #fff; stroke-width: 0.6; transition: 0.3s; cursor: pointer; }
         .state-label-text { font-size: 7px; font-weight: 800; fill: #94a3b8; pointer-events: none; text-anchor: middle; dominant-baseline: middle; }
+
         .timeline-container { padding: 10px 5px; position: relative; }
         .timeline-line { position: absolute; left: 33px; top: 60px; bottom: 20px; width: 3px; background: rgba(255,255,255,0.8); z-index: 0; }
         .timeline-item { display: flex; gap: 15px; margin-bottom: 25px; position: relative; z-index: 2; margin-left: 20px; margin-right: 16px; }
         .t-dot { min-width: 14px; height: 14px; background: var(--primary); border: 3px solid #fff; border-radius: 50%; margin-top: 6px; z-index: 3; }
         .t-card { background: #fff; padding: 18px; border-radius: 24px; flex: 1; box-shadow: 0 8px 25px rgba(0,0,0,0.04); }
+
         .resumo-uf-card { background: #fff; border-radius: 24px; padding: 24px; margin-bottom: 24px; border: 1.5px solid #F1F5F9; }
-        .badge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; justify-items: center; }
-        .badge-item { display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .uf-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f8fafc; padding-bottom: 12px; margin-bottom: 12px; font-weight: 800; }
+        .gasto-entry { padding: 15px 0; border-bottom: 1px solid #f8fafc; }
+        .pill { background: #F8FAFC; padding: 6px 10px; border-radius: 10px; font-size: 10px; font-weight: 700; color: var(--text-sub); display: flex; align-items: center; gap: 4px; border: 1px solid #eee; margin-top: 5px; }
+
+        .badge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px 10px; justify-items: center; }
+        .badge-item { display: flex; flex-direction: column; align-items: center; text-align: center; width: 80px; transition: 0.3s; }
         .b-icon { width: 52px; height: 52px; background: #F1F5F9; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 6px; }
         .badge-name { font-size: 9px; font-weight: 800; color: var(--text-sub); text-transform: uppercase; }
+
         #photo-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: #fff; padding: 24px; border-radius: 32px; box-shadow: 0 25px 60px rgba(0,0,0,0.3); z-index: 2100; width: 90%; max-width: 340px; opacity: 0; visibility: hidden; transition: 0.3s; }
         #photo-popup.show { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
-        .carousel-fotos { position: relative; width: 100%; overflow: hidden; border-radius: 20px; margin: 10px 0; height: 180px; }
+        .carousel-fotos { position: relative; width: 100%; overflow: hidden; border-radius: 20px; margin: 10px 0; height: 180px; background: #f1f5f9; }
         .track-fotos { display: flex; transition: transform 0.4s ease; height: 100%; }
         .img-slide { min-width: 100%; height: 100%; object-fit: cover; }
+
         .menu-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; height: 55px; border-top-left-radius: 25px; border-top-right-radius: 25px; z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.05); }
         .btn-aba { flex: 1; border: none; background: none; font-size: 20px; color: #CBD5E1; cursor: pointer; outline: none; }
         .btn-aba.active { color: var(--primary); transform: translateY(-3px); }
-        .close-popup { position: absolute; top: 12px; right: 12px; background: var(--primary); color: white; border: none; border-radius: 50%; width: 30px; height: 30px; font-weight: bold; z-index: 3000; }
+
         input, select { width: 100%; padding: 12px; border-radius: 12px; border: 1.5px solid #F1F5F9; font-family: inherit; background: #F8FAFC; box-sizing: border-box; }
+        .btn-acao { background: var(--primary); color: #fff; border: none; padding: 16px; border-radius: 18px; width: 100%; font-weight: 800; margin-top: 15px; cursor: pointer; }
     </style>
 </head>
 <body>
     <div class="header"><h3>Nossa Jornada 👩‍❤️‍👨</h3><span id="info">ESTADOS CONQUISTADOS: 0</span></div>
-    <div id="popup-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:2000;display:none;backdrop-filter:blur(4px);" onclick="fecharPopup()"></div>
-    <div id="photo-popup"><button class="close-popup" onclick="fecharPopup()">✕</button><div id="popup-content" style="max-height:450px; overflow-y:auto; text-align:left;"></div></div>
+    <div id="popup-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:2000;display:none;" onclick="fecharPopup()"></div>
+    <div id="photo-popup"><button style="position:absolute;top:12px;right:12px;background:var(--primary);color:#fff;border:none;border-radius:50%;width:30px;height:30px;font-weight:bold;z-index:3000;" onclick="fecharPopup()">✕</button><div id="popup-content" class="popup-scroll"></div></div>
     
     <div id="aba-mapa" class="aba ativa"><div class="mapa-card"><div id="svg-container"></div></div></div>
     <div id="aba-timeline" class="aba"><div class="timeline-container"><h3 style="margin:0 0 25px 20px; color:var(--primary)">📅 Timeline</h3><div class="timeline-line"></div><div id="timeline-list"></div></div></div>
@@ -59,12 +76,13 @@
             </select>
             <input type="text" id="txt-cidade" placeholder="Cidade" style="margin:10px 0;">
             <input type="date" id="txt-data">
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
-                <input type="number" id="v-hosp" placeholder="Hotel"><input type="number" id="v-trans" placeholder="Transporte">
+            <label style="display:flex; align-items:center; gap:8px; margin:15px 0;"><input type="checkbox" id="chk-praia" style="width:18px;height:18px;"><span>VIAGEM DE PRAIA? 🏖️</span></label>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <input type="number" id="v-hosp" placeholder="Hotel"><input type="number" id="v-trans" placeholder="Transp.">
                 <input type="number" id="v-alime" placeholder="Comida"><input type="number" id="v-atrac" placeholder="Atrações">
             </div>
             <input type="file" id="inp-foto" accept="image/*" multiple style="margin-top:10px;">
-            <button onclick="salvarViagem()" style="background:var(--primary); color:#fff; border:none; padding:16px; border-radius:18px; width:100%; font-weight:800; margin-top:15px; cursor:pointer;">Salvar Memória 🚩</button>
+            <button onclick="salvarViagem()" class="btn-acao">Salvar Memória 🚩</button>
         </div>
     </div>
     <div id="aba-gastos" class="aba"><div class="card"><h3>💰 Relatório</h3><div id="lista-detalhada-gastos"></div><div id="total-geral-brasil" style="background:var(--sky); padding:18px; border-radius:20px; text-align:center; font-weight:800; margin-top:20px;">Total Brasil: R$ 0,00</div></div></div>
@@ -95,12 +113,11 @@
             if (data) {
                 const box = el.getBBox();
                 const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                let posX = box.x + box.width / 2;
-                let posY = box.y + box.height / 2;
-                // CORREÇÃO GEOGRÁFICA ES e RN
-                if(id === 'BRES') { posX += 2; posY += 2; }
-                if(id === 'BRRN') { posX -= 1; posY += 1; }
-                txt.setAttribute("x", posX); txt.setAttribute("y", posY);
+                let pX = box.x + box.width / 2;
+                let pY = box.y + box.height / 2;
+                if(id === 'BRES') { pX += 3; pY += 2; }
+                if(id === 'BRRN') { pX -= 1; pY += 1; }
+                txt.setAttribute("x", pX); txt.setAttribute("y", pY);
                 txt.setAttribute("class", "state-label-text");
                 txt.textContent = data.description || id.replace('BR','');
                 svgEl.appendChild(txt);
@@ -116,7 +133,6 @@
         document.querySelectorAll('.btn-aba').forEach(b => b.classList.remove('active'));
         document.getElementById('aba-' + id).classList.add('ativa');
         btn.classList.add('active');
-        if(id === 'mapa' && zoomInst) zoomInst.resize().fit().center();
         if(id === 'gastos') renderGastos();
         if(id === 'jornada') renderJornada();
         if(id === 'timeline') renderTimeline();
@@ -130,54 +146,19 @@
         const files = document.getElementById('inp-foto').files;
         let fotos = []; for (let i = 0; i < Math.min(files.length, 3); i++) { fotos.push(await converter(files[i])); }
         const trip = { cidade: cid, uf, data: dat.split('-').reverse().join('/'), rawDate: dat, fotos, 
-            h: parseFloat(document.getElementById('v-hosp').value || 0), 
-            t: parseFloat(document.getElementById('v-trans').value || 0),
-            al: parseFloat(document.getElementById('v-alime').value || 0),
-            at: parseFloat(document.getElementById('v-atrac').value || 0)
+            h: parseFloat(document.getElementById('v-hosp').value || 0), t: parseFloat(document.getElementById('v-trans').value || 0),
+            al: parseFloat(document.getElementById('v-alime').value || 0), at: parseFloat(document.getElementById('v-atrac').value || 0),
+            praia: document.getElementById('chk-praia').checked
         };
         trip.total = trip.h + trip.t + trip.al + trip.at;
-        let db = JSON.parse(localStorage.getItem('jornada_vFinal')) || {};
+        let db = JSON.parse(localStorage.getItem('jornada_vMaster')) || {};
         if(!db[uf]) db[uf] = []; db[uf].unshift(trip);
-        localStorage.setItem('jornada_vFinal', JSON.stringify(db));
+        localStorage.setItem('jornada_vMaster', JSON.stringify(db));
         location.reload();
     }
 
-    function atualizarInterface() {
-        const db = JSON.parse(localStorage.getItem('jornada_vFinal')) || {};
-        Object.keys(db).forEach(u => {
-            const el = document.getElementById(u);
-            if(el) {
-                let cor = '#ccc';
-                for (let r in REGIOES) { if(REGIOES[r].UFs.includes(u)) cor = REGIOES[r].color; }
-                el.style.fill = cor;
-            }
-        });
-        document.getElementById('info').innerText = `ESTADOS CONQUISTADOS: ${Object.keys(db).length}`;
-    }
-
-    function renderJornada() {
-        const db = JSON.parse(localStorage.getItem('jornada_vFinal')) || {};
-        const v = Object.keys(db);
-        const metas = [
-            {n:1, l:'Início', i:'🌱'}, {n:5, l:'Visitante', i:'🏃'}, {n:10, l:'Explorador', i:'⭐'}, 
-            {n:20, l:'Aventureiro', i:'🔥'}, {n:26, l:'Mestre Brasil', i:'👑'},
-            {reg:'NORTE', i:'🌳'}, {reg:'NORDESTE', i:'🌵'}, {reg:'CENTRO', i:'☀️'}, {reg:'SUDESTE', i:'🏢'}, {reg:'SUL', i:'❄️'}
-        ];
-        let h = '';
-        metas.forEach(m => {
-            let ok = false;
-            if(m.n) ok = v.length >= m.n;
-            else ok = REGIOES[m.reg].UFs.every(u => v.includes(u));
-            h += `<div class="badge-item" style="opacity:${ok?1:0.2}">
-                <div class="b-icon">${m.i}</div>
-                <div class="badge-name">${m.l || m.reg}</div>
-            </div>`;
-        });
-        document.getElementById('grid-conquistas').innerHTML = h;
-    }
-
     function renderTimeline() {
-        const db = JSON.parse(localStorage.getItem('jornada_vFinal')) || {};
+        const db = JSON.parse(localStorage.getItem('jornada_vMaster')) || {};
         let t = []; for(let u in db) db[u].forEach(v => t.push(v));
         t.sort((a,b) => new Date(b.rawDate) - new Date(a.rawDate));
         let h = '';
@@ -192,14 +173,19 @@
     }
 
     function renderGastos() {
-        const db = JSON.parse(localStorage.getItem('jornada_vFinal')) || {};
+        const db = JSON.parse(localStorage.getItem('jornada_vMaster')) || {};
         let h = '', tg = 0;
         for (const u in db) {
             let tu = 0, ch = '';
             db[u].forEach(c => {
                 tu += c.total;
-                ch += `<div class="gasto-entry"><div class="cidade-data-row"><span>${c.cidade}</span><strong>R$ ${c.total.toFixed(2)}</strong></div>
-                <div style="display:flex; gap:5px;"><div class="pill">🏨 ${c.h}</div><div class="pill">🚗 ${c.t}</div><div class="pill">🍴 ${c.al}</div><div class="pill">🎡 ${c.at}</div></div></div>`;
+                ch += `<div class="gasto-entry">
+                    <div class="cidade-data-row"><span>${c.cidade}</span><strong>R$ ${c.total.toFixed(2)}</strong></div>
+                    <div style="display:flex; flex-wrap:wrap; gap:5px;">
+                        <div class="pill">🏨 ${c.h}</div><div class="pill">🚗 ${c.t}</div>
+                        <div class="pill">🍴 ${c.al}</div><div class="pill">🎡 ${c.at}</div>
+                    </div>
+                </div>`;
             });
             tg += tu;
             h += `<div class="resumo-uf-card"><div class="uf-header"><span>🚩 ${u.replace('BR','')}</span><span>R$ ${tu.toFixed(2)}</span></div>${ch}</div>`;
@@ -208,15 +194,33 @@
         document.getElementById('total-geral-brasil').innerText = `Total Brasil: R$ ${tg.toFixed(2)}`;
     }
 
+    function renderJornada() {
+        const db = JSON.parse(localStorage.getItem('jornada_vMaster')) || {};
+        const v = Object.keys(db);
+        const metas = [
+            {n:1, l:'Início', i:'🌱'}, {n:5, l:'Visitante', i:'🏃'}, {n:10, l:'Explorador', i:'⭐'}, {n:20, l:'Aventureiro', i:'🔥'}, {n:26, l:'Brasil', i:'👑'},
+            {reg:'NORTE', i:'🌳'}, {reg:'NORDESTE', i:'🌵'}, {reg:'CENTRO', i:'☀️'}, {reg:'SUDESTE', i:'🏢'}, {reg:'SUL', i:'❄️'}
+        ];
+        let h = '';
+        metas.forEach(m => {
+            let ok = m.n ? v.length >= m.n : REGIOES[m.reg].UFs.every(u => v.includes(u));
+            h += `<div class="badge-item" style="opacity:${ok?1:0.2}">
+                <div class="b-icon">${m.i}</div>
+                <div class="badge-name">${m.l || m.reg}</div>
+            </div>`;
+        });
+        document.getElementById('grid-conquistas').innerHTML = h;
+    }
+
     function abrirHistorico(id) {
-        const db = JSON.parse(localStorage.getItem('jornada_vFinal')) || {};
+        const db = JSON.parse(localStorage.getItem('jornada_vMaster')) || {};
         const lista = db[id]; const dataM = simplemaps_countrymap_mapdata.state_specific[id];
         const nome = dataM ? dataM.name : id.replace('BR','');
         if(!lista) return;
         let h = `<h2 style="color:var(--primary); margin:0 0 15px 0;">🚩 ${nome}</h2>`;
         lista.forEach((v, ci) => {
             let track = ''; v.fotos.forEach(f => { track += `<img src="${f}" class="img-slide">`; });
-            h += `<div style="margin-bottom:25px; border-bottom:1px solid #eee; padding-bottom:15px;">
+            h += `<div style="margin-bottom:30px; border-bottom:1px solid #eee; padding-bottom:15px;">
                 <p style="margin:0; font-size:14px; font-weight:800;">${v.cidade} - ${v.data}</p>
                 <h4 style="margin:5px 0; color:var(--money)">R$ ${v.total.toFixed(2)}</h4>
                 <div class="carousel-fotos" id="car-${ci}" ontouchstart="hTS(event)" ontouchmove="hTM(event, ${ci}, ${v.fotos.length})">
@@ -229,6 +233,18 @@
     let sX = 0; function hTS(e) { sX = e.touches[0].clientX; }
     function hTM(e, ci, len) { if (!sX) return; let d = sX - e.touches[0].clientX; let tr = document.querySelector(`#car-${ci} .track-fotos`); let cur = Math.round(Math.abs(new WebKitCSSMatrix(window.getComputedStyle(tr).transform).m41 / tr.offsetWidth)); if (Math.abs(d) > 40) { if (d > 0 && cur < len - 1) cur++; else if (d < 0 && cur > 0) cur--; tr.style.transform = `translateX(-${cur * 100}%)`; sX = 0; } }
     function fecharPopup() { document.getElementById('photo-popup').classList.remove('show'); document.getElementById('popup-overlay').style.display = 'none'; }
+    function atualizarInterface() {
+        const db = JSON.parse(localStorage.getItem('jornada_vMaster')) || {};
+        Object.keys(db).forEach(u => {
+            const el = document.getElementById(u);
+            if(el) {
+                let cor = '#ccc';
+                for (let r in REGIOES) { if(REGIOES[r].UFs.includes(u)) cor = REGIOES[r].color; }
+                el.style.fill = cor;
+            }
+        });
+        document.getElementById('info').innerText = `ESTADOS CONQUISTADOS: ${Object.keys(db).length}`;
+    }
     function converter(f) { return new Promise(r => { const rd = new FileReader(); rd.readAsDataURL(f); rd.onload = () => { const img = new Image(); img.src = rd.result; img.onload = () => { const cv = document.createElement('canvas'); const ctx = cv.getContext('2d'); cv.width = 600; cv.height = 600 * (img.height/img.width); ctx.drawImage(img, 0, 0, cv.width, cv.height); r(cv.toDataURL('image/jpeg', 0.6)); }; }; }); }
     init();
 </script>
