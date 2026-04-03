@@ -14,7 +14,7 @@
         .header h3 { margin: 0; font-size: 18px; color: var(--primary) !important; font-weight: 800; }
         #info { font-size: 10px; font-weight: 800; color: #000; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; display: block; }
 
-        .aba { display: none; width: 100%; height: calc(100vh - 230px); overflow-y: auto; padding-bottom: 80px; -webkit-overflow-scrolling: touch; }
+        .aba { display: none; width: 100%; height: calc(100vh - 160px); overflow-y: auto; padding-bottom: 55px; -webkit-overflow-scrolling: touch; }
         .ativa { display: block; }
         .card { background: var(--card); padding: 20px; margin: 16px 16px 30px 16px; border-radius: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
 
@@ -66,8 +66,10 @@
         .close-popup { position: absolute; top: 12px; right: 12px; background: var(--primary); color: white; border: none; border-radius: 50%; width: 30px; height: 30px; font-weight: bold; display: flex; align-items: center; justify-content: center; z-index: 3000 !important; cursor: pointer; }
 
         /* MENU NAV */
-        .menu-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; height: 75px; border-top-left-radius: 28px; border-top-right-radius: 28px; z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.05); }
-        .btn-aba { flex: 1; border: none; background: none; font-size: 22px; color: #CBD5E1; cursor: pointer; outline: none; transition: 0.3s; -webkit-tap-highlight-color: transparent; }
+        .menu-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; height: 55px; border-top-left-radius: 20px; border-top-right-radius: 20px; z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); }
+
+/* 2. Diminuindo o tamanho dos ícones (emojis) */
+        .btn-aba { flex: 1; border: none; background: none; font-size: 18px; color: #CBD5E1; cursor: pointer; outline: none; transition: 0.3s; -webkit-tap-highlight-color: transparent; }
         .btn-aba.active { color: var(--primary); transform: translateY(-5px); }
     </style>
 </head>
