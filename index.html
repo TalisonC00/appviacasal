@@ -15,11 +15,11 @@
         #info { font-size: 10px; font-weight: 800; color: #000; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; display: block; }
 
         /* ABA REDUZIDA PARA 60px */
-        .aba { display: none; width: 100%; height: calc(100vh - 140px); overflow-y: auto; padding-bottom: 40px; -webkit-overflow-scrolling: touch; }
+        .aba { display: none; width: 100%; height: calc(100vh - 135px); overflow-y: auto; padding-bottom: 40px; -webkit-overflow-scrolling: touch; }
         .ativa { display: block; }
         .card { background: var(--card); padding: 20px; margin: 16px; border-radius: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
 
-        /* MAPA */
+        /* MAPA - SEM SIGLAS */
         .mapa-card { background: var(--card); margin: 16px; border-radius: 28px; height: calc(100% - 32px); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
         #svg-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #fff; }
         path { fill: #F1F5F9; stroke: #fff; stroke-width: 0.8; transition: 0.5s; cursor: pointer; }
@@ -95,8 +95,7 @@
             </select>
             <input type="text" id="txt-cidade" placeholder="Cidade" style="margin:10px 0;">
             <input type="date" id="txt-data">
-            <label style="display:flex; align-items:center; gap:8px; margin:15px 0;"><input type="checkbox" id="chk-praia" style="width:18px;height:18px;"><span>VIAGEM DE PRAIA? 🏖️</span></label>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
                 <input type="number" id="v-hosp" placeholder="Hotel"><input type="number" id="v-trans" placeholder="Transp.">
                 <input type="number" id="v-alime" placeholder="Comida"><input type="number" id="v-atrac" placeholder="Atrações">
             </div>
@@ -155,7 +154,7 @@
         if(!cidade || !rawDate) return alert("Preencha cidade e data!");
         const files = document.getElementById('inp-foto').files;
         let fotos = []; for (let i = 0; i < Math.min(files.length, 3); i++) { fotos.push(await converter(files[i])); }
-        const trip = { cidade, uf, data: rawDate.split('-').reverse().join('/'), rawDate, fotos, h: parseFloat(document.getElementById('v-hosp').value || 0), t: parseFloat(document.getElementById('v-trans').value || 0), al: parseFloat(document.getElementById('v-alime').value || 0), at: parseFloat(document.getElementById('v-atrac').value || 0), praia: document.getElementById('chk-praia').checked, total: (parseFloat(document.getElementById('v-hosp').value || 0) + parseFloat(document.getElementById('v-trans').value || 0) + parseFloat(document.getElementById('v-alime').value || 0) + parseFloat(document.getElementById('v-atrac').value || 0)) };
+        const trip = { cidade, uf, data: rawDate.split('-').reverse().join('/'), rawDate, fotos, h: parseFloat(document.getElementById('v-hosp').value || 0), t: parseFloat(document.getElementById('v-trans').value || 0), al: parseFloat(document.getElementById('v-alime').value || 0), at: parseFloat(document.getElementById('v-atrac').value || 0), total: (parseFloat(document.getElementById('v-hosp').value || 0) + parseFloat(document.getElementById('v-trans').value || 0) + parseFloat(document.getElementById('v-alime').value || 0) + parseFloat(document.getElementById('v-atrac').value || 0)) };
         let db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
         if(!db[uf]) db[uf] = []; db[uf].unshift(trip);
         localStorage.setItem('viagens_master_v1', JSON.stringify(db));
@@ -168,7 +167,7 @@
         todas.sort((a,b) => new Date(b.rawDate) - new Date(a.rawDate));
         let html = '';
         todas.forEach(v => {
-            html += `<div class="timeline-item"><div class="t-dot"></div><div class="t-card"><span style="font-size:11px; font-weight:800; color:var(--text-sub)">${v.cidade} - ${v.data}</span><h4 style="margin:5px 0; color:var(--money)">R$ ${v.total.toFixed(2)}</h4>${v.fotos[0] ? `<img src="${v.fotos[0]}" style="width:100%; height:160px; object-fit:cover; border-radius:18px; margin-top:8px;">` : ''}</div></div>`;
+            html += `<div class="timeline-item"><div class="t-dot"></div><div class="t-card"><span style="font-size:11px; font-weight:800; color:var(--text-sub)">${v.cidade} - ${v.data}</span><h4 style="margin:6px 0; color:var(--money)">R$ ${v.total.toFixed(2)}</h4>${v.fotos[0] ? `<img src="${v.fotos[0]}" style="width:100%; height:160px; object-fit:cover; border-radius:18px; margin-top:8px;">` : ''}</div></div>`;
         });
         document.getElementById('timeline-list').innerHTML = html || '<p style="text-align:center;padding:20px;color:#999">Sem memórias ainda.</p>';
     }
@@ -178,45 +177,31 @@
         let html = '', totalGeral = 0;
         for (const uf in db) {
             let totalUF = 0, cidadesHtml = '';
-            db[uf].forEach(c => {
-                totalUF += c.total;
-                cidadesHtml += `<div class="gasto-entry"><div class="cidade-data-row"><span>${c.cidade} - ${c.data}</span><strong style="color:var(--money)">R$ ${c.total.toFixed(2)}</strong></div><div style="display:flex; flex-wrap:wrap; gap:6px;"><div class="pill">🏨 ${c.h.toFixed(0)}</div><div class="pill">🚗 ${c.t.toFixed(0)}</div><div class="pill">🍴 ${c.al.toFixed(0)}</div><div class="pill">🎡 ${c.at.toFixed(0)}</div></div></div>`;
-            });
+            db[uf].forEach(c => { totalUF += c.total; cidadesHtml += `<div class="gasto-entry"><div class="cidade-data-row"><span>${c.cidade} - ${c.data}</span><strong style="color:var(--money)">R$ ${c.total.toFixed(2)}</strong></div></div>`; });
             totalGeral += totalUF;
             html += `<div class="resumo-uf-card"><div class="uf-header"><span>🚩 ${uf.replace('BR','')}</span><span style="color:var(--money)">R$ ${totalUF.toFixed(2)}</span></div>${cidadesHtml}</div>`;
         }
         document.getElementById('lista-detalhada-gastos').innerHTML = html || '<p style="text-align:center;padding:20px;color:#999">Sem gastos.</p>';
-        document.getElementById('total-geral-brasil').innerText = `Total Brasil: R$ ${totalGeral.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+        document.getElementById('total-geral-brasil').innerText = `Total Brasil: R$ ${totalGeral.toFixed(2)}`;
     }
 
     function renderJornada() {
         const db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
-        const visitados = Object.keys(db);
-        let html = '';
-        const metas = [{n:1, l:'Início', i:'🌱'}, {n:5, l:'5 Estados', i:'🏃'}, {n:10, l:'10 Estados', i:'⭐'}, {n:20, l:'20 Estados', i:'🔥'}, {n:26, l:'Brasil', i:'👑'}];
-        metas.forEach(m => {
-            const ok = visitados.length >= m.n;
-            html += `<div class="badge ${ok ? 'active' : ''}" onclick="if(!${ok}) alert('Faltam ${m.n - visitados.length} estados!')"><div class="b-icon">${m.i}</div><div class="badge-name">${m.l}</div></div>`;
-        });
-        let temPraia = false; for(let u in db) db[u].forEach(v => { if(v.praia) temPraia = true; });
-        html += `<div class="badge ${temPraia ? 'active' : ''}"><div class="b-icon">🏖️</div><div class="badge-name">Pé na areia</div></div>`;
-        for(let r in REGIOES) {
-            const reg = REGIOES[r]; const vNaReg = reg.UFs.filter(u => visitados.includes(u)); const ok = vNaReg.length === reg.UFs.length;
-            html += `<div class="badge ${ok ? 'active' : ''}" onclick="if(!${ok}) alert('Complete a região!')"><div class="b-icon" style="${ok ? 'background:'+reg.color+';color:#fff' : ''}">${reg.icon}</div><div class="badge-name">${r}</div></div>`;
-        }
+        const visitados = Object.keys(db); let html = '';
+        const metas = [{n:1, l:'Início', i:'🌱'}, {n:5, l:'5 Estados', i:'🏃'}, {n:26, l:'Brasil', i:'👑'}];
+        metas.forEach(m => { const ok = visitados.length >= m.n; html += `<div class="badge ${ok ? 'active' : ''}"><div class="b-icon">${m.i}</div><div class="badge-name">${m.l}</div></div>`; });
         document.getElementById('grid-conquistas').innerHTML = html;
     }
 
     function abrirHistorico(id) {
         const db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
         const lista = db[id]; if (!lista) return;
-        let h = `<h2 style="color:var(--primary); margin:0 0 20px 0; font-size:22px;">🚩 ${id.replace('BR','')}</h2>`;
+        let h = `<h2 style="color:var(--primary); margin:0 0 15px 0;">🚩 ${id.replace('BR','')}</h2>`;
         lista.forEach((v, cIdx) => {
-            let track = '';
-            v.fotos.forEach(f => { track += `<img src="${f}" class="img-slide">`; });
+            let track = ''; v.fotos.forEach(f => { track += `<img src="${f}" class="img-slide">`; });
             h += `<div style="margin-bottom:30px; border-bottom:1px solid #eee; padding-bottom:20px;">
                 <p style="margin:0; font-size:14px; font-weight:800; color:var(--text-sub);">${v.cidade} - ${v.data}</p>
-                <h4 style="margin:5px 0 12px 0; color:var(--money); font-size:18px;">R$ ${v.total.toFixed(2)}</h4>
+                <h4 style="margin:6px 0 12px 0; color:var(--money); font-size:18px;">R$ ${v.total.toFixed(2)}</h4>
                 <div class="carousel-fotos" id="car-${cIdx}" ontouchstart="hTS(event)" ontouchmove="hTM(event, ${cIdx}, ${v.fotos.length})">
                     <div class="track-fotos">${track || '<div class="img-slide" style="background:#eee"></div>'}</div>
                 </div>
