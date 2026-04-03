@@ -19,17 +19,17 @@
         .ativa { display: block; }
         .card { background: var(--card); padding: 20px; margin: 16px; border-radius: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
 
-        /* MAPA - SEM SIGLAS */
+        /* MAPA */
         .mapa-card { background: var(--card); margin: 16px; border-radius: 28px; height: calc(100% - 32px); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
         #svg-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #fff; }
         path { fill: #F1F5F9; stroke: #fff; stroke-width: 0.8; transition: 0.5s; cursor: pointer; }
         
-        /* CORES VISITADOS */
-        .visitado[id^="BRAC"], .visitado[id^="BRAM"], .visitado[id^="BRRR"], .visitado[id^="BRRO"], .visitado[id^="BRPA"], .visitado[id^="BRAP"], .visitado[id^="BRTO"] { fill: #22C55E !important; }
-        .visitado[id^="BRMA"], .visitado[id^="BRPI"], .visitado[id^="BRCE"], .visitado[id^="BRRN"], .visitado[id^="BRPB"], .visitado[id^="BRPE"], .visitado[id^="BRAL"], .visitado[id^="BRSE"], .visitado[id^="BRBA"] { fill: #FACC15 !important; }
-        .visitado[id^="BRMT"], .visitado[id^="BRMS"], .visitado[id^="BRGO"], .visitado[id^="BRDF"] { fill: #FB923C !important; }
-        .visitado[id^="BRMG"], .visitado[id^="BRSP"], .visitado[id^="BRRJ"], .visitado[id^="BRES"] { fill: #EC4899 !important; }
-        .visitado[id^="BRPR"], .visitado[id^="BRSC"], .visitado[id^="BRRS"] { fill: #A855F7 !important; }
+        /* CORES VISITADOS (Atualizado para siglas sem BR) */
+        .visitado[id="AC"], .visitado[id="AM"], .visitado[id="RR"], .visitado[id="RO"], .visitado[id="PA"], .visitado[id="AP"], .visitado[id="TO"] { fill: #22C55E !important; }
+        .visitado[id="MA"], .visitado[id="PI"], .visitado[id="CE"], .visitado[id="RN"], .visitado[id="PB"], .visitado[id="PE"], .visitado[id="AL"], .visitado[id="SE"], .visitado[id="BA"] { fill: #FACC15 !important; }
+        .visitado[id="MT"], .visitado[id="MS"], .visitado[id="GO"], .visitado[id="DF"] { fill: #FB923C !important; }
+        .visitado[id="MG"], .visitado[id="SP"], .visitado[id="RJ"], .visitado[id="ES"] { fill: #EC4899 !important; }
+        .visitado[id="PR"], .visitado[id="SC"], .visitado[id="RS"] { fill: #A855F7 !important; }
 
         /* TIMELINE COM LINHA POR TRÁS */
         .timeline-container { padding: 10px 5px; position: relative; }
@@ -91,7 +91,7 @@
             <h3>📍 Nova Memória</h3>
             <label style="font-size:10px; font-weight:800; color:var(--text-sub); text-transform:uppercase; display:block; margin-bottom:5px;">Estado</label>
             <select id="sel-uf">
-                <option value="BRSP">São Paulo</option><option value="BRRJ">Rio de Janeiro</option><option value="BRMG">Minas Gerais</option><option value="BRBA">Bahia</option><option value="BRSC">Santa Catarina</option><option value="BRPR">Paraná</option><option value="BRRS">Rio Grande do Sul</option><option value="BRGO">Goiás</option><option value="BRDF">Distrito Federal</option><option value="BRES">Espírito Santo</option><option value="BRCE">Ceará</option><option value="BRPE">Pernambuco</option><option value="BRRN">Rio Grande do Norte</option><option value="BRPB">Paraíba</option><option value="BRAL">Alagoas</option><option value="BRSE">Sergipe</option><option value="BRMA">Maranhão</option><option value="BRPI">Piauí</option><option value="BRMT">Mato Grosso</option><option value="BRMS">Mato Grosso do Sul</option><option value="BRTO">Tocantins</option><option value="BRPA">Pará</option><option value="BRAM">Amazonas</option><option value="BRRO">Rondônia</option><option value="BRAC">Acre</option><option value="BRRR">Roraima</option><option value="BRAP">Amapá</option>
+                <option value="SP" selected>São Paulo</option><option value="RJ">Rio de Janeiro</option><option value="MG">Minas Gerais</option><option value="BA">Bahia</option><option value="SC">Santa Catarina</option><option value="PR">Paraná</option><option value="RS">Rio Grande do Sul</option><option value="GO">Goiás</option><option value="DF">Distrito Federal</option><option value="ES">Espírito Santo</option><option value="CE">Ceará</option><option value="PE">Pernambuco</option><option value="RN">Rio Grande do Norte</option><option value="PB">Paraíba</option><option value="AL">Alagoas</option><option value="SE">Sergipe</option><option value="MA">Maranhão</option><option value="PI">Piauí</option><option value="MT">Mato Grosso</option><option value="MS">Mato Grosso do Sul</option><option value="TO">Tocantins</option><option value="PA">Pará</option><option value="AM">Amazonas</option><option value="RO">Rondônia</option><option value="AC">Acre</option><option value="RR">Roraima</option><option value="AP">Amapá</option>
             </select>
             <input type="text" id="txt-cidade" placeholder="Cidade" style="margin:10px 0;">
             <input type="date" id="txt-data">
@@ -121,7 +121,7 @@
     </nav>
 
 <script>
-    const REGIOES = { 'NORTE': { icon: '🌳', color: '#22C55E', UFs: ['BRAC','BRAM','BRRR','BRRO','BRPA','BRAP','BRTO'] }, 'NORDESTE': { icon: '🌵', color: '#FACC15', UFs: ['BRMA','BRPI','BRCE','BRRN','BRPB','BRPE','BRAL','BRSE','BRBA'] }, 'CENTRO': { icon: '☀️', color: '#FB923C', UFs: ['BRMT','BRMS','BRGO','BRDF'] }, 'SUDESTE': { icon: '🏢', color: '#EC4899', UFs: ['BRMG','BRSP','BRRJ','BRES'] }, 'SUL': { icon: '❄️', color: '#A855F7', UFs: ['BRPR','BRSC','BRRS'] } };
+    const REGIOES = { 'NORTE': { icon: '🌳', color: '#22C55E', UFs: ['AC','AM','RR','RO','PA','AP','TO'] }, 'NORDESTE': { icon: '🌵', color: '#FACC15', UFs: ['MA','PI','CE','RN','PB','PE','AL','SE','BA'] }, 'CENTRO': { icon: '☀️', color: '#FB923C', UFs: ['MT','MS','GO','DF'] }, 'SUDESTE': { icon: '🏢', color: '#EC4899', UFs: ['MG','SP','RJ','ES'] }, 'SUL': { icon: '❄️', color: '#A855F7', UFs: ['PR','SC','RS'] } };
 
     async function init() {
         const res = await fetch('br.svg');
@@ -151,18 +151,18 @@
         const uf = document.getElementById('sel-uf').value;
         const cidade = document.getElementById('txt-cidade').value;
         const rawDate = document.getElementById('txt-data').value;
-        if(!cidade || !rawDate) return alert("Preencha cidade e data!");
+        if(!cidade || !rawDate) return alert("Preencha!");
         const files = document.getElementById('inp-foto').files;
         let fotos = []; for (let i = 0; i < Math.min(files.length, 3); i++) { fotos.push(await converter(files[i])); }
         const trip = { cidade, uf, data: rawDate.split('-').reverse().join('/'), rawDate, fotos, h: parseFloat(document.getElementById('v-hosp').value || 0), t: parseFloat(document.getElementById('v-trans').value || 0), al: parseFloat(document.getElementById('v-alime').value || 0), at: parseFloat(document.getElementById('v-atrac').value || 0), total: (parseFloat(document.getElementById('v-hosp').value || 0) + parseFloat(document.getElementById('v-trans').value || 0) + parseFloat(document.getElementById('v-alime').value || 0) + parseFloat(document.getElementById('v-atrac').value || 0)) };
-        let db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
+        let db = JSON.parse(localStorage.getItem('viagens_master_v2')) || {};
         if(!db[uf]) db[uf] = []; db[uf].unshift(trip);
-        localStorage.setItem('viagens_master_v1', JSON.stringify(db));
+        localStorage.setItem('viagens_master_v2', JSON.stringify(db));
         location.reload();
     }
 
     function renderTimeline() {
-        const db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
+        const db = JSON.parse(localStorage.getItem('viagens_master_v2')) || {};
         let todas = []; for(let uf in db) db[uf].forEach(v => todas.push(v));
         todas.sort((a,b) => new Date(b.rawDate) - new Date(a.rawDate));
         let html = '';
@@ -173,20 +173,20 @@
     }
 
     function renderGastos() {
-        const db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
+        const db = JSON.parse(localStorage.getItem('viagens_master_v2')) || {};
         let html = '', totalGeral = 0;
         for (const uf in db) {
             let totalUF = 0, cidadesHtml = '';
             db[uf].forEach(c => { totalUF += c.total; cidadesHtml += `<div class="gasto-entry"><div class="cidade-data-row"><span>${c.cidade} - ${c.data}</span><strong style="color:var(--money)">R$ ${c.total.toFixed(2)}</strong></div></div>`; });
             totalGeral += totalUF;
-            html += `<div class="resumo-uf-card"><div class="uf-header"><span>🚩 ${uf.replace('BR','')}</span><span style="color:var(--money)">R$ ${totalUF.toFixed(2)}</span></div>${cidadesHtml}</div>`;
+            html += `<div class="resumo-uf-card"><div class="uf-header"><span>🚩 ${uf}</span><span style="color:var(--money)">R$ ${totalUF.toFixed(2)}</span></div>${cidadesHtml}</div>`;
         }
         document.getElementById('lista-detalhada-gastos').innerHTML = html || '<p style="text-align:center;padding:20px;color:#999">Sem gastos.</p>';
         document.getElementById('total-geral-brasil').innerText = `Total Brasil: R$ ${totalGeral.toFixed(2)}`;
     }
 
     function renderJornada() {
-        const db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
+        const db = JSON.parse(localStorage.getItem('viagens_master_v2')) || {};
         const visitados = Object.keys(db); let html = '';
         const metas = [{n:1, l:'Início', i:'🌱'}, {n:5, l:'5 Estados', i:'🏃'}, {n:26, l:'Brasil', i:'👑'}];
         metas.forEach(m => { const ok = visitados.length >= m.n; html += `<div class="badge ${ok ? 'active' : ''}"><div class="b-icon">${m.i}</div><div class="badge-name">${m.l}</div></div>`; });
@@ -194,14 +194,14 @@
     }
 
     function abrirHistorico(id) {
-        const db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
+        const db = JSON.parse(localStorage.getItem('viagens_master_v2')) || {};
         const lista = db[id]; if (!lista) return;
-        let h = `<h2 style="color:var(--primary); margin:0 0 15px 0;">🚩 ${id.replace('BR','')}</h2>`;
+        let h = `<h2 style="color:var(--primary); margin:0 0 15px 0;">🚩 ${id}</h2>`;
         lista.forEach((v, cIdx) => {
             let track = ''; v.fotos.forEach(f => { track += `<img src="${f}" class="img-slide">`; });
             h += `<div style="margin-bottom:30px; border-bottom:1px solid #eee; padding-bottom:20px;">
                 <p style="margin:0; font-size:14px; font-weight:800; color:var(--text-sub);">${v.cidade} - ${v.data}</p>
-                <h4 style="margin:6px 0 12px 0; color:var(--money); font-size:18px;">R$ ${v.total.toFixed(2)}</h4>
+                <h4 style="margin:5px 0 10px 0; color:var(--money); font-size:18px;">R$ ${v.total.toFixed(2)}</h4>
                 <div class="carousel-fotos" id="car-${cIdx}" ontouchstart="hTS(event)" ontouchmove="hTM(event, ${cIdx}, ${v.fotos.length})">
                     <div class="track-fotos">${track || '<div class="img-slide" style="background:#eee"></div>'}</div>
                 </div>
@@ -215,7 +215,7 @@
     let sX = 0; function hTS(e) { sX = e.touches[0].clientX; }
     function hTM(e, cIdx, len) { if (!sX) return; let d = sX - e.touches[0].clientX; let tr = document.querySelector(`#car-${cIdx} .track-fotos`); let curIdx = Math.round(Math.abs(new WebKitCSSMatrix(window.getComputedStyle(tr).transform).m41 / tr.offsetWidth)); if (Math.abs(d) > 40) { if (d > 0 && curIdx < len - 1) curIdx++; else if (d < 0 && curIdx > 0) curIdx--; tr.style.transform = `translateX(-${curIdx * 100}%)`; sX = 0; } }
     function fecharPopup() { document.getElementById('photo-popup').classList.remove('show'); document.getElementById('popup-overlay').style.display = 'none'; }
-    function atualizarInterface() { const db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {}; Object.keys(db).forEach(u => { const el = document.getElementById(u); if(el) el.classList.add('visitado'); }); document.getElementById('info').innerText = `ESTADOS CONQUISTADOS: ${Object.keys(db).length}`; }
+    function atualizarInterface() { const db = JSON.parse(localStorage.getItem('viagens_master_v2')) || {}; Object.keys(db).forEach(u => { const el = document.getElementById(u); if(el) el.classList.add('visitado'); }); document.getElementById('info').innerText = `ESTADOS CONQUISTADOS: ${Object.keys(db).length}`; }
     function converter(f) { return new Promise(r => { const rd = new FileReader(); rd.readAsDataURL(f); rd.onload = () => { const img = new Image(); img.src = rd.result; img.onload = () => { const cv = document.createElement('canvas'); const ctx = cv.getContext('2d'); cv.width = 600; cv.height = 600 * (img.height/img.width); ctx.drawImage(img, 0, 0, cv.width, cv.height); r(cv.toDataURL('image/jpeg', 0.6)); }; }; }); }
     init();
 </script>
