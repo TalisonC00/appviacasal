@@ -17,73 +17,86 @@
         .aba { display: none; width: 100%; height: calc(100vh - 175px); overflow-y: auto; padding-bottom: 40px; -webkit-overflow-scrolling: touch; }
         .ativa { display: block; }
         .card { background: var(--card); padding: 24px; margin: 16px; border-radius: 32px; box-shadow: 0 12px 40px rgba(0,0,0,0.06); }
-        
+
+        /* MAPA */
         .mapa-card { background: var(--card); margin: 16px; border-radius: 28px; height: calc(100% - 32px); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
         #svg-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #fff; }
         path { fill: #F1F5F9; stroke: #fff; stroke-width: 0.8; transition: 0.5s; cursor: pointer; }
         
-        /* CORES REGIÕES NO MAPA */
+        /* CORES REGIÕES MAPA */
         .visitado[id^="BRAC"], .visitado[id^="BRAM"], .visitado[id^="BRRR"], .visitado[id^="BRRO"], .visitado[id^="BRPA"], .visitado[id^="BRAP"], .visitado[id^="BRTO"] { fill: #22C55E !important; }
         .visitado[id^="BRMA"], .visitado[id^="BRPI"], .visitado[id^="BRCE"], .visitado[id^="BRRN"], .visitado[id^="BRPB"], .visitado[id^="BRPE"], .visitado[id^="BRAL"], .visitado[id^="BRSE"], .visitado[id^="BRBA"] { fill: #FACC15 !important; }
         .visitado[id^="BRMT"], .visitado[id^="BRMS"], .visitado[id^="BRGO"], .visitado[id^="BRDF"] { fill: #FB923C !important; }
         .visitado[id^="BRMG"], .visitado[id^="BRSP"], .visitado[id^="BRRJ"], .visitado[id^="BRES"] { fill: #EC4899 !important; }
         .visitado[id^="BRPR"], .visitado[id^="BRSC"], .visitado[id^="BRRS"] { fill: #A855F7 !important; }
 
-        /* GASTOS ALINHAMENTO */
+        /* TIMELINE */
+        .timeline-item { display: flex; gap: 15px; margin: 0 20px 25px 25px; position: relative; }
+        .t-dot { min-width: 12px; height: 12px; background: var(--primary); border: 3px solid #fff; border-radius: 50%; margin-top: 6px; z-index: 2; }
+        .t-card { background: #fff; padding: 18px; border-radius: 24px; flex: 1; box-shadow: 0 8px 20px rgba(0,0,0,0.04); }
+
+        /* GASTOS */
         .resumo-uf-card { background: #fff; border-radius: 24px; padding: 20px; margin-bottom: 20px; border: 1.5px solid #F1F5F9; }
-        .uf-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f8fafc; padding-bottom: 12px; margin-bottom: 12px; }
-        .cidade-data-row { display: flex; justify-content: space-between; font-size: 13px; font-weight: 800; color: var(--text-main); margin-bottom: 10px; }
+        .uf-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f8fafc; padding-bottom: 12px; margin-bottom: 12px; font-weight: 800; font-size: 18px; }
+        .cidade-data-row { display: flex; justify-content: space-between; font-size: 12px; font-weight: 800; color: var(--text-main); margin-bottom: 8px; }
+        .pill { background: #F8FAFC; padding: 6px 10px; border-radius: 10px; font-size: 10px; font-weight: 700; color: var(--text-sub); display: flex; align-items: center; gap: 4px; border: 1px solid #eee; }
 
         /* CONQUISTAS */
-        .badge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; justify-items: center; }
-        .badge { display: flex; flex-direction: column; align-items: center; opacity: 0.15; filter: grayscale(1); transition: 0.3s; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .badge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px 10px; justify-items: center; }
+        .badge { display: flex; flex-direction: column; align-items: center; width: 80px; opacity: 0.15; filter: grayscale(1); transition: 0.4s; cursor: pointer; -webkit-tap-highlight-color: transparent; }
         .badge.active { opacity: 1; filter: grayscale(0); }
-        .b-icon { width: 50px; height: 50px; background: #F1F5F9; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 4px; }
+        .b-icon { width: 56px; height: 56px; background: #F1F5F9; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 6px; }
+        .badge-name { font-size: 9px; font-weight: 800; color: var(--text-sub); text-align: center; text-transform: uppercase; }
 
-        /* MENU NAV */
-        .menu-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; height: 85px; border-top-left-radius: 30px; border-top-right-radius: 30px; z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.05); }
-        .btn-aba { flex: 1; border: none; background: none; font-size: 24px; color: #CBD5E1; cursor: pointer; outline: none; transition: 0.3s; -webkit-tap-highlight-color: transparent; }
-        .btn-aba.active { color: var(--primary); transform: translateY(-5px); }
+        /* FORMULÁRIO */
+        input, select { width: 100%; padding: 14px; border-radius: 14px; border: 1.5px solid #F1F5F9; font-family: inherit; background: #F8FAFC; box-sizing: border-box; }
+        label { font-size: 10px; font-weight: 800; color: var(--text-sub); text-transform: uppercase; margin: 12px 0 4px 4px; display: block; }
+        .mini-check { display: flex; align-items: center; gap: 8px; margin: 15px 0; padding: 10px; background: #F8FAFC; border-radius: 12px; border: 1.5px solid #F1F5F9; cursor: pointer; }
+        .btn-acao { background: var(--primary); color: #fff; border: none; padding: 18px; border-radius: 20px; width: 100%; font-weight: 800; margin-top: 15px; cursor: pointer; }
 
-        /* POPUP ESTILO */
-        #photo-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: #fff; padding: 24px; border-radius: 32px; box-shadow: 0 25px 60px rgba(0,0,0,0.3); z-index: 2100; width: 90%; max-width: 340px; opacity: 0; visibility: hidden; transition: 0.3s; }
+        /* POP-UP & CARROSSEL */
+        #photo-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: #fff; padding: 24px; border-radius: 32px; box-shadow: 0 25px 60px rgba(0,0,0,0.3); z-index: 2100; width: 90%; max-width: 340px; text-align: center; opacity: 0; visibility: hidden; transition: 0.3s; }
         #photo-popup.show { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
-        #popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; opacity: 0; visibility: hidden; transition: 0.3s; backdrop-filter: blur(4px); }
+        .popup-scroll { max-height: 450px; overflow-y: auto; text-align: left; }
+        .carousel-fotos { position: relative; width: 100%; overflow: hidden; border-radius: 20px; margin: 10px 0; height: 180px; background: #f1f5f9; }
+        .track-fotos { display: flex; transition: transform 0.4s ease; height: 100%; }
+        .img-slide { min-width: 100%; height: 100%; object-fit: cover; }
+
+        /* NAV */
+        .menu-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; height: 85px; border-top-left-radius: 30px; border-top-right-radius: 30px; z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.05); }
+        .btn-aba { flex: 1; border: none; background: none; font-size: 24px; color: #CBD5E1; cursor: pointer; -webkit-tap-highlight-color: transparent; outline: none; }
+        .btn-aba.active { color: var(--primary); transform: translateY(-5px); transition: 0.3s; }
     </style>
 </head>
 <body>
     <div class="header"><h3>Nossa Jornada 👩‍❤️‍👨</h3><span id="info">ESTADOS CONQUISTADOS: 0</span></div>
-    
-    <div id="popup-overlay" onclick="fecharPopup()"></div>
-    <div id="photo-popup">
-        <button style="position:absolute; top:15px; right:15px; background:none; border:none; font-size:20px; font-weight:bold;" onclick="fecharPopup()">✕</button>
-        <div id="popup-content" style="max-height: 400px; overflow-y: auto;"></div>
-    </div>
+    <div id="popup-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:2000;display:none;backdrop-filter:blur(4px);" onclick="fecharPopup()"></div>
+    <div id="photo-popup"><button style="position:absolute;top:15px;right:15px;background:var(--primary);color:#fff;border:none;border-radius:50%;width:30px;height:30px;font-weight:bold;" onclick="fecharPopup()">✕</button><div id="popup-content" class="popup-scroll"></div></div>
     
     <div id="aba-mapa" class="aba ativa"><div class="mapa-card"><div id="svg-container"></div></div></div>
-    
-    <div id="aba-jornada" class="aba">
-        <div class="card">
-            <h3 style="margin:0 0 20px 0; color:var(--primary); font-size: 20px;">🏆 Conquistas</h3>
-            <div class="badge-grid" id="grid-conquistas">
-                </div>
-        </div>
-    </div>
-
     <div id="aba-timeline" class="aba"><div id="timeline-list"></div></div>
+    <div id="aba-jornada" class="aba"><div class="card"><h3 style="margin:0 0 20px 0; color:var(--primary)">🏆 Conquistas</h3><div class="badge-grid" id="grid-conquistas"></div></div></div>
+    
     <div id="aba-registro" class="aba">
         <div class="card">
             <h3 style="margin:0 0 10px 0; color:var(--primary)">📍 Nova Memória</h3>
             <label>Estado</label>
             <select id="sel-uf">
-                <option value="BRSP">São Paulo</option><option value="BRRJ">Rio de Janeiro</option><option value="BRMG">Minas Gerais</option><option value="BRBA">Bahia</option><option value="BRSC">Santa Catarina</option><option value="BRPR">Paraná</option><option value="BRRS">Rio Grande do Sul</option><option value="BRGO">Goiás</option><option value="BRDF">Distrito Federal</option><option value="BRES">Espírito Santo</option><option value="BRCE">Ceará</option><option value="BRPE">Pernambuco</option><option value="BRRN">Rio Grande do Norte</option><option value="BRPB">Paraíba</option><option value="BRAL">Alagoas</option><option value="BRSE">Sergipe</option><option value="BRMA">Maranhão</option><option value="BRPI">Piauí</option><option value="BRMT">Mato Grosso</option><option value="BRMS">Mato Grosso do Sul</option><option value="BRTO">Tocantins</option><option value="BRPA">Pará</option><option value="BRAM">Amazonas</option><option value="BRRO">Rondônia</option><option value="BRAC">Acre</option><option value="BRRR">Roraima</option><option value="BRAP">Amapá</option>
+                <option value="BRSP" selected>São Paulo</option><option value="BRRJ">Rio de Janeiro</option><option value="BRMG">Minas Gerais</option><option value="BRBA">Bahia</option><option value="BRSC">Santa Catarina</option><option value="BRPR">Paraná</option><option value="BRRS">Rio Grande do Sul</option><option value="BRGO">Goiás</option><option value="BRDF">Distrito Federal</option><option value="BRES">Espírito Santo</option><option value="BRCE">Ceará</option><option value="BRPE">Pernambuco</option><option value="BRRN">Rio Grande do Norte</option><option value="BRPB">Paraíba</option><option value="BRAL">Alagoas</option><option value="BRSE">Sergipe</option><option value="BRMA">Maranhão</option><option value="BRPI">Piauí</option><option value="BRMT">Mato Grosso</option><option value="BRMS">Mato Grosso do Sul</option><option value="BRTO">Tocantins</option><option value="BRPA">Pará</option><option value="BRAM">Amazonas</option><option value="BRRO">Rondônia</option><option value="BRAC">Acre</option><option value="BRRR">Roraima</option><option value="BRAP">Amapá</option>
             </select>
-            <input type="text" id="txt-cidade" placeholder="Cidade">
-            <input type="date" id="txt-data">
-            <button class="btn-acao" onclick="salvarViagem()" style="background:var(--primary); color:#fff; width:100%; padding:15px; border-radius:15px; border:none; margin-top:10px; font-weight:800;">Salvar 🚩</button>
+            <label>Cidade</label><input type="text" id="txt-cidade" placeholder="Ex: Gramado">
+            <label>Data da Visita</label><input type="date" id="txt-data">
+            <label class="mini-check"><input type="checkbox" id="chk-praia" style="width:18px;height:18px;"><span style="font-size:12px; font-weight:800; color:var(--text-sub)">VIAGEM DE PRAIA? 🏖️</span></label>
+            <label>Gastos (R$)</label>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"><input type="number" id="v-hosp" placeholder="Hotel"><input type="number" id="v-trans" placeholder="Transporte"><input type="number" id="v-alime" placeholder="Comida"><input type="number" id="v-atrac" placeholder="Atrações"></div>
+            <label>Fotos (Máx 3)</label><input type="file" id="inp-foto" accept="image/*" multiple>
+            <button class="btn-acao" onclick="salvarViagem()">Salvar Memória 🚩</button>
         </div>
     </div>
-    <div id="aba-gastos" class="aba"><div id="lista-detalhada-gastos" class="card"></div></div>
+
+    <div id="aba-gastos" class="aba">
+        <div class="card"><h3 style="margin:0 0 20px 0; color:var(--money)">💰 Gastos</h3><div id="lista-detalhada-gastos"></div><div style="background:var(--sky); color:#000; padding:18px; border-radius:24px; text-align:center; font-weight:800; font-size:18px; margin-top:20px;" id="total-geral-brasil">Total Brasil: R$ 0,00</div></div>
+    </div>
 
     <nav class="menu-nav">
         <button class="btn-aba active" onclick="trocarAba('mapa', this)">🗺️</button>
@@ -94,26 +107,26 @@
     </nav>
 
 <script>
-    // Configuração das Regiões
     const REGIOES = {
-        'NORTE': { icon: '🌳', UFs: ['BRAC','BRAM','BRRR','BRRO','BRPA','BRAP','BRTO'], nomes: ['Acre','Amazonas','Roraima','Rondônia','Pará','Amapá','Tocantins'] },
-        'NORDESTE': { icon: '🌵', UFs: ['BRMA','BRPI','BRCE','BRRN','BRPB','BRPE','BRAL','BRSE','BRBA'], nomes: ['Maranhão','Piauí','Ceará','Rio Grande do Norte','Paraíba','Pernambuco','Alagoas','Sergipe','Bahia'] },
-        'CENTRO-OESTE': { icon: '☀️', UFs: ['BRMT','BRMS','BRGO','BRDF'], nomes: ['Mato Grosso','Mato Grosso do Sul','Goiás','Distrito Federal'] },
-        'SUDESTE': { icon: '🏢', UFs: ['BRMG','BRSP','BRRJ','BRES'], nomes: ['Minas Gerais','São Paulo','Rio de Janeiro','Espírito Santo'] },
-        'SUL': { icon: '❄️', UFs: ['BRPR','BRSC','BRRS'], nomes: ['Paraná','Santa Catarina','Rio Grande do Sul'] }
+        'NORTE': { icon: '🌳', color: '#22C55E', UFs: ['BRAC','BRAM','BRRR','BRRO','BRPA','BRAP','BRTO'], nomes: ['Acre','Amazonas','Roraima','Rondônia','Pará','Amapá','Tocantins'] },
+        'NORDESTE': { icon: '🌵', color: '#FACC15', UFs: ['BRMA','BRPI','BRCE','BRRN','BRPB','BRPE','BRAL','BRSE','BRBA'], nomes: ['Maranhão','Piauí','Ceará','Rio Grande do Norte','Paraíba','Pernambuco','Alagoas','Sergipe','Bahia'] },
+        'CENTRO': { icon: '☀️', color: '#FB923C', UFs: ['BRMT','BRMS','BRGO','BRDF'], nomes: ['Mato Grosso','Mato Grosso do Sul','Goiás','Distrito Federal'] },
+        'SUDESTE': { icon: '🏢', color: '#EC4899', UFs: ['BRMG','BRSP','BRRJ','BRES'], nomes: ['Minas Gerais','São Paulo','Rio de Janeiro','Espírito Santo'] },
+        'SUL': { icon: '❄️', color: '#A855F7', UFs: ['BRPR','BRSC','BRRS'], nomes: ['Paraná','Santa Catarina','Rio Grande do Sul'] }
     };
 
-    let panZoomMapa;
     async function init() {
-        try {
-            const res = await fetch('br.svg');
-            const svg = await res.text();
-            document.getElementById('svg-container').innerHTML = svg;
-            const svgEl = document.querySelector('#svg-container svg');
-            svgEl.id = "mapa-svg-real"; svgEl.style.width = "100%"; svgEl.style.height = "100%";
-            panZoomMapa = svgPanZoom('#mapa-svg-real', { zoomEnabled: true, controlIconsEnabled: false, fit: true, center: true });
-            atualizarInterface();
-        } catch (e) { console.error(e); }
+        const res = await fetch('br.svg');
+        const svg = await res.text();
+        document.getElementById('svg-container').innerHTML = svg;
+        const svgEl = document.querySelector('#svg-container svg');
+        svgEl.id = "mapa-svg-real"; svgEl.style.width = "100%"; svgEl.style.height = "100%";
+        svgPanZoom('#mapa-svg-real', { zoomEnabled: true, controlIconsEnabled: false, fit: true, center: true });
+        document.getElementById('svg-container').addEventListener('touchend', (e) => {
+            const target = e.target.closest('path');
+            if (target && target.id) abrirHistorico(target.id);
+        });
+        atualizarInterface();
     }
 
     function trocarAba(id, btn) {
@@ -121,102 +134,123 @@
         document.querySelectorAll('.btn-aba').forEach(b => b.classList.remove('active'));
         document.getElementById('aba-' + id).classList.add('ativa');
         btn.classList.add('active');
+        if(id === 'gastos') renderGastos();
         if(id === 'jornada') renderJornada();
+        if(id === 'timeline') renderTimeline();
     }
 
-    function salvarViagem() {
+    async function salvarViagem() {
         const uf = document.getElementById('sel-uf').value;
         const cidade = document.getElementById('txt-cidade').value;
-        const data = document.getElementById('txt-data').value;
-        if(!cidade || !data) return;
-        let db = JSON.parse(localStorage.getItem('viagens_vFinal_v14')) || {};
-        if(!db[uf]) db[uf] = [];
-        db[uf].push({cidade, data, total: 0, fotos: []});
-        localStorage.setItem('viagens_vFinal_v14', JSON.stringify(db));
+        const rawDate = document.getElementById('txt-data').value;
+        if(!cidade || !rawDate) return alert("Preencha cidade e data!");
+        const files = document.getElementById('inp-foto').files;
+        let fotos = []; for (let i = 0; i < Math.min(files.length, 3); i++) { fotos.push(await converter(files[i])); }
+        const trip = { cidade, uf, data: rawDate.split('-').reverse().join('/'), rawDate, fotos, h: parseFloat(document.getElementById('v-hosp').value || 0), t: parseFloat(document.getElementById('v-trans').value || 0), al: parseFloat(document.getElementById('v-alime').value || 0), at: parseFloat(document.getElementById('v-atrac').value || 0), praia: document.getElementById('chk-praia').checked, total: (parseFloat(document.getElementById('v-hosp').value || 0) + parseFloat(document.getElementById('v-trans').value || 0) + parseFloat(document.getElementById('v-alime').value || 0) + parseFloat(document.getElementById('v-atrac').value || 0)) };
+        let db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
+        if(!db[uf]) db[uf] = []; db[uf].unshift(trip);
+        localStorage.setItem('viagens_master_v1', JSON.stringify(db));
         location.reload();
     }
 
+    function renderTimeline() {
+        const db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
+        let todas = []; for(let uf in db) db[uf].forEach(v => todas.push(v));
+        todas.sort((a,b) => new Date(b.rawDate) - new Date(a.rawDate));
+        let html = '<h3 style="margin:20px; color:var(--primary)">📅 Timeline</h3>';
+        todas.forEach(v => {
+            html += `<div class="timeline-item"><div class="t-dot"></div><div class="t-card"><span style="font-size:11px; font-weight:800; color:var(--text-sub)">${v.cidade} - ${v.data}</span><h4 style="margin:5px 0; color:var(--money)">R$ ${v.total.toFixed(2)}</h4>${v.fotos[0] ? `<img src="${v.fotos[0]}" style="width:100%; height:160px; object-fit:cover; border-radius:18px;">` : ''}</div></div>`;
+        });
+        document.getElementById('timeline-list').innerHTML = html || '<p style="text-align:center;padding:20px;color:#999">Sem memórias.</p>';
+    }
+
+    function renderGastos() {
+        const db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
+        let html = '', totalGeral = 0;
+        for (const uf in db) {
+            let totalUF = 0, cidadesHtml = '';
+            db[uf].forEach(c => {
+                totalUF += c.total;
+                cidadesHtml += `<div class="gasto-entry"><div class="cidade-data-row"><span>${c.cidade} - ${c.data}</span><strong style="color:var(--money)">R$ ${c.total.toFixed(2)}</strong></div><div style="display:flex; gap:8px;"><div class="pill">🏨 ${c.h.toFixed(0)}</div><div class="pill">🚗 ${c.t.toFixed(0)}</div><div class="pill">🍴 ${c.al.toFixed(0)}</div><div class="pill">🎡 ${c.at.toFixed(0)}</div></div></div>`;
+            });
+            totalGeral += totalUF;
+            html += `<div class="resumo-uf-card"><div class="uf-row"><span>🚩 ${uf.replace('BR','')}</span><span style="color:var(--money)">R$ ${totalUF.toFixed(2)}</span></div>${cidadesHtml}</div>`;
+        }
+        document.getElementById('lista-detalhada-gastos').innerHTML = html || '<p style="text-align:center;padding:20px;color:#999">Sem gastos.</p>';
+        document.getElementById('total-geral-brasil').innerText = `Total Brasil: R$ ${totalGeral.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+    }
+
     function renderJornada() {
-        const db = JSON.parse(localStorage.getItem('viagens_vFinal_v14')) || {};
+        const db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
         const visitados = Object.keys(db);
         let html = '';
-
-        // 1. Conquistas Gerais (Ex: 1 estado, 5 estados...)
-        const metas = [
-            { id: 'm1', n: 1, label: 'INÍCIO', icon: '🌱' },
-            { id: 'm5', n: 5, label: '5 ESTADOS', icon: '🏃' },
-            { id: 'm26', n: 26, label: 'BRASIL', icon: '👑' }
-        ];
-
+        const metas = [{n:1, l:'Início', i:'🌱'}, {n:5, l:'5 Estados', i:'🏃'}, {n:10, l:'10 Estados', i:'⭐'}, {n:20, l:'20 Estados', i:'🔥'}, {n:26, l:'Brasil', i:'👑'}];
+        
         metas.forEach(m => {
-            const ativa = visitados.length >= m.n;
-            html += `<div class="badge ${ativa ? 'active' : ''}" onclick="infoGeral(${m.n}, ${visitados.length})">
-                <div class="b-icon">${m.icon}</div>
-                <div style="font-size:8px;font-weight:800">${m.label}</div>
-            </div>`;
+            const ok = visitados.length >= m.n;
+            html += `<div class="badge ${ok ? 'active' : ''}" onclick="msgMeta(${m.n}, ${visitados.length})"><div class="b-icon">${m.i}</div><div class="badge-name">${m.l}</div></div>`;
         });
 
-        // 2. Conquistas por Região (Só acende se fechar a região)
-        for (let r in REGIOES) {
-            const regiao = REGIOES[r];
-            const ufsDaRegiao = regiao.UFs;
-            const visitadosNessaRegiao = ufsDaRegiao.filter(uf => visitados.includes(uf));
-            const completa = visitadosNessaRegiao.length === ufsDaRegiao.length;
+        let temPraia = false; for(let u in db) db[u].forEach(v => { if(v.praia) temPraia = true; });
+        html += `<div class="badge ${temPraia ? 'active' : ''}" onclick="alert('Visite uma praia e marque no registro!')"><div class="b-icon">🏖️</div><div class="badge-name">Pé na areia</div></div>`;
 
-            html += `<div class="badge ${completa ? 'active' : ''}" onclick="verFaltantes('${r}')">
-                <div class="b-icon">${regiao.icon}</div>
-                <div style="font-size:8px;font-weight:800">${r}</div>
-            </div>`;
+        for(let r in REGIOES) {
+            const reg = REGIOES[r];
+            const vNaReg = reg.UFs.filter(u => visitados.includes(u));
+            const ok = vNaReg.length === reg.UFs.length;
+            html += `<div class="badge ${ok ? 'active' : ''}" onclick="msgRegiao('${r}')"><div class="b-icon" style="${ok ? 'background:'+reg.color+';color:#fff' : ''}">${reg.icon}</div><div class="badge-name">${r}</div></div>`;
         }
-
         document.getElementById('grid-conquistas').innerHTML = html;
     }
 
-    function verFaltantes(nomeRegiao) {
-        const regiao = REGIOES[nomeRegiao];
-        const db = JSON.parse(localStorage.getItem('viagens_vFinal_v14')) || {};
-        const visitados = Object.keys(db);
-        
-        const faltantes = regiao.nomes.filter((nome, i) => !visitados.includes(regiao.UFs[i]));
-        
-        let msg = '';
-        if (faltantes.length === 0) {
-            msg = `<div style="text-align:center"><h3 style="color:var(--money)">🏆 Região Conquistada!</h3><p>Vocês já visitaram todos os estados do ${nomeRegiao}!</p></div>`;
-        } else {
-            msg = `<h3>📍 Falta pouco no ${nomeRegiao}!</h3>
-                   <p style="color:var(--text-sub)">Para ganhar esta medalha, vocês precisam visitar:</p>
-                   <ul style="font-weight:700; color:var(--primary)">
-                    ${faltantes.map(f => `<li>${f}</li>`).join('')}
-                   </ul>`;
-        }
-        
-        mostrarPopup(msg);
+    function msgRegiao(r) {
+        const reg = REGIOES[r];
+        const db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
+        const faltantes = reg.nomes.filter((n, i) => !Object.keys(db).includes(reg.UFs[i]));
+        if(faltantes.length === 0) alert(`Parabéns! Vocês conquistaram o ${r}!`);
+        else alert(`Faltam no ${r}: ${faltantes.join(', ')}`);
     }
 
-    function infoGeral(meta, atual) {
-        if(atual >= meta) return;
-        mostrarPopup(`<h3>🚀 Rumo aos ${meta} Estados!</h3><p>Vocês já conquistaram <b>${atual}</b> de <b>${meta}</b> estados para este selo.</p>`);
-    }
+    function msgMeta(n, v) { if(v < n) alert(`Faltam ${n - v} estados para esta conquista!`); }
 
-    function mostrarPopup(html) {
-        document.getElementById('popup-content').innerHTML = html;
+    function abrirHistorico(id) {
+        const db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
+        const lista = db[id]; if (!lista) return;
+        let h = `<h2 style="color:var(--primary); margin-bottom:15px;">🚩 ${id.replace('BR','')}</h2>`;
+        lista.forEach((v, cIdx) => {
+            let track = '', dots = '';
+            v.fotos.forEach((f, fIdx) => { track += `<img src="${f}" class="img-slide">`; dots += `<div style="width:5px;height:5px;background:#ccc;border-radius:50%;" class="dot-${cIdx}"></div>`; });
+            h += `<div style="margin-bottom:25px; border-bottom:1px solid #eee; padding-bottom:15px;">
+                <p style="margin:0; font-size:14px; font-weight:800; color:var(--text-sub);">${v.cidade} - ${v.data}</p>
+                <h4 style="margin:5px 0; color:var(--money)">R$ ${v.total.toFixed(2)}</h4>
+                <div class="carousel-fotos" id="car-${cIdx}" ontouchstart="hTS(event)" ontouchmove="hTM(event, ${cIdx}, ${v.fotos.length})">
+                    <div class="track-fotos">${track || '<div class="img-slide" style="background:#eee"></div>'}</div>
+                </div>
+            </div>`;
+        });
+        document.getElementById('popup-content').innerHTML = h;
         document.getElementById('photo-popup').classList.add('show');
-        document.getElementById('popup-overlay').style.visibility = 'visible';
-        document.getElementById('popup-overlay').style.opacity = '1';
+        document.getElementById('popup-overlay').style.display = 'block';
     }
 
-    function fecharPopup() {
-        document.getElementById('photo-popup').classList.remove('show');
-        document.getElementById('popup-overlay').style.opacity = '0';
-        setTimeout(() => document.getElementById('popup-overlay').style.visibility = 'hidden', 300);
+    let sX = 0; function hTS(e) { sX = e.touches[0].clientX; }
+    function hTM(e, cIdx, len) {
+        if (!sX) return; let d = sX - e.touches[0].clientX;
+        let tr = document.querySelector(`#car-${cIdx} .track-fotos`);
+        let currentIdx = Math.round(Math.abs(new WebKitCSSMatrix(window.getComputedStyle(tr).transform).m41 / tr.offsetWidth));
+        if (Math.abs(d) > 40) {
+            if (d > 0 && currentIdx < len - 1) currentIdx++; else if (d < 0 && currentIdx > 0) currentIdx--;
+            tr.style.transform = `translateX(-${currentIdx * 100}%)`; sX = 0;
+        }
     }
 
+    function fecharPopup() { document.getElementById('photo-popup').classList.remove('show'); document.getElementById('popup-overlay').style.display = 'none'; }
     function atualizarInterface() {
-        const db = JSON.parse(localStorage.getItem('viagens_vFinal_v14')) || {};
+        const db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
         Object.keys(db).forEach(u => { const el = document.getElementById(u); if(el) el.classList.add('visitado'); });
         document.getElementById('info').innerText = `ESTADOS CONQUISTADOS: ${Object.keys(db).length}`;
     }
-
+    function converter(f) { return new Promise(r => { const rd = new FileReader(); rd.readAsDataURL(f); rd.onload = () => { const img = new Image(); img.src = rd.result; img.onload = () => { const cv = document.createElement('canvas'); const ctx = cv.getContext('2d'); cv.width = 600; cv.height = 600 * (img.height/img.width); ctx.drawImage(img, 0, 0, cv.width, cv.height); r(cv.toDataURL('image/jpeg', 0.5)); }; }; }); }
     init();
 </script>
 </body>
