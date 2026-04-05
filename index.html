@@ -221,14 +221,54 @@
     atualizarInterface();
     trocarAba('mapa', document.querySelector('.btn-aba')); // Volta para o mapa automaticamente
 }
+    
+   function removerViagem(uf, rawDate, cidade) {
+        // 1. Confirmação para evitar exclusões acidentais
+        if (!confirm(`Deseja apagar a memória de ${cidade}?`)) return;
 
+        // 2. Carrega o banco de dados
+        let db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
+
+        if (db[uf]) {
+            // 3. FILTRAGEM: Remove apenas a viagem que condiz com a data e cidade selecionada
+            db[uf] = db[uf].filter(v => !(v.rawDate === rawDate && v.cidade === cidade));
+
+            // 4. VERIFICAÇÃO DO MAPA: Se a lista do estado ficou vazia, removemos a chave do estado
+            if (db[uf].length === 0) {
+                delete db[uf];
+            }
+
+            // 5. Salva de volta no LocalStorage
+            localStorage.setItem('viagens_master_v1', JSON.stringify(db));
+            
+            // 6. Atualiza a tela automaticamente para refletir no Mapa, Gastos e Timeline
+            location.reload();
+        }
+    }
+    
     function renderTimeline() {
         const db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
-        let todas = []; for(let uf in db) db[uf].forEach(v => todas.push(v));
+        let todas = []; 
+        for(let uf in db) db[uf].forEach(v => todas.push(v));
+        
         todas.sort((a,b) => new Date(b.rawDate) - new Date(a.rawDate));
+        
         let html = '';
         todas.forEach(v => {
-            html += `<div class="timeline-item"><div class="t-dot"></div><div class="t-card"><span style="font-size:11px; font-weight:800; color:var(--text-sub)">${v.cidade} - ${v.data}</span><h4 style="margin:6px 0; color:var(--money); font-size:16px;">R$ ${v.total.toFixed(2)}</h4>${v.fotos[0] ? `<img src="${v.fotos[0]}" style="width:100%; height:160px; object-fit:cover; border-radius:18px; margin-top:8px;">` : ''}</div></div>`;
+            html += `
+            <div class="timeline-item">
+                <div class="t-dot"></div>
+                <div class="t-card" style="position: relative;">
+                    <button onclick="removerViagem('${v.uf}', '${v.rawDate}', '${v.cidade}')" 
+                            style="position: absolute; top: 10px; right: 10px; border: none; background: #fee2e2; color: #ef4444; border-radius: 8px; padding: 5px; cursor: pointer; font-size: 14px;">
+                        🗑️
+                    </button>
+
+                    <span style="font-size:11px; font-weight:800; color:var(--text-sub)">${v.cidade} - ${v.data}</span>
+                    <h4 style="margin:6px 0; color:var(--money); font-size:16px;">R$ ${v.total.toFixed(2)}</h4>
+                    ${v.fotos[0] ? `<img src="${v.fotos[0]}" style="width:100%; height:160px; object-fit:cover; border-radius:18px; margin-top:8px;">` : ''}
+                </div>
+            </div>`;
         });
         document.getElementById('timeline-list').innerHTML = html || '<p style="text-align:center;padding:20px;color:#999">Sem memórias ainda.</p>';
     }
