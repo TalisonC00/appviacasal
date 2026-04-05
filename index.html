@@ -321,7 +321,7 @@
         const trip = { cidade: elCidade.value, uf: elUf.value, data: elData.value.split('-').reverse().join('/'), rawDate: elData.value, fotos, h, t, al, at, praia: elPraia.checked, total: h + t + al + at };
         database.ref('viagens/' + elUf.value).push(trip).then(() => {
             elCidade.value = ""; elData.value = ""; elHosp.value = ""; elTrans.value = ""; elAlime.value = ""; elAtrac.value = ""; elFoto.value = ""; elPraia.checked = false;
-            mostrarAlerta("Memória salva na nuvem!", "❤️");
+            mostrarAlerta("Memória salva!", "📌");
             trocarAba('mapa', document.querySelector('.btn-aba'));
         });
     }
@@ -376,7 +376,7 @@
         document.getElementById('svg-container').innerHTML = svg;
         const svgEl = document.querySelector('#svg-container svg');
         svgEl.id = "mapa-svg-real"; svgEl.style.width = "100%"; svgEl.style.height = "100%";
-        controleMapa = svgPanZoom('#mapa-svg-real', { zoomEnabled: true, controlIconsEnabled: false, fit: true, center: true, dblClickZoomEnabled: false, zoomScaleSensitivity: 0.3, minZoom: 0.5, maxZoom: 10 });
+        controleMapa = svgPanZoom('#mapa-svg-real', { zoomEnabled: true, controlIconsEnabled: false, fit: true, center: true, zoomScaleSensitivity: 0.3, minZoom: 0.5, maxZoom: 10 });
         
         document.getElementById('svg-container').addEventListener('touchend', (e) => {
             const target = e.target.closest('path');
