@@ -226,10 +226,7 @@
             elCidade.value = ""; elData.value = ""; elHosp.value = ""; elTrans.value = "";
             elAlime.value = ""; elAtrac.value = ""; elFoto.value = ""; elPraia.checked = false;
             alert("Memória salva!");
-            .catch((error) => {
-            alert("Erro ao salvar: Verifique sua conexão.");
-            console.error(error);
-            
+    
             trocarAba('mapa', document.querySelector('.btn-aba'));
         });
     }
