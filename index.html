@@ -158,8 +158,7 @@
         document.getElementById('svg-container').innerHTML = svg;
         const svgEl = document.querySelector('#svg-container svg');
         svgEl.id = "mapa-svg-real"; svgEl.style.width = "100%"; svgEl.style.height = "100%";
-        svgPanZoom('#mapa-svg-real', { zoomEnabled: false, panEnabled: false, dblClickZoomEnabled: false, controlIconsEnabled: false, fit: true, center: true });
-        
+        controleMapa = svgPanZoom('#mapa-svg-real', { zoomEnabled: true, controlIconsEnabled: false, fit: true, center: true, minZoom: 0.5, maxZoom: 10, zoomScaleSensitivity: 0.4 });
         document.getElementById('svg-container').addEventListener('touchend', (e) => {
             const target = e.target.closest('path');
             if (target && target.id) abrirHistorico(target.id);
@@ -256,7 +255,7 @@
                         🗑️
                     </button>
                     <span style="font-size:11px; font-weight:800; color:var(--text-sub)">${v.cidade} - ${v.data}</span>
-                    <h4 style="margin:6px 0; color:var(--money); font-size:16px;">R$ ${v.total.toFixed(2)}</h4>
+                    <h4 style="margin:6px 0; color:var(--money); font-size:16px;"> ${v.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} </h4>
                     ${v.fotos[0] ? `<img src="${v.fotos[0]}" style="width:100%; height:160px; object-fit:cover; border-radius:18px; margin-top:8px;">` : ''}
                 </div>
             </div>`;
@@ -274,7 +273,7 @@
                 cidadesHtml += `<div class="gasto-entry"><div class="cidade-data-row"><span>${c.cidade} - ${c.data}</span><strong style="color:var(--money)">R$ ${c.total.toFixed(2)}</strong></div><div style="display:flex; flex-wrap:wrap; gap:6px;"><div class="pill">🏨 ${c.h.toFixed(0)}</div><div class="pill">🚗 ${c.t.toFixed(0)}</div><div class="pill">🍴 ${c.al.toFixed(0)}</div><div class="pill">🎡 ${c.at.toFixed(0)}</div></div></div>`;
             }
             totalGeral += totalUF;
-            html += `<div class="resumo-uf-card"><div class="uf-header"><span>🚩 ${uf.replace('BR','')}</span><span style="color:var(--money)">R$ ${totalUF.toFixed(2)}</span></div>${cidadesHtml}</div>`;
+            html += `<div class="resumo-uf-card"><div class="uf-header"><span>🚩 ${uf.replace('BR','')}</span><span style="color:var(--money)">R$ ${totalUF.toFixed(2)}<span style="color:var(--money)"> ${totalUF.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} </span>
         }
         document.getElementById('lista-detalhada-gastos').innerHTML = html || '<p style="text-align:center;padding:20px;color:#999">Sem gastos.</p>';
         document.getElementById('total-geral-brasil').innerText = `Total Brasil: R$ ${totalGeral.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
@@ -320,7 +319,8 @@
             let track = ''; v.fotos.forEach(f => { track += `<img src="${f}" class="img-slide">`; });
             h += `<div style="margin-bottom:30px; border-bottom:1px solid #eee; padding-bottom:20px;">
                 <p style="margin:0; font-size:14px; font-weight:800; color:var(--text-sub);">${v.cidade} - ${v.data}</p>
-                <h4 style="margin:6px 0 12px 0; color:var(--money); font-size:18px;">R$ ${v.total.toFixed(2)}</h4>
+                // Substitui a linha do h4 por esta:
+                <h4 style="margin:6px 0 12px 0; color:var(--money); font-size:18px;"> ${v.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} </h4>
                 <div class="carousel-fotos" id="car-${idFirebase}" ontouchstart="hTS(event)" ontouchmove="hTM(event, '${idFirebase}', ${v.fotos.length})">
                     <div class="track-fotos">${track || '<div class="img-slide" style="background:#eee"></div>'}</div>
                 </div>
