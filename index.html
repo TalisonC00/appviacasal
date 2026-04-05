@@ -159,8 +159,7 @@
         document.getElementById('svg-container').innerHTML = svg;
         const svgEl = document.querySelector('#svg-container svg');
         svgEl.id = "mapa-svg-real"; svgEl.style.width = "100%"; svgEl.style.height = "100%";
-        svgPanZoom('#mapa-svg-real', { zoomEnabled: true, controlIconsEnabled: false, fit: true, center: true, dblClickZoomEnabled: false, mouseWheelZoomEnabled: true, preventMouseEventsDefault: true, zoomScaleSensitivity: 0.3, minZoom: 0.5, maxZoom: 10 });
-        #svg-container svg { touch-action: auto !important; }
+        svgPanZoom('#mapa-svg-real', { zoomEnabled: true, controlIconsEnabled: false, fit: true, center: true, dblClickZoomEnabled: false, zoomScaleSensitivity: 0.3, minZoom: 0.5, maxZoom: 10 });
         
         document.getElementById('svg-container').addEventListener('touchend', (e) => {
             const target = e.target.closest('path');
