@@ -251,10 +251,30 @@
                 const c = dbGlobal[uf][id];
                 const valorViagem = parseFloat(c.total) || 0;
                 totalUF += valorViagem;
-                cidadesHtml += `<div class="gasto-entry"><div class="cidade-data-row"><span>${c.cidade} - ${c.data}</span><strong style="color:var(--money)">${valorViagem.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong></div><div style="display:flex; flex-wrap:wrap; gap:6px;"><div class="pill">🏨 ${parseFloat(c.h).toLocaleString('pt-BR')}</div><div class="pill">🚗 ${parseFloat(c.t).toLocaleString('pt-BR')}</div><div class="pill">🍴 ${parseFloat(c.al).toLocaleString('pt-BR')}</div><div class="pill">🎡 ${parseFloat(c.at).toLocaleString('pt-BR')}</div></div></div>`;
+                
+                cidadesHtml += `
+                <div class="gasto-entry" style="padding: 15px 0; border-bottom: 1px solid #f1f5f9;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="font-size: 13px; font-weight: 600; color: var(--text-main);">${c.cidade} - ${c.data}</span>
+                        <strong style="color: var(--money); font-size: 14px;">${valorViagem.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong>
+                    </div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                        <div class="pill">🏨 ${parseFloat(c.h).toLocaleString('pt-BR')}</div>
+                        <div class="pill">🚗 ${parseFloat(c.t).toLocaleString('pt-BR')}</div>
+                        <div class="pill">🍴 ${parseFloat(c.al).toLocaleString('pt-BR')}</div>
+                        <div class="pill">🎡 ${parseFloat(c.at).toLocaleString('pt-BR')}</div>
+                    </div>
+                </div>`;
             }
             totalGeral += totalUF;
-            html += `<div class="resumo-uf-card"><div class="uf-header"><span>🚩 ${uf.replace('BR','')}</span><span style="color:var(--money)">${totalUF.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div>${cidadesHtml}</div>`;
+            html += `
+            <div class="resumo-uf-card">
+                <div class="uf-header" style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>🚩 ${uf.replace('BR','')}</span>
+                    <span style="color: var(--money); font-weight: 800;">${totalUF.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                </div>
+                ${cidadesHtml}
+            </div>`;
         }
         document.getElementById('lista-detalhada-gastos').innerHTML = html || '<p style="text-align:center;padding:20px;color:#999">Sem gastos registrados.</p>';
         document.getElementById('total-geral-brasil').innerText = `Total Brasil: ${totalGeral.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
