@@ -159,7 +159,7 @@
         document.getElementById('svg-container').innerHTML = svg;
         const svgEl = document.querySelector('#svg-container svg');
         svgEl.id = "mapa-svg-real"; svgEl.style.width = "100%"; svgEl.style.height = "100%";
-        svgPanZoom('#mapa-svg-real', { zoomEnabled: true, controlIconsEnabled: false, fit: true, center: true });
+        svgPanZoom('#mapa-svg-real', { zoomEnabled: true, minZoom: 0.5, controlIconsEnabled: false, fit: true, center: true });
         
         document.getElementById('svg-container').addEventListener('touchend', (e) => {
             const target = e.target.closest('path');
