@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nossa Jornada 👩‍❤️‍👨</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+    
     <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
         :root { --primary: #FF4B5C; --sky: #BAE6FD; --card: #FFFFFF; --text-main: #1E293B; --text-sub: #64748B; --money: #10B981; }
@@ -29,14 +34,14 @@
         .visitado[id^="BRMG"], .visitado[id^="BRSP"], .visitado[id^="BRRJ"], .visitado[id^="BRES"] { fill: #EC4899 !important; }
         .visitado[id^="BRPR"], .visitado[id^="BRSC"], .visitado[id^="BRRS"] { fill: #A855F7 !important; }
 
-        /* TIMELINE CORRIGIDA */
+        /* TIMELINE */
         .timeline-container { padding: 10px 5px; position: relative; }
         .timeline-line { position: absolute; left: 33px; top: 60px; bottom: 20px; width: 3px; background: rgba(255,255,255,0.8); z-index: 0; border-radius: 10px; }
         .timeline-item { display: flex; gap: 15px; margin-bottom: 25px; position: relative; z-index: 2; margin-left: 20px; margin-right: 16px; }
         .t-dot { min-width: 14px; height: 14px; background: var(--primary); border: 3px solid #fff; border-radius: 50%; margin-top: 6px; z-index: 3; box-shadow: 0 0 0 2px rgba(255,75,92,0.1); }
         .t-card { background: #fff; padding: 18px; border-radius: 24px; flex: 1; box-shadow: 0 8px 25px rgba(0,0,0,0.04); border: 1px solid #f8fafc; }
 
-        /* GASTOS - ALINHAMENTO E ESPAÇO */
+        /* GASTOS */
         .resumo-uf-card { background: #fff; border-radius: 24px; padding: 24px; margin-bottom: 24px; border: 1.5px solid #F1F5F9; }
         .uf-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f8fafc; padding-bottom: 12px; margin-bottom: 12px; font-weight: 800; font-size: 16px; }
         .gasto-entry { padding: 20px 0; border-bottom: 1px solid #f8fafc; }
@@ -123,6 +128,19 @@
     </nav>
 
 <script>
+    // --- CONFIGURAÇÃO FIREBASE ---
+    const firebaseConfig = {
+  apiKey: "AIzaSyDCAP09SYTF589nXB3Xu5Q20d8ai0N_WgQ",
+  authDomain: "appviacasal.firebaseapp.com",
+  databaseURL: "https://appviacasal-default-rtdb.firebaseio.com",
+  projectId: "appviacasal",
+  storageBucket: "appviacasal.firebasestorage.app",
+  messagingSenderId: "124096832260",
+  appId: "1:124096832260:web:827591aff876c4185a6651"
+};
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
     const REGIOES = {
         'NORTE': { icon: '🌳', color: '#22C55E', UFs: ['BRAC','BRAM','BRRR','BRRO','BRPA','BRAP','BRTO'], nomes: ['Acre','Amazonas','Roraima','Rondônia','Pará','Amapá','Tocantins'] },
         'NORDESTE': { icon: '🌵', color: '#FACC15', UFs: ['BRMA','BRPI','BRCE','BRRN','BRPB','BRPE','BRAL','BRSE','BRBA'], nomes: ['Maranhão','Piauí','Ceará','Rio Grande do Norte','Paraíba','Pernambuco','Alagoas','Sergipe','Bahia'] },
@@ -131,6 +149,9 @@
         'SUL': { icon: '❄️', color: '#A855F7', UFs: ['BRPR','BRSC','BRRS'], nomes: ['Paraná','Santa Catarina','Rio Grande do Sul'] }
     };
 
+    // Variável global para armazenar os dados vindo da nuvem
+    let dbGlobal = {};
+
     async function init() {
         const res = await fetch('br.svg');
         const svg = await res.text();
@@ -138,11 +159,21 @@
         const svgEl = document.querySelector('#svg-container svg');
         svgEl.id = "mapa-svg-real"; svgEl.style.width = "100%"; svgEl.style.height = "100%";
         svgPanZoom('#mapa-svg-real', { zoomEnabled: true, controlIconsEnabled: false, fit: true, center: true });
+        
         document.getElementById('svg-container').addEventListener('touchend', (e) => {
             const target = e.target.closest('path');
             if (target && target.id) abrirHistorico(target.id);
         });
-        atualizarInterface();
+
+        // ESCUTAR MUDANÇAS NA NUVEM EM TEMPO REAL
+        database.ref('viagens').on('value', (snapshot) => {
+            dbGlobal = snapshot.val() || {};
+            atualizarInterface();
+            // Atualiza as abas se estiverem abertas
+            renderTimeline();
+            renderGastos();
+            renderJornada();
+        });
     }
 
     function trocarAba(id, btn) {
@@ -156,101 +187,62 @@
     }
 
     async function salvarViagem() {
-    // 1. Captura de elementos para facilitar a limpeza depois
-    const elUf = document.getElementById('sel-uf');
-    const elCidade = document.getElementById('txt-cidade');
-    const elData = document.getElementById('txt-data');
-    const elHosp = document.getElementById('v-hosp');
-    const elTrans = document.getElementById('v-trans');
-    const elAlime = document.getElementById('v-alime');
-    const elAtrac = document.getElementById('v-atrac');
-    const elFoto = document.getElementById('inp-foto');
-    const elPraia = document.getElementById('chk-praia');
+        const elUf = document.getElementById('sel-uf');
+        const elCidade = document.getElementById('txt-cidade');
+        const elData = document.getElementById('txt-data');
+        const elHosp = document.getElementById('v-hosp');
+        const elTrans = document.getElementById('v-trans');
+        const elAlime = document.getElementById('v-alime');
+        const elAtrac = document.getElementById('v-atrac');
+        const elFoto = document.getElementById('inp-foto');
+        const elPraia = document.getElementById('chk-praia');
 
-    // 2. Validação de Segurança
-    if (!elCidade.value.trim()) return alert("Por favor, digite o nome da cidade.");
-    if (!elData.value) return alert("A data da visita é obrigatória.");
-    
-    // Garantir que os gastos sejam números válidos (0 ou mais)
-    const h = parseFloat(elHosp.value) || 0;
-    const t = parseFloat(elTrans.value) || 0;
-    const al = parseFloat(elAlime.value) || 0;
-    const at = parseFloat(elAtrac.value) || 0;
-
-    if (h < 0 || t < 0 || al < 0 || at < 0) {
-        return alert("Os gastos não podem ser valores negativos!");
-    }
-
-    // ... (aqui continua a parte de converter fotos que você já tem)
-    const files = elFoto.files;
-    let fotos = []; 
-    for (let i = 0; i < Math.min(files.length, 3); i++) { 
-        fotos.push(await converter(files[i])); 
-    }
-
-    const trip = {
-        cidade: elCidade.value,
-        uf: elUf.value,
-        data: elData.value.split('-').reverse().join('/'),
-        rawDate: elData.value,
-        fotos,
-        h, t, al, at,
-        praia: elPraia.checked,
-        total: h + t + al + at
-    };
-
-    // 3. Salvando no Banco (LocalStorage)
-    let db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
-    if(!db[elUf.value]) db[elUf.value] = []; 
-    db[elUf.value].unshift(trip);
-    localStorage.setItem('viagens_master_v1', JSON.stringify(db));
-
-    // 4. LIMPEZA DOS CAMPOS (O "Pulo do Gato")
-    elCidade.value = "";
-    elData.value = "";
-    elHosp.value = "";
-    elTrans.value = "";
-    elAlime.value = "";
-    elAtrac.value = "";
-    elFoto.value = ""; // Limpa a seleção de arquivos
-    elPraia.checked = false;
-
-    alert("Memória salva com sucesso! 🎉");
-    
-    // Em vez de recarregar a página toda, podemos apenas atualizar a UI
-    atualizarInterface();
-    trocarAba('mapa', document.querySelector('.btn-aba')); // Volta para o mapa automaticamente
-}
-    
-   function removerViagem(uf, rawDate, cidade) {
-        // 1. Confirmação para evitar exclusões acidentais
-        if (!confirm(`Deseja apagar a memória de ${cidade}?`)) return;
-
-        // 2. Carrega o banco de dados
-        let db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
-
-        if (db[uf]) {
-            // 3. FILTRAGEM: Remove apenas a viagem que condiz com a data e cidade selecionada
-            db[uf] = db[uf].filter(v => !(v.rawDate === rawDate && v.cidade === cidade));
-
-            // 4. VERIFICAÇÃO DO MAPA: Se a lista do estado ficou vazia, removemos a chave do estado
-            if (db[uf].length === 0) {
-                delete db[uf];
-            }
-
-            // 5. Salva de volta no LocalStorage
-            localStorage.setItem('viagens_master_v1', JSON.stringify(db));
-            
-            // 6. Atualiza a tela automaticamente para refletir no Mapa, Gastos e Timeline
-            location.reload();
-        }
-    }
-    
-    function renderTimeline() {
-        const db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
-        let todas = []; 
-        for(let uf in db) db[uf].forEach(v => todas.push(v));
+        if (!elCidade.value.trim()) return alert("Por favor, digite o nome da cidade.");
+        if (!elData.value) return alert("A data da visita é obrigatória.");
         
+        const h = parseFloat(elHosp.value) || 0;
+        const t = parseFloat(elTrans.value) || 0;
+        const al = parseFloat(elAlime.value) || 0;
+        const at = parseFloat(elAtrac.value) || 0;
+
+        if (h < 0 || t < 0 || al < 0 || at < 0) return alert("Valores negativos não permitidos!");
+
+        const files = elFoto.files;
+        let fotos = []; 
+        for (let i = 0; i < Math.min(files.length, 3); i++) { fotos.push(await converter(files[i])); }
+
+        const trip = {
+            cidade: elCidade.value,
+            uf: elUf.value,
+            data: elData.value.split('-').reverse().join('/'),
+            rawDate: elData.value,
+            fotos, h, t, al, at,
+            praia: elPraia.checked,
+            total: h + t + al + at,
+            timestamp: Date.now() // Importante para ordenar a timeline
+        };
+
+        // SALVAR NO FIREBASE (NUVEM)
+        database.ref('viagens/' + elUf.value).push(trip).then(() => {
+            elCidade.value = ""; elData.value = ""; elHosp.value = ""; elTrans.value = "";
+            elAlime.value = ""; elAtrac.value = ""; elFoto.value = ""; elPraia.checked = false;
+            alert("Memória salva!");
+            trocarAba('mapa', document.querySelector('.btn-aba'));
+        });
+    }
+
+    function removerViagem(uf, idFirebase, cidade) {
+        if (!confirm(`Deseja apagar a memória de ${cidade}?`)) return;
+        database.ref('viagens/' + uf + '/' + idFirebase).remove();
+    }
+
+    function renderTimeline() {
+        let todas = [];
+        for(let uf in dbGlobal) {
+            for(let id in dbGlobal[uf]) {
+                todas.push({ ...dbGlobal[uf][id], idFirebase: id });
+            }
+        }
         todas.sort((a,b) => new Date(b.rawDate) - new Date(a.rawDate));
         
         let html = '';
@@ -259,11 +251,10 @@
             <div class="timeline-item">
                 <div class="t-dot"></div>
                 <div class="t-card" style="position: relative;">
-                    <button onclick="removerViagem('${v.uf}', '${v.rawDate}', '${v.cidade}')" 
+                    <button onclick="removerViagem('${v.uf}', '${v.idFirebase}', '${v.cidade}')" 
                             style="position: absolute; top: 10px; right: 10px; border: none; background: #fee2e2; color: #ef4444; border-radius: 8px; padding: 5px; cursor: pointer; font-size: 14px;">
                         🗑️
                     </button>
-
                     <span style="font-size:11px; font-weight:800; color:var(--text-sub)">${v.cidade} - ${v.data}</span>
                     <h4 style="margin:6px 0; color:var(--money); font-size:16px;">R$ ${v.total.toFixed(2)}</h4>
                     ${v.fotos[0] ? `<img src="${v.fotos[0]}" style="width:100%; height:160px; object-fit:cover; border-radius:18px; margin-top:8px;">` : ''}
@@ -274,14 +265,14 @@
     }
 
     function renderGastos() {
-        const db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
         let html = '', totalGeral = 0;
-        for (const uf in db) {
+        for (const uf in dbGlobal) {
             let totalUF = 0, cidadesHtml = '';
-            db[uf].forEach(c => {
+            for(let id in dbGlobal[uf]) {
+                const c = dbGlobal[uf][id];
                 totalUF += c.total;
                 cidadesHtml += `<div class="gasto-entry"><div class="cidade-data-row"><span>${c.cidade} - ${c.data}</span><strong style="color:var(--money)">R$ ${c.total.toFixed(2)}</strong></div><div style="display:flex; flex-wrap:wrap; gap:6px;"><div class="pill">🏨 ${c.h.toFixed(0)}</div><div class="pill">🚗 ${c.t.toFixed(0)}</div><div class="pill">🍴 ${c.al.toFixed(0)}</div><div class="pill">🎡 ${c.at.toFixed(0)}</div></div></div>`;
-            });
+            }
             totalGeral += totalUF;
             html += `<div class="resumo-uf-card"><div class="uf-header"><span>🚩 ${uf.replace('BR','')}</span><span style="color:var(--money)">R$ ${totalUF.toFixed(2)}</span></div>${cidadesHtml}</div>`;
         }
@@ -290,35 +281,47 @@
     }
 
     function renderJornada() {
-        const db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
-        const visitados = Object.keys(db);
+        const visitados = Object.keys(dbGlobal);
         let html = '';
         const metas = [{n:1, l:'Início', i:'🌱'}, {n:5, l:'5 Estados', i:'🏃'}, {n:10, l:'10 Estados', i:'⭐'}, {n:20, l:'20 Estados', i:'🔥'}, {n:26, l:'Brasil', i:'👑'}];
         metas.forEach(m => {
             const ok = visitados.length >= m.n;
             html += `<div class="badge ${ok ? 'active' : ''}" onclick="if(!${ok}) alert('Faltam ${m.n - visitados.length} estados!')"><div class="b-icon">${m.i}</div><div class="badge-name">${m.l}</div></div>`;
         });
-        let temPraia = false; for(let u in db) db[u].forEach(v => { if(v.praia) temPraia = true; });
+        
+        let temPraia = false; 
+        for(let u in dbGlobal) {
+            for(let id in dbGlobal[u]) { if(dbGlobal[u][id].praia) temPraia = true; }
+        }
+        
         html += `<div class="badge ${temPraia ? 'active' : ''}" onclick="if(!${temPraia}) alert('Visite uma praia para liberar!')"><div class="b-icon">🏖️</div><div class="badge-name">Pé na areia</div></div>`;
+        
         for(let r in REGIOES) {
-            const reg = REGIOES[r]; const vNaReg = reg.UFs.filter(u => visitados.includes(u)); const ok = vNaReg.length === reg.UFs.length;
+            const reg = REGIOES[r]; 
+            const vNaReg = reg.UFs.filter(u => visitados.includes(u)); 
+            const ok = vNaReg.length === reg.UFs.length;
             html += `<div class="badge ${ok ? 'active' : ''}" onclick="msgRegiao('${r}', ${ok})"><div class="b-icon" style="${ok ? 'background:'+reg.color+';color:#fff' : ''}">${reg.icon}</div><div class="badge-name">${r}</div></div>`;
         }
         document.getElementById('grid-conquistas').innerHTML = html;
     }
 
-    function msgRegiao(r, ok) { if(ok) return; const db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {}; const faltantes = REGIOES[r].nomes.filter((n, i) => !Object.keys(db).includes(REGIOES[r].UFs[i])); alert(`Faltam no ${r}: ${faltantes.join(', ')}`); }
+    function msgRegiao(r, ok) { 
+        if(ok) return; 
+        const faltantes = REGIOES[r].nomes.filter((n, i) => !Object.keys(dbGlobal).includes(REGIOES[r].UFs[i])); 
+        alert(`Faltam no ${r}: ${faltantes.join(', ')}`); 
+    }
 
     function abrirHistorico(id) {
-        const db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {};
-        const lista = db[id]; if (!lista) return;
+        const listaObj = dbGlobal[id]; if (!listaObj) return;
         let h = `<h2 style="color:var(--primary); margin:0 0 20px 0; font-size:22px;">🚩 ${id.replace('BR','')}</h2>`;
-        lista.forEach((v, cIdx) => {
+        
+        Object.keys(listaObj).forEach((idFirebase) => {
+            const v = listaObj[idFirebase];
             let track = ''; v.fotos.forEach(f => { track += `<img src="${f}" class="img-slide">`; });
             h += `<div style="margin-bottom:30px; border-bottom:1px solid #eee; padding-bottom:20px;">
                 <p style="margin:0; font-size:14px; font-weight:800; color:var(--text-sub);">${v.cidade} - ${v.data}</p>
                 <h4 style="margin:6px 0 12px 0; color:var(--money); font-size:18px;">R$ ${v.total.toFixed(2)}</h4>
-                <div class="carousel-fotos" id="car-${cIdx}" ontouchstart="hTS(event)" ontouchmove="hTM(event, ${cIdx}, ${v.fotos.length})">
+                <div class="carousel-fotos" id="car-${idFirebase}" ontouchstart="hTS(event)" ontouchmove="hTM(event, '${idFirebase}', ${v.fotos.length})">
                     <div class="track-fotos">${track || '<div class="img-slide" style="background:#eee"></div>'}</div>
                 </div>
             </div>`;
@@ -329,10 +332,16 @@
     }
 
     let sX = 0; function hTS(e) { sX = e.touches[0].clientX; }
-    function hTM(e, cIdx, len) { if (!sX) return; let d = sX - e.touches[0].clientX; let tr = document.querySelector(`#car-${cIdx} .track-fotos`); let curIdx = Math.round(Math.abs(new WebKitCSSMatrix(window.getComputedStyle(tr).transform).m41 / tr.offsetWidth)); if (Math.abs(d) > 40) { if (d > 0 && curIdx < len - 1) curIdx++; else if (d < 0 && curIdx > 0) curIdx--; tr.style.transform = `translateX(-${curIdx * 100}%)`; sX = 0; } }
+    function hTM(e, idF, len) { if (!sX) return; let d = sX - e.touches[0].clientX; let tr = document.querySelector(`#car-${idF} .track-fotos`); let curIdx = Math.round(Math.abs(new WebKitCSSMatrix(window.getComputedStyle(tr).transform).m41 / tr.offsetWidth)); if (Math.abs(d) > 40) { if (d > 0 && curIdx < len - 1) curIdx++; else if (d < 0 && curIdx > 0) curIdx--; tr.style.transform = `translateX(-${curIdx * 100}%)`; sX = 0; } }
 
     function fecharPopup() { document.getElementById('photo-popup').classList.remove('show'); document.getElementById('popup-overlay').style.display = 'none'; }
-    function atualizarInterface() { const db = JSON.parse(localStorage.getItem('viagens_master_v1')) || {}; Object.keys(db).forEach(u => { const el = document.getElementById(u); if(el) el.classList.add('visitado'); }); document.getElementById('info').innerText = `ESTADOS CONQUISTADOS: ${Object.keys(db).length}`; }
+    
+    function atualizarInterface() { 
+        document.querySelectorAll('path').forEach(p => p.classList.remove('visitado'));
+        Object.keys(dbGlobal).forEach(u => { const el = document.getElementById(u); if(el) el.classList.add('visitado'); }); 
+        document.getElementById('info').innerText = `ESTADOS CONQUISTADOS: ${Object.keys(dbGlobal).length}`; 
+    }
+    
     function converter(f) { return new Promise(r => { const rd = new FileReader(); rd.readAsDataURL(f); rd.onload = () => { const img = new Image(); img.src = rd.result; img.onload = () => { const cv = document.createElement('canvas'); const ctx = cv.getContext('2d'); cv.width = 600; cv.height = 600 * (img.height/img.width); ctx.drawImage(img, 0, 0, cv.width, cv.height); r(cv.toDataURL('image/jpeg', 0.6)); }; }; }); }
     init();
 </script>
