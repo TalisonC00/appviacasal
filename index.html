@@ -375,39 +375,76 @@
     }
 
     function abrirHistorico(id) {
-        const listaObj = dbGlobal[id]; if (!listaObj) return;
+    const listaObj = dbGlobal[id]; if (!listaObj) return;
+    let h = `<h2 style="color:var(--primary); margin:0 0 15px 10px; font-size:20px; font-weight:800;">🚩 ${id.replace('BR','')}</h2>`;
+    
+    Object.keys(listaObj).forEach((idFirebase) => {
+        const v = listaObj[idFirebase];
+        let track = ''; 
+        let bullets = '';
         
-        // Cabeçalho do Pop-up (Estado)
-        let h = `<h2 style="color:var(--primary); margin:0 0 15px 0; font-size:20px; font-weight:800;">🚩 ${id.replace('BR','')}</h2>`;
+        if(v.fotos) {
+            v.fotos.forEach((f, idx) => { 
+                track += `<img src="${f}" class="img-slide" style="width:100%; height:300px; object-fit:cover;">`; 
+                // Cria os pontinhos indicadores
+                bullets += `<div class="bullet-${idFirebase}" style="width:6px; height:6px; border-radius:50%; background:${idx===0?'white':'rgba(255,255,255,0.4)'}; transition:0.3s;"></div>`;
+            });
+        }
         
-        Object.keys(listaObj).forEach((idFirebase) => {
-            const v = listaObj[idFirebase];
-            let track = ''; 
-            if(v.fotos) v.fotos.forEach(f => { track += `<img src="${f}" class="img-slide" style="width:100%; height:250px; object-fit:cover;">`; });
-            
-            h += `
-            <div style="margin-bottom:25px; border-bottom:1px solid #f1f5f9; padding-bottom:15px;">
-                <p style="margin:0; font-size:14px; font-weight:700; color:var(--text-main);">${v.cidade} - ${v.data}</p>
+        h += `
+        <div style="margin-bottom:20px; border-radius:24px; overflow:hidden; position:relative; background:#f1f5f9; box-shadow:0 10px 20px rgba(0,0,0,0.05);">
+            <div class="carousel-fotos" id="car-${idFirebase}" 
+                 style="height:300px; position:relative;"
+                 ontouchstart="hTS(event)" ontouchmove="hTM(event, '${idFirebase}', ${v.fotos ? v.fotos.length : 0})">
                 
-                <h4 style="margin:4px 0 10px 0; color:var(--money); font-size:15px; font-weight:700;">
-                    ${v.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                </h4>
+                <div class="track-fotos" style="display:flex; transition:0.4s ease-out; height:100%;">${track || '<div style="width:100%; height:300px; background:#eee;"></div>'}</div>
                 
-                <div class="carousel-fotos" id="car-${idFirebase}" 
-                     style="height:250px; border-radius:20px; overflow:hidden; background:#f8fafc;"
-                     ontouchstart="hTS(event)" ontouchmove="hTM(event, '${idFirebase}', ${v.fotos ? v.fotos.length : 0})">
-                    <div class="track-fotos">${track || '<div class="img-slide" style="background:#eee; height:250px;"></div>'}</div>
+                <div style="position:absolute; bottom:0; left:0; width:100%; background:linear-gradient(to top, rgba(0,0,0,0.8), transparent); padding:15px; box-sizing:border-box; pointer-events:none;">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+                        <div>
+                            <p style="margin:0; font-size:15px; font-weight:700; color:white;">${v.cidade}</p>
+                            <span style="font-size:10px; color:rgba(255,255,255,0.7); font-weight:600;">${v.data}</span>
+                        </div>
+                        <span style="color:#4ade80; font-weight:800; font-size:13px; background:rgba(0,0,0,0.3); padding:4px 8px; border-radius:8px;">
+                            ${v.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                        </span>
+                    </div>
+                    
+                    <div style="display:flex; justify-content:center; gap:5px; margin-top:10px;">
+                        ${bullets}
+                    </div>
                 </div>
-            </div>`;
+            </div>
+        </div>`;
+    });
+    
+    document.getElementById('popup-content').innerHTML = h;
+    document.getElementById('photo-popup').classList.add('show');
+    document.getElementById('popup-overlay').style.display = 'block';
+}
+    let sX = 0; function hTS(e) { sX = e.touches[0].clientX; }
+        
+    function hTM(e, idF, len) { 
+    if (!sX) return; 
+    let d = sX - e.touches[0].clientX; 
+    let tr = document.querySelector(`#car-${idF} .track-fotos`); 
+    let curIdx = Math.round(Math.abs(new WebKitCSSMatrix(window.getComputedStyle(tr).transform).m41 / tr.offsetWidth)); 
+    
+    if (Math.abs(d) > 40) { 
+        if (d > 0 && curIdx < len - 1) curIdx++; 
+        else if (d < 0 && curIdx > 0) curIdx--; 
+        
+        tr.style.transform = `translateX(-${curIdx * 100}%)`; 
+        
+        // Atualiza os pontinhos visualmente
+        document.querySelectorAll(`.bullet-${idF}`).forEach((b, i) => {
+            b.style.background = (i === curIdx) ? 'white' : 'rgba(255,255,255,0.4)';
+            b.style.transform = (i === curIdx) ? 'scale(1.2)' : 'scale(1)';
         });
         
-        document.getElementById('popup-content').innerHTML = h;
-        document.getElementById('photo-popup').classList.add('show');
-        document.getElementById('popup-overlay').style.display = 'block';
-    }
-    let sX = 0; function hTS(e) { sX = e.touches[0].clientX; }
-    function hTM(e, idF, len) { if (!sX) return; let d = sX - e.touches[0].clientX; let tr = document.querySelector(`#car-${idF} .track-fotos`); let curIdx = Math.round(Math.abs(new WebKitCSSMatrix(window.getComputedStyle(tr).transform).m41 / tr.offsetWidth)); if (Math.abs(d) > 40) { if (d > 0 && curIdx < len - 1) curIdx++; else if (d < 0 && curIdx > 0) curIdx--; tr.style.transform = `translateX(-${curIdx * 100}%)`; sX = 0; } }
-
+        sX = 0; 
+    } 
+}
     function atualizarInterface() { 
         document.querySelectorAll('path').forEach(p => p.classList.remove('visitado'));
         Object.keys(dbGlobal).forEach(u => { const el = document.getElementById(u); if(el) el.classList.add('visitado'); }); 
