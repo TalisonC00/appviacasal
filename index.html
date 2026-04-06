@@ -106,8 +106,8 @@
 
             <div style="display: flex; flex-direction: column; gap: 12px;">
                 <button onclick="compartilharNoStories()" style="background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); color: white; border: none; padding: 15px; border-radius: 18px; font-weight: 800; width: 100%; cursor: pointer;">📸 Compartilhe com sua rede</button>
-                <button onclick="document.getElementById('modal-celebracao').style.display='none'" style="background: rgba(255,255,255,0.2); color: white; border: none; padding: 12px; border-radius: 18px; font-weight: 700; width: 100%; cursor: pointer;">Uhul! 🔥</button>
-            </div>
+                <button onclick="fecharCelebracaoEProxima()" style="background: rgba(255,255,255,0.2); color: white; border: none; padding: 12px; border-radius: 18px; font-weight: 700; width: 100%; cursor: pointer;"> Uhuuul! 🔥</button>
+        </div>
         </div>
     </div>
 
@@ -231,12 +231,35 @@
         document.getElementById('popup-overlay').style.display = 'none';
     }
 
-    function celebrarConquista(conquista) {
-        document.getElementById('celebracao-nome').innerText = conquista.nome;
-        document.getElementById('celebracao-icone').innerText = conquista.icone;
-        if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-        setTimeout(() => { document.getElementById('modal-celebracao').style.display = 'flex'; }, 800);
+    function mostrarProximaConquistaDaFila() {
+    if (filaDeConquistas.length === 0) return;
+
+    const conquista = filaDeConquistas[0]; // Pega a primeira da fila
+    const modal = document.getElementById('modal-celebracao');
+    
+    document.getElementById('celebracao-nome').innerText = conquista.nome;
+    document.getElementById('celebracao-icone').innerText = conquista.icone;
+    
+    if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+    
+    modal.style.display = 'flex';
+}
+
+// ESTA FUNÇÃO VAI NO BOTÃO "UHUL!" DO SEU HTML
+function fecharCelebracaoEProxima() {
+    // Remove a conquista que acabou de ser mostrada da fila
+    filaDeConquistas.shift();
+    
+    // Fecha o modal
+    document.getElementById('modal-celebracao').style.display = 'none';
+    
+    // Se ainda tiver coisa na fila, espera um pouquinho e abre a próxima
+    if (filaDeConquistas.length > 0) {
+        setTimeout(() => {
+            mostrarProximaConquistaDaFila();
+        }, 600); // Meio segundo de intervalo entre um troféu e outro
     }
+}
 
     function compartilharNoStories() {
         const nome = document.getElementById('celebracao-nome').innerText;
@@ -249,35 +272,47 @@
         }
     }
 
-    function verificarNovasConquistas() {
-        const metas = [
-            {id: 'm1', n:1, l:'🌱 Início da Jornada', i:'🌱'}, 
-            {id: 'm5', n:5, l:'🏃 Exploradores Estaduais', i:'🏃'}, 
-            {id: 'm10', n:10, l:'⭐ Casal Aventureiro', i:'⭐'}, 
-            {id: 'm20', n:20, l:'🔥 Pelo Brasil', i:'🔥'}, 
-            {id: 'm26', n:26, l:'👑 Conquistadores do Brasil', i:'👑'}
-        ];
-        const visitados = Object.keys(dbGlobal || {});
-        let novas = [];
-        metas.forEach(m => {
-            if (visitados.length >= m.n && !conquistasAnteriores.includes(m.id)) {
-                novas.push({nome: m.l, icone: m.i});
-            }
-        });
-        
-        // Verifica Praia
-        let temPraia = false; 
-        for(let u in dbGlobal) { for(let id in dbGlobal[u]) { if(dbGlobal[u][id].praia) temPraia = true; } }
-        if (temPraia && !conquistasAnteriores.includes('praia')) {
-            novas.push({nome: '🏖️ Pé na Areia', icone: '🏖️'});
+   let filaDeConquistas = [];
+
+function verificarNovasConquistas() {
+    const metas = [
+        {id: 'm1', n:1, l:' Início da Jornada', i:'🌱'}, 
+        {id: 'm5', n:5, l:' Exploradores Estaduais', i:'🏃'}, 
+        {id: 'm10', n:10, l:' Casal Aventureiro', i:'⭐'}, 
+        {id: 'm20', n:20, l:' Casal Explorador', i:'🔥'}, 
+        {id: 'm26', n:26, l:' Conquistadores do Brasil', i:'👑'}
+    ];
+    
+    const visitados = Object.keys(dbGlobal || {});
+    let novasNestaRodada = [];
+
+    // 1. Verifica Metas Numéricas
+    metas.forEach(m => {
+        if (visitados.length >= m.n && !conquistasAnteriores.includes(m.id)) {
+            novasNestaRodada.push({nome: m.l, icone: m.i, id: m.id});
         }
-
-        // Atualiza lista de já conquistados
-        conquistasAnteriores = metas.filter(m => visitados.length >= m.n).map(m => m.id);
-        if (temPraia) conquistasAnteriores.push('praia');
-
-        if (novas.length > 0) celebrarConquista(novas[0]);
+    });
+    
+    // 2. Verifica Meta de Praia
+    let temPraia = false; 
+    for(let u in dbGlobal) { for(let id in dbGlobal[u]) { if(dbGlobal[u][id].praia) temPraia = true; } }
+    if (temPraia && !conquistasAnteriores.includes('praia')) {
+        novasNestaRodada.push({nome: '🏖️ Pé na Areia', icone: '🏖️', id: 'praia'});
     }
+
+    // Se houver novas conquistas, adiciona na fila global e inicia a celebração
+    if (novasNestaRodada.length > 0) {
+        filaDeConquistas = [...filaDeConquistas, ...novasNestaRodada];
+        
+        // Atualiza a lista de 'já celebrados' para não repetir no próximo sync do banco
+        novasNestaRodada.forEach(n => conquistasAnteriores.push(n.id));
+        
+        // Se não houver nenhum modal aberto agora, começa a mostrar
+        if (document.getElementById('modal-celebracao').style.display !== 'flex') {
+            mostrarProximaConquistaDaFila();
+        }
+    }
+}
 
     function converter(f) { 
         return new Promise(r => { 
