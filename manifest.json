@@ -1,0 +1,17 @@
+{
+  "short_name": "Jornada",
+  "name": "Nossa Jornada 👩‍❤️‍👨",
+  "icons": [
+    {
+      "src": "icone.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "index.html",
+  "background_color": "#BAE6FD",
+  "theme_color": "#FF4B5C",
+  "display": "standalone",
+  "orientation": "portrait"
+}
