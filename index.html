@@ -91,6 +91,29 @@
         <button class="close-popup" onclick="fecharPopup()">✕</button>
         <div id="popup-content" class="popup-scroll"></div>
     </div>
+    
+<div id="modal-celebracao" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(10px); flex-direction: column; text-align: center; color: white;">
+        <div style="font-size: 100px; margin-bottom: 20px; animation: bounceCustom 1s infinite;">🏆</div>
+        
+        <div style="background: rgba(255,255,255,0.1); padding: 30px; border-radius: 32px; width: 85%; max-width: 340px; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.3);">
+            <h1 style="margin: 0; font-size: 26px; font-weight: 800; color: #FACC15;">NOVA CONQUISTA!</h1>
+            <p style="font-size: 14px; opacity: 0.8; margin: 10px 0;">Vocês desbloquearam o troféu:</p>
+            
+            <div style="display: flex; align-items: center; justify-content: center; gap: 15px; background: white; color: #1E293B; padding: 15px; border-radius: 20px; margin: 20px 0;">
+                <div id="celebracao-icone" style="font-size: 30px; width: 50px; height: 50px; background: #F1F5F9; border-radius: 50%; display: flex; align-items: center; justify-content: center;"></div>
+                <h3 id="celebracao-nome" style="margin: 0; font-size: 18px; font-weight: 800; flex: 1; text-align: left;"></h3>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <button onclick="compartilharNoStories()" style="background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); color: white; border: none; padding: 15px; border-radius: 18px; font-weight: 800; width: 100%; cursor: pointer;">📸 Compartilhe com sua rede</button>
+                <button onclick="document.getElementById('modal-celebracao').style.display='none'" style="background: rgba(255,255,255,0.2); color: white; border: none; padding: 12px; border-radius: 18px; font-weight: 700; width: 100%; cursor: pointer;">Uhul! 🔥</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+    @keyframes bounceCustom { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+    </style>
 
     <div id="custom-alert" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 5000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
         <div style="background: white; padding: 25px; border-radius: 24px; width: 80%; max-width: 300px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
@@ -185,6 +208,8 @@
     // 2. VARIÁVEIS GLOBAIS
     let dbGlobal = {};
     let controleMapa;
+    let conquistasAnteriores = []; // Controla o que já foi celebrado
+    
     const REGIOES = {
         'NORTE': { icon: '🌳', color: '#22C55E', UFs: ['BRAC','BRAM','BRRR','BRRO','BRPA','BRAP','BRTO'], nomes: ['Acre','Amazonas','Roraima','Rondônia','Pará','Amapá','Tocantins'] },
         'NORDESTE': { icon: '🌵', color: '#FACC15', UFs: ['BRMA','BRPI','BRCE','BRRN','BRPB','BRPE','BRAL','BRSE','BRBA'], nomes: ['Maranhão','Piauí','Ceará','Rio Grande do Norte','Paraíba','Pernambuco','Alagoas','Sergipe','Bahia'] },
@@ -193,7 +218,7 @@
         'SUL': { icon: '❄️', color: '#A855F7', UFs: ['BRPR','BRSC','BRRS'], nomes: ['Paraná','Santa Catarina','Rio Grande do Sul'] }
     };
 
-    // 3. FUNÇÕES DE SUPORTE
+    // 3. FUNÇÕES DE SUPORTE E CELEBRAÇÃO
     function mostrarAlerta(msg, icon = '💡') {
         document.getElementById('alert-msg').innerText = msg;
         document.getElementById('alert-icon').innerText = icon;
@@ -204,6 +229,54 @@
     function fecharPopup() {
         document.getElementById('photo-popup').classList.remove('show');
         document.getElementById('popup-overlay').style.display = 'none';
+    }
+
+    function celebrarConquista(conquista) {
+        document.getElementById('celebracao-nome').innerText = conquista.nome;
+        document.getElementById('celebracao-icone').innerText = conquista.icone;
+        if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+        setTimeout(() => { document.getElementById('modal-celebracao').style.display = 'flex'; }, 800);
+    }
+
+    function compartilharNoStories() {
+        const nome = document.getElementById('celebracao-nome').innerText;
+        const texto = `🏆 NOVA CONQUISTA NO NOSSO APP! Desbloqueamos: ${nome}. Mapeando nossa jornada pelo Brasil! 🇧🇷`;
+        if (navigator.share) {
+            navigator.share({ title: 'Nossa Jornada', text: texto, url: window.location.href }).catch(() => {});
+        } else {
+            navigator.clipboard.writeText(texto);
+            mostrarAlerta("Texto copiado! Cole na sua rede.", "📸");
+        }
+    }
+
+    function verificarNovasConquistas() {
+        const metas = [
+            {id: 'm1', n:1, l:'🌱 Início da Jornada', i:'🌱'}, 
+            {id: 'm5', n:5, l:'🏃 Exploradores Estaduais', i:'🏃'}, 
+            {id: 'm10', n:10, l:'⭐ Casal Aventureiro', i:'⭐'}, 
+            {id: 'm20', n:20, l:'🔥 Pelo Brasil', i:'🔥'}, 
+            {id: 'm26', n:26, l:'👑 Conquistadores do Brasil', i:'👑'}
+        ];
+        const visitados = Object.keys(dbGlobal || {});
+        let novas = [];
+        metas.forEach(m => {
+            if (visitados.length >= m.n && !conquistasAnteriores.includes(m.id)) {
+                novas.push({nome: m.l, icone: m.i});
+            }
+        });
+        
+        // Verifica Praia
+        let temPraia = false; 
+        for(let u in dbGlobal) { for(let id in dbGlobal[u]) { if(dbGlobal[u][id].praia) temPraia = true; } }
+        if (temPraia && !conquistasAnteriores.includes('praia')) {
+            novas.push({nome: '🏖️ Pé na Areia', icone: '🏖️'});
+        }
+
+        // Atualiza lista de já conquistados
+        conquistasAnteriores = metas.filter(m => visitados.length >= m.n).map(m => m.id);
+        if (temPraia) conquistasAnteriores.push('praia');
+
+        if (novas.length > 0) celebrarConquista(novas[0]);
     }
 
     function converter(f) { 
@@ -234,7 +307,6 @@
             }
         }
         todas.sort((a,b) => new Date(b.rawDate) - new Date(a.rawDate));
-        
         let html = '';
         todas.forEach(v => {
             const ufExibicao = v.ufOriginal.replace('BR','');
@@ -243,23 +315,12 @@
                 <div class="t-dot"></div>
                 <div class="t-card" style="position: relative; padding: 0; overflow: hidden; border-radius: 24px;">
                     <div style="position: relative; width: 100%; height: 280px;">
-                        ${v.fotos && v.fotos[0] ? 
-                            `<img src="${v.fotos[0]}" style="width: 100%; height: 100%; object-fit: cover;">` : 
-                            `<div style="width: 100%; height: 100%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; color: #cbd5e1;">🖼️ Sem foto</div>`
-                        }
-                        
-                        <button onclick="removerViagem('${v.ufOriginal}', '${v.idFirebase}', '${v.cidade}')" 
-                                style="position: absolute; top: 12px; right: 12px; border: none; background: rgba(255,255,255,0.8); color: #ef4444; border-radius: 10px; padding: 6px; cursor: pointer; z-index: 10; backdrop-filter: blur(4px);">🗑️</button>
-
+                        ${v.fotos && v.fotos[0] ? `<img src="${v.fotos[0]}" style="width: 100%; height: 100%; object-fit: cover;">` : `<div style="width: 100%; height: 100%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; color: #cbd5e1;">🖼️ Sem foto</div>`}
+                        <button onclick="removerViagem('${v.ufOriginal}', '${v.idFirebase}', '${v.cidade}')" style="position: absolute; top: 12px; right: 12px; border: none; background: rgba(255,255,255,0.8); color: #ef4444; border-radius: 10px; padding: 6px; cursor: pointer; z-index: 10; backdrop-filter: blur(4px);">🗑️</button>
                         <div style="position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); padding: 15px; box-sizing: border-box; color: white;">
                             <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-                                <div>
-                                    <h3 style="margin: 0; font-size: 15px; font-weight: 700;">${v.cidade} - ${ufExibicao}</h3>
-                                    <span style="font-size: 10px; opacity: 0.8;">${v.data}</span>
-                                </div>
-                                <span style="font-size: 13px; font-weight: 800; color: #4ade80; background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 8px;">
-                                    ${v.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                                </span>
+                                <div><h3 style="margin: 0; font-size: 15px; font-weight: 700;">${v.cidade} - ${ufExibicao}</h3><span style="font-size: 10px; opacity: 0.8;">${v.data}</span></div>
+                                <span style="font-size: 13px; font-weight: 800; color: #4ade80; background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 8px;">${v.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
                             </div>
                         </div>
                     </div>
@@ -277,29 +338,10 @@
                 const c = dbGlobal[uf][id];
                 const valorViagem = parseFloat(c.total) || 0;
                 totalUF += valorViagem;
-                cidadesHtml += `
-                <div class="gasto-entry" style="padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                        <span style="font-size: 13px; font-weight: 600; color: var(--text-main);">${c.cidade} - ${c.data}</span>
-                        <strong style="color: var(--money); font-size: 13px;">${valorViagem.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong>
-                    </div>
-                    <div style="display: flex; flex-wrap: wrap; gap: 6px;">
-                        <div class="pill">🏨 ${parseFloat(c.h).toLocaleString('pt-BR')}</div>
-                        <div class="pill">🚗 ${parseFloat(c.t).toLocaleString('pt-BR')}</div>
-                        <div class="pill">🍴 ${parseFloat(c.al).toLocaleString('pt-BR')}</div>
-                        <div class="pill">🎡 ${parseFloat(c.at).toLocaleString('pt-BR')}</div>
-                    </div>
-                </div>`;
+                cidadesHtml += `<div class="gasto-entry" style="padding: 12px 0; border-bottom: 1px solid #f1f5f9;"><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;"><span style="font-size: 13px; font-weight: 600; color: var(--text-main);">${c.cidade} - ${c.data}</span><strong style="color: var(--money); font-size: 13px;">${valorViagem.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong></div><div style="display: flex; flex-wrap: wrap; gap: 6px;"><div class="pill">🏨 ${parseFloat(c.h).toLocaleString('pt-BR')}</div><div class="pill">🚗 ${parseFloat(c.t).toLocaleString('pt-BR')}</div><div class="pill">🍴 ${parseFloat(c.al).toLocaleString('pt-BR')}</div><div class="pill">🎡 ${parseFloat(c.at).toLocaleString('pt-BR')}</div></div></div>`;
             }
             totalGeral += totalUF;
-            html += `
-            <div class="resumo-uf-card">
-                <div class="uf-header" style="display: flex; justify-content: space-between; align-items: center;">
-                    <span>🚩 ${uf.replace('BR','')}</span>
-                    <span style="color: var(--money); font-weight: 800;">${totalUF.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
-                </div>
-                ${cidadesHtml}
-            </div>`;
+            html += `<div class="resumo-uf-card"><div class="uf-header" style="display: flex; justify-content: space-between; align-items: center;"><span>🚩 ${uf.replace('BR','')}</span><span style="color: var(--money); font-weight: 800;">${totalUF.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div>${cidadesHtml}</div>`;
         }
         document.getElementById('lista-detalhada-gastos').innerHTML = html || '<p style="text-align:center;padding:20px;color:#999">Sem gastos registrados.</p>';
         document.getElementById('total-geral-brasil').innerText = `Total Brasil: ${totalGeral.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
@@ -375,76 +417,41 @@
     }
 
     function abrirHistorico(id) {
-    const listaObj = dbGlobal[id]; if (!listaObj) return;
-    let h = `<h2 style="color:var(--primary); margin:0 0 15px 10px; font-size:20px; font-weight:800;">🚩 ${id.replace('BR','')}</h2>`;
-    
-    Object.keys(listaObj).forEach((idFirebase) => {
-        const v = listaObj[idFirebase];
-        let track = ''; 
-        let bullets = '';
-        
-        if(v.fotos) {
-            v.fotos.forEach((f, idx) => { 
-                track += `<img src="${f}" class="img-slide" style="width:100%; height:300px; object-fit:cover;">`; 
-                // Cria os pontinhos indicadores
-                bullets += `<div class="bullet-${idFirebase}" style="width:6px; height:6px; border-radius:50%; background:${idx===0?'white':'rgba(255,255,255,0.4)'}; transition:0.3s;"></div>`;
-            });
-        }
-        
-        h += `
-        <div style="margin-bottom:20px; border-radius:24px; overflow:hidden; position:relative; background:#f1f5f9; box-shadow:0 10px 20px rgba(0,0,0,0.05);">
-            <div class="carousel-fotos" id="car-${idFirebase}" 
-                 style="height:300px; position:relative;"
-                 ontouchstart="hTS(event)" ontouchmove="hTM(event, '${idFirebase}', ${v.fotos ? v.fotos.length : 0})">
-                
-                <div class="track-fotos" style="display:flex; transition:0.4s ease-out; height:100%;">${track || '<div style="width:100%; height:300px; background:#eee;"></div>'}</div>
-                
-                <div style="position:absolute; bottom:0; left:0; width:100%; background:linear-gradient(to top, rgba(0,0,0,0.8), transparent); padding:15px; box-sizing:border-box; pointer-events:none;">
-                    <div style="display:flex; justify-content:space-between; align-items:flex-end;">
-                        <div>
-                            <p style="margin:0; font-size:15px; font-weight:700; color:white;">${v.cidade}</p>
-                            <span style="font-size:10px; color:rgba(255,255,255,0.7); font-weight:600;">${v.data}</span>
-                        </div>
-                        <span style="color:#4ade80; font-weight:800; font-size:13px; background:rgba(0,0,0,0.3); padding:4px 8px; border-radius:8px;">
-                            ${v.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                        </span>
-                    </div>
-                    
-                    <div style="display:flex; justify-content:center; gap:5px; margin-top:10px;">
-                        ${bullets}
-                    </div>
-                </div>
-            </div>
-        </div>`;
-    });
-    
-    document.getElementById('popup-content').innerHTML = h;
-    document.getElementById('photo-popup').classList.add('show');
-    document.getElementById('popup-overlay').style.display = 'block';
-}
-    let sX = 0; function hTS(e) { sX = e.touches[0].clientX; }
-        
-    function hTM(e, idF, len) { 
-    if (!sX) return; 
-    let d = sX - e.touches[0].clientX; 
-    let tr = document.querySelector(`#car-${idF} .track-fotos`); 
-    let curIdx = Math.round(Math.abs(new WebKitCSSMatrix(window.getComputedStyle(tr).transform).m41 / tr.offsetWidth)); 
-    
-    if (Math.abs(d) > 40) { 
-        if (d > 0 && curIdx < len - 1) curIdx++; 
-        else if (d < 0 && curIdx > 0) curIdx--; 
-        
-        tr.style.transform = `translateX(-${curIdx * 100}%)`; 
-        
-        // Atualiza os pontinhos visualmente
-        document.querySelectorAll(`.bullet-${idF}`).forEach((b, i) => {
-            b.style.background = (i === curIdx) ? 'white' : 'rgba(255,255,255,0.4)';
-            b.style.transform = (i === curIdx) ? 'scale(1.2)' : 'scale(1)';
+        const listaObj = dbGlobal[id]; if (!listaObj) return;
+        let h = `<h2 style="color:var(--primary); margin:0 0 15px 10px; font-size:20px; font-weight:800;">🚩 ${id.replace('BR','')}</h2>`;
+        Object.keys(listaObj).forEach((idFirebase) => {
+            const v = listaObj[idFirebase];
+            let track = ''; let bullets = '';
+            if(v.fotos) {
+                v.fotos.forEach((f, idx) => { 
+                    track += `<img src="${f}" class="img-slide" style="width:100%; height:300px; object-fit:cover;">`; 
+                    bullets += `<div class="bullet-${idFirebase}" style="width:6px; height:6px; border-radius:50%; background:${idx===0?'white':'rgba(255,255,255,0.4)'}; transition:0.3s;"></div>`;
+                });
+            }
+            h += `<div style="margin-bottom:20px; border-radius:24px; overflow:hidden; position:relative; background:#f1f5f9; box-shadow:0 10px 20px rgba(0,0,0,0.05);"><div class="carousel-fotos" id="car-${idFirebase}" style="height:300px; position:relative;" ontouchstart="hTS(event)" ontouchmove="hTM(event, '${idFirebase}', ${v.fotos ? v.fotos.length : 0})"><div class="track-fotos" style="display:flex; transition:0.4s ease-out; height:100%;">${track || '<div style="width:100%; height:300px; background:#eee;"></div>'}</div><div style="position:absolute; bottom:0; left:0; width:100%; background:linear-gradient(to top, rgba(0,0,0,0.8), transparent); padding:15px; box-sizing:border-box; pointer-events:none;"><div style="display:flex; justify-content:space-between; align-items:flex-end;"><div><p style="margin:0; font-size:15px; font-weight:700; color:white;">${v.cidade}</p><span style="font-size:10px; color:rgba(255,255,255,0.7); font-weight:600;">${v.data}</span></div><span style="color:#4ade80; font-weight:800; font-size:13px; background:rgba(0,0,0,0.3); padding:4px 8px; border-radius:8px;">${v.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div><div style="display:flex; justify-content:center; gap:5px; margin-top:10px;">${bullets}</div></div></div></div>`;
         });
-        
-        sX = 0; 
-    } 
-}
+        document.getElementById('popup-content').innerHTML = h;
+        document.getElementById('photo-popup').classList.add('show');
+        document.getElementById('popup-overlay').style.display = 'block';
+    }
+
+    let sX = 0; function hTS(e) { sX = e.touches[0].clientX; }
+    function hTM(e, idF, len) { 
+        if (!sX) return; 
+        let d = sX - e.touches[0].clientX; 
+        let tr = document.querySelector(`#car-${idF} .track-fotos`); 
+        let curIdx = Math.round(Math.abs(new WebKitCSSMatrix(window.getComputedStyle(tr).transform).m41 / tr.offsetWidth)); 
+        if (Math.abs(d) > 40) { 
+            if (d > 0 && curIdx < len - 1) curIdx++; else if (d < 0 && curIdx > 0) curIdx--; 
+            tr.style.transform = `translateX(-${curIdx * 100}%)`; 
+            document.querySelectorAll(`.bullet-${idF}`).forEach((b, i) => {
+                b.style.background = (i === curIdx) ? 'white' : 'rgba(255,255,255,0.4)';
+                b.style.transform = (i === curIdx) ? 'scale(1.2)' : 'scale(1)';
+            });
+            sX = 0; 
+        } 
+    }
+
     function atualizarInterface() { 
         document.querySelectorAll('path').forEach(p => p.classList.remove('visitado'));
         Object.keys(dbGlobal).forEach(u => { const el = document.getElementById(u); if(el) el.classList.add('visitado'); }); 
@@ -458,21 +465,20 @@
         const svgEl = document.querySelector('#svg-container svg');
         svgEl.id = "mapa-svg-real"; svgEl.style.width = "100%"; svgEl.style.height = "100%";
         controleMapa = svgPanZoom('#mapa-svg-real', { zoomEnabled: true, controlIconsEnabled: false, fit: true, center: true, zoomScaleSensitivity: 0.3, minZoom: 0.5, maxZoom: 10 });
-        
         document.getElementById('svg-container').addEventListener('touchend', (e) => {
             const target = e.target.closest('path');
             if (target && target.id) abrirHistorico(target.id);
         });
-
         database.ref('viagens').on('value', (snapshot) => {
             dbGlobal = snapshot.val() || {};
             atualizarInterface();
+            verificarNovasConquistas(); // Dispara o modal se houver algo novo
             renderTimeline();
             renderGastos();
             renderJornada();
         });
     }
-
+        
     init();
 </script>
 </body>
