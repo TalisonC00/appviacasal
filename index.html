@@ -297,7 +297,7 @@ function verificarNovasConquistas() {
     let temPraia = false; 
     for(let u in dbGlobal) { for(let id in dbGlobal[u]) { if(dbGlobal[u][id].praia) temPraia = true; } }
     if (temPraia && !conquistasAnteriores.includes('praia')) {
-        novasNestaRodada.push({nome: '🏖️ Pé na Areia', icone: '🏖️', id: 'praia'});
+        novasNestaRodada.push({nome: 'Pé na Areia', icone: '🏖️', id: 'praia'});
     }
 
     // Se houver novas conquistas, adiciona na fila global e inicia a celebração
