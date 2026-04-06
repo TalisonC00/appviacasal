@@ -3,9 +3,9 @@
   "name": "Nossa Jornada 👩‍❤️‍👨",
   "icons": [
     {
-      "src": "icone.png",
+      "src": "icone.jpeg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/jpeg",
       "purpose": "any maskable"
     }
   ],
