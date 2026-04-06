@@ -377,24 +377,35 @@
 
     function abrirHistorico(id) {
         const listaObj = dbGlobal[id]; if (!listaObj) return;
-        let h = `<h2 style="color:var(--primary); margin:0 0 20px 0; font-size:22px;">🚩 ${id.replace('BR','')}</h2>`;
+        
+        // Cabeçalho do Pop-up (Estado)
+        let h = `<h2 style="color:var(--primary); margin:0 0 15px 0; font-size:20px; font-weight:800;">🚩 ${id.replace('BR','')}</h2>`;
+        
         Object.keys(listaObj).forEach((idFirebase) => {
             const v = listaObj[idFirebase];
             let track = ''; 
-            if(v.fotos) v.fotos.forEach(f => { track += `<img src="${f}" class="img-slide">`; });
-            h += `<div style="margin-bottom:30px; border-bottom:1px solid #eee; padding-bottom:20px;">
-                <p style="margin:0; font-size:14px; font-weight:800; color:var(--text-sub);">${v.cidade} - ${v.data}</p>
-                <h4 style="margin:6px 0 12px 0; color:var(--money); font-size:18px;">${v.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</h4>
-                <div class="carousel-fotos" id="car-${idFirebase}" ontouchstart="hTS(event)" ontouchmove="hTM(event, '${idFirebase}', ${v.fotos ? v.fotos.length : 0})">
-                    <div class="track-fotos">${track || '<div class="img-slide" style="background:#eee"></div>'}</div>
+            if(v.fotos) v.fotos.forEach(f => { track += `<img src="${f}" class="img-slide" style="width:100%; height:250px; object-fit:cover;">`; });
+            
+            h += `
+            <div style="margin-bottom:25px; border-bottom:1px solid #f1f5f9; padding-bottom:15px;">
+                <p style="margin:0; font-size:14px; font-weight:700; color:var(--text-main);">${v.cidade} - ${v.data}</p>
+                
+                <h4 style="margin:4px 0 10px 0; color:var(--money); font-size:15px; font-weight:700;">
+                    ${v.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                </h4>
+                
+                <div class="carousel-fotos" id="car-${idFirebase}" 
+                     style="height:250px; border-radius:20px; overflow:hidden; background:#f8fafc;"
+                     ontouchstart="hTS(event)" ontouchmove="hTM(event, '${idFirebase}', ${v.fotos ? v.fotos.length : 0})">
+                    <div class="track-fotos">${track || '<div class="img-slide" style="background:#eee; height:250px;"></div>'}</div>
                 </div>
             </div>`;
         });
+        
         document.getElementById('popup-content').innerHTML = h;
         document.getElementById('photo-popup').classList.add('show');
         document.getElementById('popup-overlay').style.display = 'block';
     }
-
     let sX = 0; function hTS(e) { sX = e.touches[0].clientX; }
     function hTM(e, idF, len) { if (!sX) return; let d = sX - e.touches[0].clientX; let tr = document.querySelector(`#car-${idF} .track-fotos`); let curIdx = Math.round(Math.abs(new WebKitCSSMatrix(window.getComputedStyle(tr).transform).m41 / tr.offsetWidth)); if (Math.abs(d) > 40) { if (d > 0 && curIdx < len - 1) curIdx++; else if (d < 0 && curIdx > 0) curIdx--; tr.style.transform = `translateX(-${curIdx * 100}%)`; sX = 0; } }
 
