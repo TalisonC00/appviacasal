@@ -140,20 +140,20 @@
             <select id="sel-uf">
                 <option value="BRSP" selected>São Paulo</option><option value="BRRJ">Rio de Janeiro</option><option value="BRMG">Minas Gerais</option><option value="BRBA">Bahia</option><option value="BRSC">Santa Catarina</option><option value="BRPR">Paraná</option><option value="BRRS">Rio Grande do Sul</option><option value="BRGO">Goiás</option><option value="BRDF">Distrito Federal</option><option value="BRES">Espírito Santo</option><option value="BRCE">Ceará</option><option value="BRPE">Pernambuco</option><option value="BRRN">Rio Grande do Norte</option><option value="BRPB">Paraíba</option><option value="BRAL">Alagoas</option><option value="BRSE">Sergipe</option><option value="BRMA">Maranhão</option><option value="BRPI">Piauí</option><option value="BRMT">Mato Grosso</option><option value="BRMS">Mato Grosso do Sul</option><option value="BRTO">Tocantins</option><option value="BRPA">Pará</option><option value="BRAM">Amazonas</option><option value="BRRO">Rondônia</option><option value="BRAC">Acre</option><option value="BRRR">Roraima</option><option value="BRAP">Amapá</option>
             </select>
-            <label>Cidade</label><input type="text" id="txt-cidade" placeholder="Ex: Gramado">
+            <label>Cidade Visitada</label><input type="text" id="txt-cidade" placeholder="Ex: Brasília">
             <label>Data da Visita</label><input type="date" id="txt-data">
             <label style="display:flex; align-items:center; gap:8px; margin:15px 0;"><input type="checkbox" id="chk-praia" style="width:18px;height:18px;"><span style="font-size:12px; font-weight:800; color:var(--text-sub)">VIAGEM DE PRAIA? 🏖️</span></label>
             <label>Gastos (R$)</label>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;"><input type="number" id="v-hosp" placeholder="Hotel"><input type="number" id="v-trans" placeholder="Transp."></div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;"><input type="number" id="v-hosp" placeholder="Hotel"><input type="number" id="v-trans" placeholder="Transporte"></div>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:8px;"><input type="number" id="v-alime" placeholder="Comida"><input type="number" id="v-atrac" placeholder="Atrações"></div>
-            <label>Fotos (Máx 3)</label><input type="file" id="inp-foto" accept="image/*" multiple>
+            <label>Fotos (Máx: 3)</label><input type="file" id="inp-foto" accept="image/*" multiple>
             <button class="btn-acao" onclick="salvarViagem()">Salvar Memória🚩</button>
         </div>
     </div>
 
     <div id="aba-gastos" class="aba">
         <div class="card" style="padding:20px 16px;">
-            <h3>💰 Relatório</h3>
+            <h3>💰 Relatório de Viagens</h3>
             <div id="lista-detalhada-gastos"></div>
             <div style="background:var(--money); color:#fff; padding:18px; border-radius:22px; text-align:center; font-weight:800; font-size:16px; margin:25px 0 5px 0;" id="total-geral-brasil">Total Brasil: R$ 0,00</div>
         </div>
