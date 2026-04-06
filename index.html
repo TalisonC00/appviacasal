@@ -12,6 +12,7 @@
 
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
     
     <style>
@@ -261,16 +262,27 @@ function fecharCelebracaoEProxima() {
     }
 }
 
-    function compartilharNoStories() {
-        const nome = document.getElementById('celebracao-nome').innerText;
-        const texto = `🏆 NOVA CONQUISTA NO NOSSO APP! Desbloqueamos: ${nome}. Mapeando nossa jornada pelo Brasil! 🇧🇷`;
-        if (navigator.share) {
-            navigator.share({ title: 'Nossa Jornada', text: texto, url: window.location.href }).catch(() => {});
-        } else {
-            navigator.clipboard.writeText(texto);
-            mostrarAlerta("Texto copiado! Cole na sua rede.", "📸");
+    async function compartilharNoStories() {
+    const mapaElemento = document.querySelector('.mapa-card');
+    
+    // Tira um "print" do mapa colorido
+    const canvas = await html2canvas(mapaElemento);
+    const dataUrl = canvas.toDataURL('image/png');
+    const blob = await (await fetch(dataUrl)).blob();
+    const file = new File([blob], 'meu-mapa.png', { type: 'image/png' });
+
+    if (navigator.share) {
+        try {
+            await navigator.share({
+                title: 'Nossa Jornada',
+                text: 'Olha como está ficando nosso mapa do Brasil! 🇧🇷',
+                files: [file] // Envia a foto real do mapa colorido!
+            });
+        } catch (err) {
+            console.error("Erro ao compartilhar:", err);
         }
     }
+}
 
    let filaDeConquistas = [];
 
