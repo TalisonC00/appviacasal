@@ -299,12 +299,11 @@ function verificarNovasConquistas() {
     const visitados = Object.keys(dbGlobal || {});
     let novasNestaRodada = [];
 
-    // Busca no celular quais IDs de conquistas já foram celebrados antes
+    // Lê o que está salvo no celular
     const celebradosNoHistorico = JSON.parse(localStorage.getItem('conquistas_vistas') || "[]");
 
     // 1. Verifica Metas Numéricas
     metas.forEach(m => {
-        // Se bateu a meta E nunca foi celebrado (nem nesta sessão, nem no histórico do celular)
         if (visitados.length >= m.n && !celebradosNoHistorico.includes(m.id)) {
             novasNestaRodada.push({nome: m.l, icone: m.i, id: m.id});
         }
@@ -312,25 +311,34 @@ function verificarNovasConquistas() {
     
     // 2. Verifica Meta de Praia
     let temPraia = false; 
-    for(let u in dbGlobal) { for(let id in dbGlobal[u]) { if(dbGlobal[u][id].praia) temPraia = true; } }
+    for(let u in dbGlobal) { 
+        for(let id in dbGlobal[u]) { 
+            if(dbGlobal[u][id].praia) temPraia = true; 
+        } 
+    }
     if (temPraia && !celebradosNoHistorico.includes('praia')) {
         novasNestaRodada.push({nome: '🏖️ Pé na Areia', icone: '🏖️', id: 'praia'});
     }
 
-    // Se houver novas, adiciona na fila e marca como "vistas"
+    // Se houver novas, adiciona na fila e salva na nuvem e local
     if (novasNestaRodada.length > 0) {
         filaDeConquistas = [...filaDeConquistas, ...novasNestaRodada];
         
-        // Salva imediatamente no localStorage para não repetir
         const novoHistorico = [...celebradosNoHistorico, ...novasNestaRodada.map(n => n.id)];
+        
+        // Salva no LocalStorage (celular)
         localStorage.setItem('conquistas_vistas', JSON.stringify(novoHistorico));
+        
+        // Salva no Firebase (nuvem)
+        novasNestaRodada.forEach(n => {
+            database.ref('conquistas_vistas/' + n.id).set(true);
+        });
         
         if (document.getElementById('modal-celebracao').style.display !== 'flex') {
             mostrarProximaConquistaDaFila();
         }
     }
 }
-
 
     function converter(f) { 
         return new Promise(r => { 
@@ -512,26 +520,37 @@ function verificarNovasConquistas() {
     }
 
     async function init() {
-        const res = await fetch('br.svg');
-        const svg = await res.text();
-        document.getElementById('svg-container').innerHTML = svg;
-        const svgEl = document.querySelector('#svg-container svg');
-        svgEl.id = "mapa-svg-real"; svgEl.style.width = "100%"; svgEl.style.height = "100%";
-        controleMapa = svgPanZoom('#mapa-svg-real', { zoomEnabled: true, controlIconsEnabled: false, fit: true, center: true, zoomScaleSensitivity: 0.3, minZoom: 0.5, maxZoom: 10 });
-        document.getElementById('svg-container').addEventListener('touchend', (e) => {
-            const target = e.target.closest('path');
-            if (target && target.id) abrirHistorico(target.id);
-        });
-        database.ref('viagens').on('value', (snapshot) => {
-            dbGlobal = snapshot.val() || {};
-            atualizarInterface();
-            verificarNovasConquistas(); // Dispara o modal se houver algo novo
-            renderTimeline();
-            renderGastos();
-            renderJornada();
-        });
-    }
-        
+    const res = await fetch('br.svg');
+    const svg = await res.text();
+    document.getElementById('svg-container').innerHTML = svg;
+    const svgEl = document.querySelector('#svg-container svg');
+    svgEl.id = "mapa-svg-real"; svgEl.style.width = "100%"; svgEl.style.height = "100%";
+    
+    controleMapa = svgPanZoom('#mapa-svg-real', { zoomEnabled: true, controlIconsEnabled: false, fit: true, center: true, zoomScaleSensitivity: 0.3, minZoom: 0.5, maxZoom: 10 });
+
+    document.getElementById('svg-container').addEventListener('touchend', (e) => {
+        const target = e.target.closest('path');
+        if (target && target.id) abrirHistorico(target.id);
+    });
+
+    // SINCRONIZAÇÃO: Busca no Firebase e salva no LocalStorage do celular
+    database.ref('conquistas_vistas').on('value', (snapshot) => {
+        const dados = snapshot.val() || {};
+        conquistasDesbloqueadas = dados;
+        const idsVistos = Object.keys(dados);
+        localStorage.setItem('conquistas_vistas', JSON.stringify(idsVistos));
+    });
+
+    // ESCUTA AS VIAGENS
+    database.ref('viagens').on('value', (snapshot) => {
+        dbGlobal = snapshot.val() || {};
+        atualizarInterface();
+        verificarNovasConquistas(); 
+        renderTimeline();
+        renderGastos();
+        renderJornada();
+    });
+}      
     init();
 </script>
 </body>
