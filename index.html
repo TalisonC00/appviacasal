@@ -210,7 +210,6 @@
     // 2. VARIÁVEIS GLOBAIS
     let dbGlobal = {};
     let controleMapa;
-    let conquistasAnteriores=[]; // Controla o que já foi celebrado
     let filaDeConquistas = []; //
     let conquistasDesbloqueadas = {}; // Necessário para a sincronização com Firebase
     
@@ -286,8 +285,6 @@ function fecharCelebracaoEProxima() {
         }
     }
 }
-
-   let filaDeConquistas = [];
 
 function verificarNovasConquistas() {
     const metas = [
