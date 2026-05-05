@@ -211,7 +211,8 @@
     let dbGlobal = {};
     let controleMapa;
     let conquistasAnteriores=[]; // Controla o que já foi celebrado
-    
+    let filaDeConquistas = []; //
+    let conquistasDesbloqueadas = {}; // Necessário para a sincronização com Firebase
     
     const REGIOES = {
         'NORTE': { icon: '🌳', color: '#22C55E', UFs: ['BRAC','BRAM','BRRR','BRRO','BRPA','BRAP','BRTO'], nomes: ['Acre','Amazonas','Roraima','Rondônia','Pará','Amapá','Tocantins'] },
@@ -311,11 +312,14 @@ function verificarNovasConquistas() {
     });
     
     // 2. Verifica Meta de Praia
+    // 2. Verifica Meta de Praia
     let temPraia = false; 
     for(let u in dbGlobal) { 
-        for(let id in dbGlobal[u]) { 
+       if (dbGlobal[u]) {
+         for(let id in dbGlobal[u]) { 
             if(dbGlobal[u][id].praia) temPraia = true; 
-        } 
+          } 
+       }
     }
     if (temPraia && !celebradosNoHistorico.includes('praia')) {
         novasNestaRodada.push({nome: '🏖️ Pé na Areia', icone: '🏖️', id: 'praia'});
